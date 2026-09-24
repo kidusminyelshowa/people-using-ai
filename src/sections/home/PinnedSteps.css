@@ -1,0 +1,155 @@
+.pinned {
+  position: relative;
+}
+.pinned__sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: flex;
+  align-items: center;
+}
+.pinned__grid {
+  width: min(100% - 2 * var(--gutter), var(--max));
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: center;
+  gap: clamp(24px, 5vw, 88px);
+}
+.pinned__media {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  max-height: 78svh;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background: var(--slate);
+}
+.pinned__media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.pinned__counter {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgb(255 253 253 / 0.9);
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.pinned__rows {
+  display: grid;
+  font-size: clamp(2.2rem, 5vw, 4.6rem);
+  font-weight: 700;
+  letter-spacing: -0.022em;
+  line-height: 1.05;
+}
+.pinned__num,
+.pinned__row {
+  display: grid;
+  overflow: hidden;
+  /* room for descenders (g, y) inside the clipping row */
+  padding: 0.06em 0 0.14em;
+  border-bottom: 1px solid rgb(32 34 43 / 0.3);
+}
+/* All versions share one cell, so the row is as tall as its longest label. */
+.pinned__swap {
+  grid-area: 1 / 1;
+  display: block;
+}
+.pinned__row .mark {
+  display: inline-block;
+  padding: 0 0.15em;
+}
+.pinned__curve {
+  margin-top: clamp(24px, 4vh, 48px);
+}
+.pinned__curve svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.pinned__track,
+.pinned__line {
+  fill: none;
+  stroke-linecap: round;
+  stroke-width: 4;
+}
+.pinned__track {
+  stroke: rgb(32 34 43 / 0.12);
+}
+.pinned__line {
+  stroke: var(--coral);
+}
+.pinned__dot {
+  fill: var(--coral);
+  stroke: var(--paper);
+  stroke-width: 4;
+}
+.pinned__ends {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  color: var(--slate);
+}
+.pinned__caption {
+  max-width: 46ch;
+  margin-top: clamp(20px, 3vh, 36px);
+  font-size: clamp(1.05rem, 1.4vw, 1.25rem);
+  line-height: 1.45;
+}
+
+/* Tablets keep the desktop's two columns, just tighter. */
+@media (max-width: 1024px) {
+  .pinned__grid {
+    gap: clamp(20px, 4vw, 48px);
+  }
+  .pinned__media {
+    max-height: 70svh;
+  }
+  .pinned__rows {
+    font-size: clamp(2rem, 5.2vw, 3.4rem);
+  }
+}
+
+/* Phones: compact square photo top-left, full-width rows below (as wembi.ai). */
+@media (max-width: 700px) {
+  /* Breathing room so the section doesn't arrive jammed against the
+     "who it's for" panel above while that panel is still scrolling away. */
+  .pinned {
+    margin-top: clamp(64px, 16svh, 140px);
+  }
+  .pinned__grid {
+    grid-template-columns: 1fr;
+    align-content: center;
+    gap: 18px;
+  }
+  .pinned__media {
+    width: min(56%, 34svh);
+    aspect-ratio: 1;
+    max-height: none;
+    border-radius: 22px;
+  }
+  .pinned__counter {
+    left: 10px;
+    bottom: 10px;
+    padding: 4px 9px;
+    font-size: 0.75rem;
+  }
+  .pinned__rows {
+    font-size: clamp(1.8rem, 8.4vw, 2.6rem);
+  }
+  .pinned__curve {
+    margin-top: 16px;
+  }
+  .pinned__caption {
+    margin-top: 12px;
+    font-size: 0.95rem;
+  }
+}

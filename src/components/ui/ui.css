@@ -1,0 +1,272 @@
+/* ---------- Section head ---------- */
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: clamp(40px, 6vw, 88px);
+}
+.section-head__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.section-head__label::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--coral);
+}
+.section-head__rule {
+  flex: 1;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.3;
+  transform-origin: left;
+}
+.section-head--light {
+  color: var(--cotton);
+}
+.section-head--light .section-head__label::before {
+  background: var(--pink);
+}
+
+/* ---------- Reveal text ---------- */
+.reveal-text__word {
+  display: inline;
+}
+
+/* ---------- Parallax image ---------- */
+.parallax {
+  position: relative;
+  overflow: hidden;
+  background: var(--slate);
+}
+.parallax img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  will-change: transform;
+}
+
+/* ---------- Marquee ---------- */
+.marquee {
+  /* clip sideways only, so descenders (g, y, p) are never cut off */
+  overflow-x: clip;
+  overflow-y: visible;
+  white-space: nowrap;
+}
+.marquee__track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+.marquee__chunk {
+  display: flex;
+  flex-shrink: 0;
+}
+
+/* ---------- Stacked pills ---------- */
+.pill-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.pill-stack__item {
+  padding: 0.18em 0.6em 0.24em;
+  font-size: clamp(2.2rem, 6vw, 5.5rem);
+  font-weight: 700;
+  letter-spacing: -0.022em;
+  line-height: 1;
+  cursor: default;
+  box-shadow: 0 10px 30px rgb(32 34 43 / 0.18);
+}
+.pill-stack__item + .pill-stack__item {
+  margin-top: -0.08em;
+}
+.pill-stack__item--round {
+  border-radius: 999px;
+}
+.pill-stack__item--square {
+  border-radius: 0.22em;
+}
+
+/* ---------- Countdown ---------- */
+.countdown {
+  display: flex;
+  gap: clamp(10px, 1.6vw, 18px);
+}
+.countdown__unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.countdown__value {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  min-width: 2.1ch;
+  padding: 0.12em 0.18em;
+  border-radius: 12px;
+  background: var(--night);
+  color: var(--cotton);
+  font-size: clamp(1.8rem, 3.4vw, 3rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.017em;
+  line-height: 1.1;
+  text-align: center;
+}
+.countdown__value span {
+  display: block;
+}
+.countdown__label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ---------- Hover list ---------- */
+.hover-list {
+  position: relative;
+}
+.hover-list__rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid rgb(32 34 43 / 0.2);
+}
+.hover-list__row {
+  border-bottom: 1px solid rgb(32 34 43 / 0.2);
+}
+.hover-list__link {
+  position: relative;
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1.4fr) minmax(0, 1fr) 2rem;
+  align-items: center;
+  gap: 8px 24px;
+  padding: clamp(20px, 2.6vw, 34px) 0;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.hover-list__link::before {
+  content: "";
+  position: absolute;
+  inset: 0 -12px;
+  z-index: -1;
+  border-radius: 16px;
+  background: var(--row-hover, var(--yellow));
+  transform: scaleY(0);
+  transition: transform 0.45s var(--ease);
+}
+.hover-list__row.is-active .hover-list__link::before {
+  transform: none;
+}
+.hover-list {
+  isolation: isolate;
+}
+.hover-list__num {
+  font-size: 1rem;
+  color: var(--coral);
+}
+.hover-list__title {
+  font-size: clamp(1.7rem, 3.6vw, 3.4rem);
+  font-weight: 700;
+  letter-spacing: -0.019em;
+  line-height: 1;
+}
+.hover-list__body {
+  font-size: 1rem;
+  line-height: 1.45;
+  max-width: 42ch;
+}
+.hover-list__arrow {
+  font-size: 1.6rem;
+  font-weight: 700;
+  transition: transform 0.4s var(--ease);
+}
+.hover-list__row.is-active .hover-list__arrow {
+  transform: translateX(6px) rotate(-45deg);
+}
+.hover-list__float {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+.hover-list__float img {
+  position: absolute;
+  width: clamp(200px, 22vw, 340px);
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: 20px;
+  translate: 24px -50%;
+  box-shadow: 0 20px 50px rgb(32 34 43 / 0.3);
+}
+.hover-list__inline {
+  display: none;
+}
+
+/* Touch screens and narrow windows: no cursor to follow, so each row
+   becomes a photo card — two columns on tablets, one on phones. */
+@media (hover: none), (max-width: 760px) {
+  .hover-list__float {
+    display: none;
+  }
+  .hover-list__rows {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px 20px;
+    border-top: 0;
+  }
+  .hover-list__row {
+    display: flex;
+    flex-direction: column;
+    border-bottom: 0;
+  }
+  .hover-list__inline {
+    display: block;
+    order: -1;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+  }
+  .hover-list__link {
+    grid-template-columns: 2.2rem minmax(0, 1fr) 1.6rem;
+    align-items: start;
+    padding: 16px 0 0;
+  }
+  .hover-list__link::before {
+    display: none;
+  }
+  .hover-list__title {
+    font-size: clamp(1.4rem, 3.4vw, 2rem);
+  }
+  .hover-list__body {
+    grid-column: 2 / 3;
+  }
+  .hover-list__arrow {
+    grid-row: 1;
+    grid-column: 3;
+    font-size: 1.3rem;
+  }
+}
+@media (max-width: 640px) {
+  .hover-list__rows {
+    grid-template-columns: 1fr;
+  }
+}

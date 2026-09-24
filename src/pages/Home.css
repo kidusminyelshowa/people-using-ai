@@ -1,0 +1,100 @@
+.home-why__title {
+  max-width: 16ch;
+}
+.home-why__title .serif,
+.home-how__title .serif {
+  color: var(--coral);
+}
+
+.home-why__panel {
+  min-height: min(90svh, 860px);
+  display: flex;
+  align-items: flex-end;
+}
+.home-why__img {
+  position: absolute;
+  inset: 0;
+}
+.home-why__cards {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--inset);
+  width: min(100%, 980px);
+  margin-left: auto;
+  padding: var(--inset);
+}
+.home-why__card {
+  padding: clamp(22px, 3vw, 40px);
+  border-radius: var(--radius-lg);
+  background: rgb(255 253 253 / 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  font-size: clamp(1.1rem, 1.6vw, 1.45rem);
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+.home-why__card--coral {
+  background: var(--coral);
+  color: #fff;
+}
+
+.home-how__title {
+  max-width: 17ch;
+}
+.home-how__intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  margin-top: clamp(32px, 5vw, 64px);
+}
+.home-how__intro p {
+  grid-column: 2;
+}
+
+.home-who {
+  min-height: min(100svh, 900px);
+  display: grid;
+  place-items: center;
+}
+.home-who__img {
+  position: absolute;
+  inset: 0;
+}
+.home-who__stack {
+  position: relative;
+  padding: 80px 16px;
+}
+
+@media (max-width: 760px) {
+  .home-why__cards,
+  .home-how__intro {
+    grid-template-columns: 1fr;
+  }
+
+  .home-how__intro p {
+    grid-column: 1;
+  }
+}
+
+/* Phones and portrait tablets: the panel is tall enough that the cards would
+   cover the face, so they sit under the photo instead. */
+@media (max-width: 760px), (orientation: portrait) and (max-width: 1100px) {
+  .home-why__panel {
+    min-height: 0;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .home-why__img {
+    position: relative;
+    inset: auto;
+    height: min(56svh, 620px);
+    border-radius: var(--radius-xl);
+  }
+  .home-why__img img {
+    object-position: 36% 72% !important;
+  }
+  .home-why__cards {
+    width: 100%;
+    padding: var(--inset) 0 0;
+  }
+}

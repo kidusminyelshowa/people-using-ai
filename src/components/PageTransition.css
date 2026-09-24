@@ -1,0 +1,15 @@
+.curtain {
+  position: fixed;
+  inset: 0 0 -12vh;
+  z-index: 150;
+  display: grid;
+  place-items: center;
+  background: var(--coral);
+  /* bowl-shaped trailing edge, echoing the icon */
+  border-radius: 0 0 50% 50% / 0 0 12vh 12vh;
+  pointer-events: none;
+  will-change: transform;
+}
+.curtain__icon {
+  width: clamp(88px, 10vw, 140px);
+}

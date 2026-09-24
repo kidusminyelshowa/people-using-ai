@@ -1,0 +1,57 @@
+.page-hero {
+  min-height: min(92svh, 900px);
+  display: flex;
+  align-items: flex-end;
+  color: var(--cotton);
+  background: var(--night);
+}
+.page-hero__img {
+  position: absolute;
+  inset: 0;
+}
+.page-hero__shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(32 34 43 / 0.15) 0%, rgb(32 34 43 / 0.1) 40%, rgb(32 34 43 / 0.85) 100%);
+}
+.page-hero__content {
+  position: relative;
+  width: 100%;
+  padding: clamp(120px, 14vw, 180px) clamp(20px, 3.5vw, 56px) clamp(28px, 4vw, 56px);
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  align-items: end;
+  gap: 24px 48px;
+}
+.page-hero__title {
+  font-size: clamp(3.4rem, 11vw, 10.5rem);
+  letter-spacing: -0.03em;
+  line-height: 0.9;
+}
+/* Each word rises out of its own mask. The padding gives glyph overhangs
+   and descenders room; the negative margins cancel it so spacing is unchanged. */
+.page-hero__mask {
+  display: inline-block;
+  overflow: hidden;
+  padding: 0.04em 0.14em 0.2em;
+  margin: -0.04em 0.08em -0.2em -0.14em;
+  vertical-align: top;
+}
+.page-hero__mask:last-child {
+  margin-right: -0.14em;
+}
+.page-hero__mask > span {
+  display: inline-block;
+}
+.page-hero__intro {
+  max-width: 38ch;
+  padding-bottom: 0.6em;
+  font-size: clamp(1.05rem, 1.4vw, 1.25rem);
+  line-height: 1.45;
+}
+
+@media (max-width: 860px) {
+  .page-hero__content {
+    grid-template-columns: 1fr;
+  }
+}

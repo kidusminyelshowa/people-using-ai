@@ -1,0 +1,5 @@
+node_modules
+dist
+*.local
+# Full-resolution originals; web versions live in public/images
+source-images

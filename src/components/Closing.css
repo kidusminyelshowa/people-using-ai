@@ -1,0 +1,102 @@
+.closing {
+  background: var(--coral);
+  color: #fff;
+}
+.closing__inner {
+  position: relative;
+  z-index: 1;
+  padding: clamp(40px, 5vw, 72px) clamp(20px, 3.5vw, 56px) clamp(40px, 5vw, 72px);
+}
+.closing .section-head__label::before {
+  background: var(--night);
+}
+.closing__title {
+  font-size: clamp(3.6rem, 12vw, 12rem);
+  letter-spacing: -0.03em;
+  line-height: 0.88;
+}
+.closing__ai {
+  color: var(--night);
+}
+.closing__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 32px 64px;
+  margin-top: clamp(40px, 5vw, 72px);
+}
+.closing__row p {
+  max-width: 44ch;
+  font-size: clamp(1.1rem, 1.5vw, 1.35rem);
+  line-height: 1.4;
+}
+.closing__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+.closing__icon {
+  position: absolute;
+  right: -3%;
+  top: 8%;
+  width: clamp(200px, 30vw, 460px);
+  opacity: 0.18;
+  pointer-events: none;
+}
+
+.footer {
+  margin: 0 var(--inset) var(--inset);
+  padding: clamp(32px, 4vw, 56px) clamp(20px, 3.5vw, 56px) 24px;
+  border-radius: var(--radius-xl);
+  background: var(--night);
+  color: rgb(255 253 253 / 0.65);
+  font-size: 0.95rem;
+}
+.footer__top {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 32px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid rgb(255 253 253 / 0.14);
+}
+.footer__logo {
+  height: 64px;
+  width: auto;
+}
+.footer__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 28px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.footer__nav a {
+  color: var(--cotton);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer__nav a:hover {
+  color: var(--coral);
+}
+.footer__bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 20px;
+  /* keep clear of the floating pills */
+  padding-bottom: 44px;
+}
+
+@media (max-width: 860px) {
+  .closing__row {
+    grid-template-columns: 1fr;
+  }
+  .closing__actions {
+    justify-content: flex-start;
+  }
+}
