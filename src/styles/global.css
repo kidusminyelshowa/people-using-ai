@@ -1,17 +1,21 @@
 /* People using ai — design tokens & base styles (Brand Guidelines v1.0.1) */
 
-/* Apfel Grotezk (Collletttivo, free licence). Add the .woff2 files to
-   public/fonts/ and they take over from the Familjen Grotesk fallback. */
+/* Apfel Grotezk (Collletttivo, SIL OFL 1.1 licence).
+   Font files are self-hosted in public/fonts/ for reliable loading on all devices. */
 @font-face {
   font-family: "Apfel Grotezk";
-  src: url("/fonts/ApfelGrotezk-Regular.woff2") format("woff2");
+  src: url("/fonts/ApfelGrotezk-Regular.woff2") format("woff2"),
+       url("/fonts/ApfelGrotezk-Regular.woff") format("woff");
   font-weight: 400;
+  font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "Apfel Grotezk";
-  src: url("/fonts/ApfelGrotezk-Fett.woff2") format("woff2");
+  src: url("/fonts/ApfelGrotezk-Fett.woff2") format("woff2"),
+       url("/fonts/ApfelGrotezk-Fett.woff") format("woff");
   font-weight: 700;
+  font-style: normal;
   font-display: swap;
 }
 
