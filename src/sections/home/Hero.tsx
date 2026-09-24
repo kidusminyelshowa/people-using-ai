@@ -95,7 +95,7 @@ export default function Hero() {
             <div className="hero-card__photo">
               <motion.img
                 {...photo("teamTable")}
-                sizes="(max-width: 760px) 92vw, (max-width: 1024px) 88vw, 74vw"
+                sizes="(max-width: 900px) 96vw, (max-width: 1024px) 88vw, 74vw"
                 alt=""
                 style={{ y: photoY }}
               />

@@ -196,12 +196,11 @@
   mask: var(--bowl) no-repeat 50% calc(var(--top-h) * -1) / var(--card-w) var(--card-h);
 }
 
-/* ---------- Tablets: keep the bowl, wider, with more room for text ---------- */
-@media (min-width: 761px) and (max-width: 1024px) {
+/* ---------- Large tablets: the desktop bowl, wider ---------- */
+@media (min-width: 901px) and (max-width: 1024px) {
   .hero,
   .hero-bowl {
     --card-w: 88vw;
-    --split: 0.5;
   }
   .hero-card__text {
     padding: 4.6cqw 7cqw 2.4cqw;
@@ -215,17 +214,16 @@
   }
 }
 
-/* ---------- Phones ----------
-   The text needs more height than the bowl's top can give on a narrow
-   screen, so it sits in a coral box above the bowl. The seam is placed at
-   the bowl's widest point (31% down), where its sides are vertical — so
-   the box's straight sides run on into the bowl's curve without a step,
-   and the lower bowl, photo, ring and outline marquee are the same
-   geometry as desktop and tablet. */
-@media (max-width: 760px) {
+/* ---------- 900px and below ----------
+   The text needs more height than the bowl's top can give, so it sits in a
+   coral box above the bowl. The seam is at 31% of the bowl's height — the
+   centre of its circle, where the sides are vertical — so the box's straight
+   sides run on into the curve without a step, and the photo shows the full
+   lower half of the circle: a perfect semicircle, never a squashed segment. */
+@media (max-width: 900px) {
   .hero,
   .hero-bowl {
-    --card-w: calc(100vw - 20px);
+    --card-w: calc(100vw - 2 * var(--gutter));
     --split: 0.31;
   }
   .hero {
@@ -239,10 +237,35 @@
   }
   .hero-card__text {
     height: auto;
-    gap: 20px;
-    padding: 30px 24px 26px;
-    border-radius: 30px 30px 0 0;
+    gap: 24px;
+    padding: clamp(28px, 5vw, 44px) clamp(24px, 5.5vw, 52px) clamp(24px, 4vw, 36px);
+    border-radius: clamp(28px, 4.5vw, 44px) clamp(28px, 4.5vw, 44px) 0 0;
     background: var(--coral);
+  }
+  .hero-card h1 {
+    font-size: clamp(1.75rem, 5.2vw, 2.8rem);
+  }
+  .hero-card__row p {
+    max-width: 60ch;
+    font-size: 1rem;
+  }
+  .hero-card__row .btn {
+    font-size: 1rem;
+  }
+  /* a slightly heavier ring than 1.6cqw would give on a smaller card */
+  .hero-card__photo {
+    inset: clamp(9px, 1.6cqw, 14px);
+  }
+}
+
+/* ---------- Phones ---------- */
+@media (max-width: 760px) {
+  .hero,
+  .hero-bowl {
+    --card-w: calc(100vw - 20px);
+  }
+  .hero-card__text {
+    gap: 20px;
   }
   .hero-card h1 {
     font-size: clamp(1.75rem, 7.4vw, 2.6rem);
@@ -254,14 +277,6 @@
   }
   .hero-card__row p {
     max-width: none;
-    font-size: 1rem;
-  }
-  .hero-card__row .btn {
-    font-size: 1rem;
-  }
-  /* a slightly heavier ring than 1.6cqw would give on a small card */
-  .hero-card__photo {
-    inset: 9px;
   }
   .hero-marquee {
     font-size: 36vw;

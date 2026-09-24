@@ -12,7 +12,7 @@ import GetInvolved from "./pages/GetInvolved";
 import NotFound from "./pages/NotFound";
 
 const titles: Record<string, string> = {
-  "/": "People using ai — Communication is how you make AI useful",
+  "/": "People using ai",
   "/work-with-us": "Work with us — People using ai",
   "/about": "About us — People using ai",
   "/get-involved": "Get involved — People using ai",
