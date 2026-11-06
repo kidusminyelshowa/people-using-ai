@@ -48,7 +48,22 @@
   z-index: 1;
   right: var(--px);
   bottom: var(--py);
-  width: clamp(92px, 11 * var(--u), 260px);
+  width: clamp(120px, 12.5 * var(--u), 280px);
+  container-type: inline-size;
+}
+/* "Launching soon" sits still in the middle while the ring turns */
+.soon__badge-text {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 0 31%;
+  font-size: 8.6cqw;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  text-align: center;
+  color: var(--night);
 }
 .soon__badge img {
   display: block;
@@ -294,7 +309,7 @@
   .soon__badge {
     right: var(--px);
     bottom: calc(5 * var(--u));
-    width: clamp(76px, 11 * var(--u), 190px);
+    width: clamp(100px, 12.5 * var(--u), 210px);
   }
   .soon__form {
     --h: clamp(44px, 4.6 * var(--u), 72px);
@@ -349,7 +364,7 @@
     line-height: 1.4;
   }
   .soon__badge {
-    width: 72px;
+    width: 96px;
   }
   .soon__form {
     --h: 42px;

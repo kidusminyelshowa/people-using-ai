@@ -41,7 +41,7 @@ export default function ComingSoon() {
 
   return (
     <div className="soon">
-      <div className="soon__media" aria-hidden="true">
+      <div className="soon__media">
         <motion.img
           className="soon__photo"
           src="/images/coming-soon-faces-v2-1400.webp"
@@ -60,6 +60,7 @@ export default function ComingSoon() {
           transition={{ duration: 1.1, delay: 0.7, ease }}
         >
           <img src={badge} alt="" />
+          <span className="soon__badge-text">Launching soon</span>
         </motion.div>
       </div>
 
