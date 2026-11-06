@@ -42,6 +42,32 @@
   pointer-events: none;
 }
 
+/* Badge: on the photo, just past the text column; turns slowly */
+.soon__badge {
+  position: absolute;
+  z-index: 1;
+  top: calc(var(--py) + 0.5 * var(--u));
+  left: 5vw;
+  width: clamp(92px, 11 * var(--u), 260px);
+}
+.soon__badge img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 calc(0.6 * var(--u)) calc(1.6 * var(--u)) rgb(0 0 0 / 0.35));
+  animation: soon-spin 40s linear infinite;
+}
+@keyframes soon-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .soon__badge img {
+    animation: none;
+  }
+}
+
 /* ---------- Text column ---------- */
 .soon__inner {
   position: relative;
@@ -64,14 +90,15 @@
   display: flex;
   flex-direction: column;
   gap: calc(2.8 * var(--u));
-  max-width: 44vw;
+  max-width: 43vw;
 }
 .soon h1 {
   margin: 0;
   font-weight: 700;
-  font-size: clamp(40px, 8.6 * var(--u), 220px);
-  line-height: 0.92;
+  font-size: clamp(38px, 6.6 * var(--u), 170px);
+  line-height: 0.95;
   letter-spacing: -0.035em;
+  text-wrap: balance;
 }
 .soon__copy {
   display: flex;
@@ -81,16 +108,10 @@
 .soon__copy p {
   margin: 0;
 }
-.soon__lead {
-  font-weight: 700;
-  font-size: clamp(17px, 1.95 * var(--u), 46px);
-  line-height: 1.2;
-  letter-spacing: -0.01em;
-}
 .soon__body {
-  max-width: 34em;
-  font-size: clamp(14px, 1.25 * var(--u), 28px);
-  line-height: 1.5;
+  max-width: 30em;
+  font-size: clamp(15px, 1.5 * var(--u), 32px);
+  line-height: 1.45;
   color: #d9d9e0;
   text-wrap: pretty;
 }
@@ -265,13 +286,17 @@
     gap: calc(2.2 * var(--u));
   }
   .soon h1 {
-    font-size: clamp(38px, 5.4 * var(--u), 150px);
-  }
-  .soon__lead {
-    font-size: clamp(17px, 2 * var(--u), 40px);
+    font-size: clamp(34px, 4.6 * var(--u), 130px);
   }
   .soon__body {
-    font-size: clamp(14px, 1.55 * var(--u), 24px);
+    font-size: clamp(15px, 1.75 * var(--u), 26px);
+  }
+  .soon__badge {
+    top: auto;
+    left: auto;
+    right: var(--px);
+    bottom: calc(5 * var(--u));
+    width: clamp(76px, 11 * var(--u), 190px);
   }
   .soon__form {
     --h: clamp(44px, 4.6 * var(--u), 72px);
@@ -319,11 +344,15 @@
     width: 92px;
   }
   .soon h1 {
-    font-size: clamp(30px, 6.4 * var(--u), 48px);
-    white-space: nowrap;
+    font-size: clamp(26px, 5 * var(--u), 40px);
   }
   .soon__body {
-    display: none;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  .soon__badge {
+    width: 72px;
+    left: 4vw;
   }
   .soon__form {
     --h: 42px;

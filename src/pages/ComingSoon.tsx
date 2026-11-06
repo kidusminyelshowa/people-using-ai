@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import wordmark from "../assets/brand/wordmark-cotton.svg";
+import badge from "../assets/brand/badge-research-training-community.svg";
 import { links } from "../content/links";
 import { EMAIL, subscribe } from "../lib/subscribe";
 import "./ComingSoon.css";
@@ -19,7 +20,7 @@ export default function ComingSoon() {
   const [state, setState] = useState<State>({ kind: "idle" });
 
   useEffect(() => {
-    document.title = "People using ai — Launching soon";
+    document.title = "People Using AI — Training the Future Workforce";
   }, []);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
@@ -43,28 +44,36 @@ export default function ComingSoon() {
       <div className="soon__media" aria-hidden="true">
         <motion.img
           className="soon__photo"
-          src="/images/coming-soon-faces-1400.webp"
-          srcSet="/images/coming-soon-faces-800.webp 800w, /images/coming-soon-faces-1400.webp 1400w, /images/coming-soon-faces-2480.webp 2480w"
+          src="/images/coming-soon-faces-v2-1400.webp"
+          srcSet="/images/coming-soon-faces-v2-800.webp 800w, /images/coming-soon-faces-v2-1400.webp 1400w, /images/coming-soon-faces-v2-2480.webp 2480w"
           sizes="(orientation: portrait), (max-width: 900px) 100vw, 54vw"
           alt=""
           initial={{ opacity: 0, scale: 1.04 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.6, ease }}
         />
+        {/* Sticker where the text meets the photo; turns slowly. */}
+        <motion.div
+          className="soon__badge"
+          initial={{ opacity: 0, scale: 0.6, rotate: -40 }}
+          animate={{ opacity: 1, scale: 1, rotate: 0 }}
+          transition={{ duration: 1.1, delay: 0.7, ease }}
+        >
+          <img src={badge} alt="" />
+        </motion.div>
       </div>
 
       <div className="soon__inner">
         <motion.header {...rise(0.1)}>
-          <img className="soon__logo" src={wordmark} alt="People using ai" />
+          <img className="soon__logo" src={wordmark} alt="People Using AI" />
         </motion.header>
 
         <main className="soon__main" id="main">
-          <motion.h1 {...rise(0.2)}>Launching Soon</motion.h1>
+          <motion.h1 {...rise(0.2)}>Training the Future Workforce</motion.h1>
           <motion.div className="soon__copy" {...rise(0.32)}>
-            <p className="soon__lead">AI skills for people, not just tools.</p>
             <p className="soon__body">
-              AI doesn’t have to feel like a different language. Getting more out of it comes down to how you
-              communicate, and we’re building the place to learn how.
+              People Using AI helps people and teams use AI with confidence through practical training, research
+              rooted in African contexts, and a community for learning together.
             </p>
           </motion.div>
 
@@ -135,7 +144,7 @@ export default function ComingSoon() {
               </a>
             </nav>
           </div>
-          <p className="soon__place">Nairobi, Kenya · © {new Date().getFullYear()} People using ai</p>
+          <p className="soon__place">Nairobi, Kenya · © {new Date().getFullYear()} People Using AI</p>
         </motion.footer>
       </div>
     </div>
