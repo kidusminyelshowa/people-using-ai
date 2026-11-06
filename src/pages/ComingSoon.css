@@ -42,12 +42,12 @@
   pointer-events: none;
 }
 
-/* Badge: on the photo, just past the text column; turns slowly */
+/* Badge: bottom-right corner of the photo, on the page margins; turns slowly */
 .soon__badge {
   position: absolute;
   z-index: 1;
-  top: calc(var(--py) + 0.5 * var(--u));
-  left: 5vw;
+  right: var(--px);
+  bottom: var(--py);
   width: clamp(92px, 11 * var(--u), 260px);
 }
 .soon__badge img {
@@ -292,8 +292,6 @@
     font-size: clamp(15px, 1.75 * var(--u), 26px);
   }
   .soon__badge {
-    top: auto;
-    left: auto;
     right: var(--px);
     bottom: calc(5 * var(--u));
     width: clamp(76px, 11 * var(--u), 190px);
@@ -352,7 +350,6 @@
   }
   .soon__badge {
     width: 72px;
-    left: 4vw;
   }
   .soon__form {
     --h: 42px;
