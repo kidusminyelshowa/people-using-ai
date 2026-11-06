@@ -43,8 +43,8 @@ export default function ComingSoon() {
       <div className="soon__media" aria-hidden="true">
         <motion.img
           className="soon__photo"
-          src="/images/coming-soon-1254.webp"
-          srcSet="/images/coming-soon-640.webp 640w, /images/coming-soon-1254.webp 1254w"
+          src="/images/coming-soon-faces-1400.webp"
+          srcSet="/images/coming-soon-faces-800.webp 800w, /images/coming-soon-faces-1400.webp 1400w, /images/coming-soon-faces-2480.webp 2480w"
           sizes="(orientation: portrait), (max-width: 900px) 100vw, 54vw"
           alt=""
           initial={{ opacity: 0, scale: 1.04 }}
