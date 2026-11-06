@@ -7,6 +7,8 @@ import path from "node:path";
 import { chromium } from "playwright-core";
 import sharp from "sharp";
 
+const manifest = JSON.parse(await readFile(path.join(process.cwd(), "src/content/image-manifest.json"), "utf8"));
+
 const root = process.cwd();
 const out = path.join(root, "profile", "PUAI-Company-Profile.pdf");
 const types = {
@@ -21,14 +23,16 @@ const types = {
 // Minimal static server: CSS masks need same-origin http, not file://.
 const server = http.createServer(async (req, res) => {
   const url = decodeURIComponent(new URL(req.url, "http://x").pathname);
-  const file = path.join(root, url === "/" ? "profile/index.html" : url);
+  let file = path.join(root, url === "/" ? "profile/index.html" : url);
+  // Print quality: whatever width the page asks for, use the largest one made.
+  const m = url.match(/^\/public\/images\/(.+)-\d+\.webp$/);
+  if (m && manifest[m[1]]) file = path.join(root, "public/images", `${m[1]}-${Math.max(...manifest[m[1]])}.webp`);
   if (!file.startsWith(root)) return res.writeHead(403).end();
   try {
     const body = await readFile(file);
-    // Chromium re-encodes WebP losslessly in PDFs; JPEG is embedded as-is,
-    // which keeps the file small enough to email.
+    // Chromium embeds JPEG as-is; near-lossless, full chroma, for print.
     if (path.extname(file) === ".webp") {
-      const jpg = await sharp(body).jpeg({ quality: 80, mozjpeg: true }).toBuffer();
+      const jpg = await sharp(body).jpeg({ quality: 95, chromaSubsampling: "4:4:4" }).toBuffer();
       return res.writeHead(200, { "Content-Type": "image/jpeg" }).end(jpg);
     }
     res.writeHead(200, { "Content-Type": types[path.extname(file)] ?? "application/octet-stream" }).end(body);

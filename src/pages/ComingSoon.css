@@ -1,0 +1,354 @@
+/* Launching-soon page, from the "Coming soon · web page" design.
+   One screen, never scrolls. Every size comes from --u, a unit tied to
+   whichever of the viewport's width or height is tighter, so the page keeps
+   its proportions from phones up to 4K. Landscape screens split
+   text | photo; portrait screens stack a photo band above the text, and
+   the band takes whatever height the text leaves. */
+.soon {
+  --u: min(1vw, 1.8svh);
+  --px: clamp(20px, 4.5vw, 120px); /* edge margin */
+  --py: clamp(16px, 3.4 * var(--u), 72px);
+  --split: 54vw; /* photo panel width */
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  background: var(--night);
+  color: var(--cotton);
+}
+
+/* ---------- Photo ---------- */
+.soon__media {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: var(--split);
+  overflow: hidden;
+}
+.soon__photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+}
+/* Soft edge where the photo meets the text */
+.soon__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--night) 0%, rgb(32 34 43 / 0.55) 18%, rgb(32 34 43 / 0) 42%);
+  pointer-events: none;
+}
+
+/* ---------- Text column ---------- */
+.soon__inner {
+  position: relative;
+  box-sizing: border-box;
+  height: 100%;
+  width: calc(100vw - var(--split) + 4vw); /* overlaps the faded edge a little */
+  padding: var(--py) var(--px) max(var(--py), env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: calc(2 * var(--u));
+}
+.soon__logo {
+  display: block;
+  width: clamp(104px, 10 * var(--u), 240px);
+  height: auto;
+}
+
+.soon__main {
+  display: flex;
+  flex-direction: column;
+  gap: calc(2.8 * var(--u));
+  max-width: 44vw;
+}
+.soon h1 {
+  margin: 0;
+  font-weight: 700;
+  font-size: clamp(40px, 8.6 * var(--u), 220px);
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+}
+.soon__copy {
+  display: flex;
+  flex-direction: column;
+  gap: calc(1.1 * var(--u));
+}
+.soon__copy p {
+  margin: 0;
+}
+.soon__lead {
+  font-weight: 700;
+  font-size: clamp(17px, 1.95 * var(--u), 46px);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+.soon__body {
+  max-width: 34em;
+  font-size: clamp(14px, 1.25 * var(--u), 28px);
+  line-height: 1.5;
+  color: #d9d9e0;
+  text-wrap: pretty;
+}
+
+/* ---------- Form ---------- */
+.soon__form {
+  --h: clamp(44px, 3.9 * var(--u), 84px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 0.85 * var(--u), 18px);
+  width: min(100%, 38em);
+  font-size: clamp(15px, 1.18 * var(--u), 26px);
+}
+.soon__label {
+  font-size: clamp(12px, 0.95 * var(--u), 20px);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.soon__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(8px, 0.85 * var(--u), 18px);
+}
+.soon__input {
+  flex: 1 1 14em;
+  min-width: 0;
+  box-sizing: border-box;
+  height: var(--h);
+  padding: 0 1.3em;
+  border-radius: 999px;
+  border: 1.5px solid var(--slate);
+  background: rgb(32 34 43 / 0.6);
+  color: var(--cotton);
+  font: inherit;
+}
+.soon__input::placeholder {
+  color: #9a9aa6;
+}
+.soon__input:focus {
+  outline: 3px solid var(--coral);
+  outline-offset: 2px;
+}
+.soon__input[aria-invalid="true"] {
+  border-color: var(--coral);
+}
+.soon__btn {
+  flex: 0 0 auto;
+  height: var(--h);
+  padding: 0 1.75em;
+  border: 0;
+  border-radius: 999px;
+  background: var(--coral);
+  color: var(--cotton);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.soon__btn:hover {
+  background: #d92f42;
+}
+.soon__btn:focus-visible {
+  outline: 3px solid var(--cotton);
+  outline-offset: 2px;
+}
+.soon__btn:disabled {
+  cursor: progress;
+  opacity: 0.8;
+}
+.soon__thanks {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  min-height: var(--h);
+  font-weight: 700;
+  font-size: 1.15em;
+}
+.soon__error {
+  margin: 0;
+  font-size: 0.9em;
+  color: #ff8a97;
+}
+.soon__hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+/* ---------- Footer ---------- */
+.soon__footer {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.6 * var(--u));
+}
+.soon__social {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 1.2 * var(--u), 28px);
+}
+.soon__social nav {
+  display: flex;
+  align-items: center;
+}
+/* small glyphs inside comfortable tap areas */
+.soon__social a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(36px, 2.6 * var(--u), 52px);
+  height: clamp(36px, 2.6 * var(--u), 52px);
+  color: var(--cotton);
+  transition: color 0.2s;
+}
+.soon__social svg {
+  width: clamp(16px, 1.05 * var(--u), 24px);
+  height: auto;
+}
+.soon__social a:hover,
+.soon__social a:focus-visible {
+  color: var(--coral);
+}
+.soon__place {
+  margin: 0;
+  font-family: Texturina, Georgia, serif;
+  font-style: italic;
+  font-size: clamp(13px, 1.05 * var(--u), 22px);
+  color: #b4b4c0;
+}
+
+/* ---------- Portrait screens: photo band on top ---------- */
+@media (orientation: portrait), (max-width: 900px) and (min-aspect-ratio: 1/1.15) and (orientation: portrait) {
+  .soon {
+    --u: min(2.6vw, 1.22svh);
+    --py: clamp(16px, 2.2 * var(--u), 48px);
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto; /* band takes what's left */
+  }
+  .soon__media {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    margin-bottom: calc(-4 * var(--u)); /* fade runs under the headline */
+  }
+  .soon__photo {
+    object-position: center 22%;
+  }
+  .soon__media::after {
+    background: linear-gradient(180deg, rgb(32 34 43 / 0.9) 0%, rgb(32 34 43 / 0.4) 24%, rgb(32 34 43 / 0) 45%, rgb(32 34 43 / 0) 62%, var(--night) 100%);
+  }
+  .soon__inner {
+    position: static;
+    width: 100%;
+    height: auto;
+    padding-top: 0;
+    justify-content: flex-start;
+    gap: calc(3 * var(--u));
+  }
+  /* the logo sits on the photo */
+  .soon__inner > header {
+    position: absolute;
+    top: var(--py);
+    left: var(--px);
+  }
+  .soon__main {
+    position: relative;
+    max-width: 40em;
+    gap: calc(2.2 * var(--u));
+  }
+  .soon h1 {
+    font-size: clamp(38px, 5.4 * var(--u), 150px);
+  }
+  .soon__lead {
+    font-size: clamp(17px, 2 * var(--u), 40px);
+  }
+  .soon__body {
+    font-size: clamp(14px, 1.55 * var(--u), 24px);
+  }
+  .soon__form {
+    --h: clamp(44px, 4.6 * var(--u), 72px);
+    font-size: clamp(15px, 1.5 * var(--u), 22px);
+  }
+  .soon__label {
+    font-size: clamp(12px, 1.2 * var(--u), 17px);
+  }
+  .soon__logo {
+    width: clamp(100px, 11 * var(--u), 220px);
+  }
+  .soon__social a {
+    width: clamp(36px, 3.4 * var(--u), 48px);
+    height: clamp(36px, 3.4 * var(--u), 48px);
+  }
+  .soon__social svg {
+    width: clamp(16px, 1.6 * var(--u), 22px);
+  }
+  .soon__place {
+    font-size: clamp(12px, 1.25 * var(--u), 18px);
+  }
+}
+/* Small phones: the button goes full width under the field */
+@media (max-width: 480px) {
+  .soon__btn {
+    flex: 1 1 100%;
+  }
+}
+/* Very short screens (phones on their side, zoomed laptops): keep the
+   essentials on screen and let the longer paragraph go. */
+@media (orientation: landscape) and (max-height: 520px) {
+  .soon {
+    --split: 42vw;
+    --py: 18px;
+  }
+  .soon__inner {
+    width: calc(100vw - var(--split) + 2vw);
+    gap: 10px;
+  }
+  .soon__main {
+    max-width: none;
+    gap: 14px;
+  }
+  .soon__logo {
+    width: 92px;
+  }
+  .soon h1 {
+    font-size: clamp(30px, 6.4 * var(--u), 48px);
+    white-space: nowrap;
+  }
+  .soon__body {
+    display: none;
+  }
+  .soon__form {
+    --h: 42px;
+    gap: 8px;
+    font-size: 15px;
+  }
+  .soon__input {
+    flex-basis: 10em;
+  }
+  .soon__btn {
+    flex: 0 0 auto;
+    padding: 0 1.3em;
+  }
+  .soon__footer {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px 16px;
+  }
+  .soon__social a {
+    width: 36px;
+    height: 36px;
+  }
+  .soon__place {
+    font-size: 12px;
+  }
+}

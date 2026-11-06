@@ -4,8 +4,8 @@ export const links = {
   caseStudy: "#", // TODO: case study page or PDF
   masterclassRegister: "#", // TODO: registration form
   survey: "#", // TODO: survey form
-  linkedin: "#", // TODO
-  instagram: "#", // TODO
+  linkedin: "https://www.linkedin.com/company/people-using-ai-org/about/",
+  instagram: "https://www.instagram.com/peopleusingai?exln=N2o4Y2hmM2VpcnIx&utm_source=qr",
   substack: "#", // TODO
 };
 

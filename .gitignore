@@ -3,3 +3,10 @@ dist
 *.local
 # Full-resolution originals; web versions live in public/images
 source-images
+
+.env
+.env.local
+
+# Profile build by-products
+profile/preview-*.png
+profile/PUAI-Company-Profile-*.pdf

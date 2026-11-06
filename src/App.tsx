@@ -10,6 +10,11 @@ import WorkWithUs from "./pages/WorkWithUs";
 import About from "./pages/About";
 import GetInvolved from "./pages/GetInvolved";
 import NotFound from "./pages/NotFound";
+import ComingSoon from "./pages/ComingSoon";
+
+// Until launch, every URL shows the launching-soon page.
+// Set VITE_COMING_SOON=false to open the full site.
+const comingSoonOnly = import.meta.env.VITE_COMING_SOON !== "false";
 
 const titles: Record<string, string> = {
   "/": "People using ai",
@@ -43,6 +48,15 @@ function ScrollManager() {
 export default function App() {
   const location = useLocation();
   const reduce = useReducedMotion();
+
+  // The launching-soon page stands alone: no site navigation around it.
+  if (comingSoonOnly || location.pathname === "/coming-soon") {
+    return (
+      <MotionConfig reducedMotion="user">
+        <ComingSoon />
+      </MotionConfig>
+    );
+  }
 
   return (
     <MotionConfig reducedMotion="user">
