@@ -12,9 +12,11 @@ import CaseStudy from "./pages/CaseStudy";
 import NotFound from "./pages/NotFound";
 import ComingSoon from "./pages/ComingSoon";
 
-// Until launch, every URL shows the launching-soon page.
-// Set VITE_COMING_SOON=false to open the full site.
-const comingSoonOnly = import.meta.env.VITE_COMING_SOON !== "false";
+// Until launch, every production URL shows the launching-soon page.
+// Set VITE_COMING_SOON=false to open the full site. Vercel preview
+// deployments always show the full site so changes can be reviewed.
+const isPreview = import.meta.env.VERCEL_ENV === "preview";
+const comingSoonOnly = !isPreview && import.meta.env.VITE_COMING_SOON !== "false";
 
 const titles: Record<string, string> = {
   "/": "People Using AI",
