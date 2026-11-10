@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/react";
-import { iconCoral } from "../content/brand";
+import { iconCoral, iconWhite } from "../content/brand";
 import { homeNav, links, pageNav } from "../content/links";
 import { ease } from "./motion";
 import "./Header.css";
@@ -14,15 +14,20 @@ export default function Header() {
   const { scrollY } = useScroll();
   const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [overHero, setOverHero] = useState(true);
   const [open, setOpen] = useState(false);
 
   useMotionValueEvent(scrollY, "change", (y) => {
     const prev = scrollY.getPrevious() ?? 0;
     setScrolled(y > 8);
+    setOverHero(y < window.innerHeight - 80);
     if (open) return;
     if (y > 240 && y > prev + 4) setHidden(true);
     else if (y < prev - 4 || y < 240) setHidden(false);
   });
+
+  // On the home page the bar sits over the full-bleed hero photo in white.
+  const onHero = pathname === "/" && overHero;
 
   // Close the menu on navigation.
   useEffect(() => setOpen(false), [pathname, hash]);
@@ -32,13 +37,13 @@ export default function Header() {
 
   return (
     <motion.header
-      className={`header ${scrolled ? "header--scrolled" : ""} ${open ? "header--open" : ""}`}
+      className={`header ${scrolled && !onHero ? "header--scrolled" : ""} ${onHero && !open ? "header--light" : ""} ${open ? "header--open" : ""}`}
       animate={{ y: hidden ? "-110%" : "0%" }}
       transition={{ duration: 0.45, ease }}
     >
       <div className="header__bar container">
         <Link to="/" className="header__brand" aria-label="People Using AI — home">
-          <img src={iconCoral} alt="" width={34} height={34} />
+          <img src={onHero && !open ? iconWhite : iconCoral} alt="" width={34} height={34} />
           <span>People Using AI</span>
         </Link>
 
@@ -55,7 +60,7 @@ export default function Header() {
           ))}
         </nav>
 
-        <a className="btn btn--ink btn--sm header__cta" href={links.workWithUs}>
+        <a className={`btn btn--sm header__cta ${onHero ? "btn--white" : "btn--ink"}`} href={links.workWithUs}>
           Work with us
         </a>
 

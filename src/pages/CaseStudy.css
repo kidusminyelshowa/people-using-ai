@@ -7,7 +7,9 @@
   font-size: 0.95rem;
 }
 .cs-hero__title {
-  font-size: clamp(2.5rem, 6.4vw, 5.5rem);
+  font-size: clamp(2.75rem, 8vw, 7.5rem);
+  letter-spacing: -0.045em;
+  line-height: 0.92;
 }
 .cs-hero__summary {
   max-width: 34ch;
@@ -28,8 +30,32 @@
   background: var(--dark);
   color: #fff;
 }
+.cs-stat {
+  transition: transform 0.5s var(--ease);
+}
+.cs-stat:hover {
+  transform: translateY(-6px) rotate(-1deg);
+}
+.cs-stat--0 {
+  background: var(--coral);
+}
+.cs-stat--1 {
+  background: var(--navy);
+}
+.cs-stat--2 {
+  background: var(--yellow);
+  color: var(--ink);
+}
+.cs-stat--3 {
+  background: var(--green);
+  color: var(--ink);
+}
+.cs-stat--2 .cs-stat__label,
+.cs-stat--3 .cs-stat__label {
+  color: rgb(0 0 0 / 0.7);
+}
 .cs-stat__value {
-  color: var(--coral);
+  color: inherit;
   font-family: var(--font-sans);
   font-size: clamp(2.5rem, 4.6vw, 4rem);
   font-weight: 700;
@@ -81,7 +107,9 @@
 }
 
 .cs-gaps {
-  background: var(--mist);
+  margin-inline: clamp(8px, 1vw, 14px);
+  border-radius: var(--radius-xl);
+  background: var(--cream);
 }
 .cs-chart {
   margin-top: clamp(32px, 4vw, 56px);
@@ -165,8 +193,15 @@
 }
 .cs-session {
   padding: clamp(22px, 2.6vw, 34px);
-  border: 1px solid var(--line);
   border-radius: var(--radius-lg);
+  background: var(--pink);
+  transition: transform 0.5s var(--ease);
+}
+.cs-session:nth-child(2) {
+  background: var(--yellow);
+}
+.cs-session:hover {
+  transform: translateY(-6px);
 }
 .cs-session .eyebrow {
   margin-bottom: 12px;

@@ -1,5 +1,5 @@
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "motion/react";
+import { useRef, useState } from "react";
+import { AnimatePresence, motion, useMotionValueEvent, useScroll, useTransform } from "motion/react";
 import { Placeholder, Reveal, SplitHeading, ease } from "../components/motion";
 import { CtaBand } from "../components/Footer";
 import "./About.css";
@@ -10,19 +10,19 @@ const story = [
       "We’ve spent over 20 years combined working across communication, marketing, strategy, and business in emerging markets.",
     ],
     image: "[IMAGE 1: logos of organisations we’ve worked with]",
-    tint: false,
+    tone: "cream",
   },
   {
     text: ["We are both mums.", { accent: "Sometimes the kids join our calls." }],
     image: "[IMAGE 2: us on a call with the kids]",
-    tint: true,
+    tone: "pink",
   },
   {
     text: [
       "We’ve spent time in tech spaces and noticed something: so much is built around developers, and so little around the people actually using the AI technology.",
     ],
     image: "[IMAGE 3: both of us at tech events]",
-    tint: false,
+    tone: "yellow",
   },
 ];
 
@@ -54,15 +54,94 @@ const dislikes = [
   "Spending so much time predicting the future of AI that we forget the people trying to use it today.",
 ];
 
+const shapes = [
+  { className: "shape shape--coral", speed: -260, rotate: 40 },
+  { className: "shape shape--yellow", speed: -120, rotate: -30 },
+  { className: "shape shape--green", speed: -340, rotate: 60 },
+  { className: "shape shape--navy", speed: -180, rotate: -50 },
+];
+
+function AboutHero() {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  return (
+    <section ref={ref} className="about-hero">
+      {shapes.map((s, i) => (
+        <Shape key={i} {...s} progress={scrollYProgress} index={i} />
+      ))}
+      <div className="container about-hero__inner">
+        <motion.span className="eyebrow" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.1 }}>
+          About PUAI
+        </motion.span>
+        <SplitHeading
+          as="h1"
+          onMount
+          delay={0.15}
+          className="about-hero__title"
+          segments={["We are", { text: "communicators.", className: "accent" }]}
+        />
+        <motion.p
+          className="lede about-hero__intro"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.55, ease }}
+        >
+          We met in Nairobi. People Using AI grew out of our shared interest in communication, people, and how AI is
+          changing everyday life and work.
+        </motion.p>
+      </div>
+    </section>
+  );
+}
+
+function Shape({
+  className,
+  speed,
+  rotate,
+  progress,
+  index,
+}: {
+  className: string;
+  speed: number;
+  rotate: number;
+  progress: ReturnType<typeof useScroll>["scrollYProgress"];
+  index: number;
+}) {
+  const y = useTransform(progress, [0, 1], [0, speed]);
+  const r = useTransform(progress, [0, 1], [0, rotate]);
+  return (
+    <motion.span className={className} style={{ y, rotate: r }} aria-hidden="true">
+      <motion.span
+        className="shape__inner"
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1, y: [0, -14, 0] }}
+        transition={{
+          scale: { type: "spring", stiffness: 180, damping: 14, delay: 0.5 + index * 0.12 },
+          opacity: { duration: 0.4, delay: 0.5 + index * 0.12 },
+          y: { duration: 4 + index, repeat: Infinity, ease: "easeInOut" },
+        }}
+      />
+    </motion.span>
+  );
+}
+
 function StoryRow({ row, index }: { row: (typeof story)[number]; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], [60, -60]);
-  const rotate = useTransform(scrollYProgress, [0, 1], [index % 2 ? 2 : -2, 0]);
+  const y = useTransform(scrollYProgress, [0, 1], [80, -80]);
+  const rotate = useTransform(scrollYProgress, [0, 0.5, 1], [index % 2 ? 6 : -6, 0, index % 2 ? -3 : 3]);
+  const flip = index % 2 === 1;
 
   return (
-    <div ref={ref} className={`story ${index % 2 ? "story--flip" : ""}`}>
-      <Reveal className="story__text">
+    <motion.div
+      ref={ref}
+      className={`story story--${row.tone} ${flip ? "story--flip" : ""}`}
+      initial={{ opacity: 0, y: 80, scale: 0.96 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, amount: 0.25 }}
+      transition={{ duration: 1, ease }}
+    >
+      <div className="story__text">
         <p>
           {row.text.map((t, i) =>
             typeof t === "string" ? (
@@ -74,47 +153,75 @@ function StoryRow({ row, index }: { row: (typeof story)[number]; index: number }
             )
           )}
         </p>
-      </Reveal>
+      </div>
       <motion.div className="story__media" style={{ y, rotate }}>
-        <Placeholder label={row.image} tint={row.tint} className="story__ph" />
+        <Placeholder label={row.image} className="story__ph" />
       </motion.div>
+    </motion.div>
+  );
+}
+
+// The 25 points scroll past while a big counter on the left keeps count.
+function Dislikes() {
+  const ref = useRef<HTMLOListElement>(null);
+  const [current, setCurrent] = useState(1);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.6", "end 0.6"] });
+  useMotionValueEvent(scrollYProgress, "change", (p) => {
+    setCurrent(Math.min(dislikes.length, Math.max(1, Math.ceil(p * dislikes.length))));
+  });
+  const fill = useTransform(scrollYProgress, [0, 1], [0, 1]);
+
+  return (
+    <div className="pov__grid">
+      <div className="pov__side">
+        <div className="pov__counter" aria-hidden="true">
+          <AnimatePresence mode="popLayout" initial={false}>
+            <motion.span
+              key={current}
+              initial={{ y: "70%", opacity: 0 }}
+              animate={{ y: "0%", opacity: 1 }}
+              exit={{ y: "-70%", opacity: 0 }}
+              transition={{ duration: 0.35, ease }}
+            >
+              {String(current).padStart(2, "0")}
+            </motion.span>
+          </AnimatePresence>
+          <small>/25</small>
+        </div>
+        <div className="pov__meter" aria-hidden="true">
+          <motion.span style={{ scaleY: fill }} />
+        </div>
+      </div>
+      <ol ref={ref} className="dislikes">
+        {dislikes.map((d, i) => (
+          <Dislike key={i} text={d} index={i} active={i + 1 === current} />
+        ))}
+      </ol>
     </div>
+  );
+}
+
+function Dislike({ text, index, active }: { text: string; index: number; active: boolean }) {
+  return (
+    <motion.li
+      className={`dislike ${active ? "is-active" : ""}`}
+      initial={{ opacity: 0, x: 40 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true, amount: 0.6 }}
+      transition={{ duration: 0.7, ease }}
+    >
+      <span className="dislike__n">{String(index + 1).padStart(2, "0")}</span>
+      <span className="dislike__text">{text}</span>
+    </motion.li>
   );
 }
 
 export default function About() {
   return (
     <main id="main">
-      <section className="about-hero">
-        <div className="container">
-          <motion.span
-            className="eyebrow"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.1 }}
-          >
-            About PUAI
-          </motion.span>
-          <SplitHeading
-            as="h1"
-            onMount
-            delay={0.15}
-            className="display"
-            segments={["We are", { text: "communicators.", className: "accent" }]}
-          />
-          <motion.p
-            className="lede about-hero__intro"
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.55, ease }}
-          >
-            We met in Nairobi. People Using AI grew out of our shared interest in communication, people, and how AI is
-            changing everyday life and work.
-          </motion.p>
-        </div>
-      </section>
+      <AboutHero />
 
-      <section className="section--tight">
+      <section className="stories-wrap">
         <div className="container stories">
           {story.map((row, i) => (
             <StoryRow key={i} row={row} index={i} />
@@ -133,25 +240,11 @@ export default function About() {
             stagger={0.035}
           />
           <Reveal delay={0.2}>
-            <p className="body-lg pov__sub">
+            <p className="lede pov__sub">
               Here are <span className="accent">25 things we dislike about it.</span> And part of why we started PUAI.
             </p>
           </Reveal>
-          <ol className="dislikes">
-            {dislikes.map((d, i) => (
-              <motion.li
-                key={i}
-                className="dislike"
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.6 }}
-                transition={{ duration: 0.7, ease, delay: (i % 4) * 0.05 }}
-              >
-                <span className="dislike__n">{String(i + 1).padStart(2, "0")}</span>
-                <span>{d}</span>
-              </motion.li>
-            ))}
-          </ol>
+          <Dislikes />
         </div>
       </section>
 

@@ -38,6 +38,14 @@
   --line: #ececec;
   --mist: #f6f6f6;
 
+  /* Secondary accents from the brand guidelines, used for colour blocks */
+  --navy: #143d7a;
+  --yellow: #f5c81a;
+  --pink: #ffcad3;
+  --orange: #ff6f3b;
+  --green: #4de8a8;
+  --cream: #fff4e8;
+
   --font-sans: "Apfel Grotezk", "Familjen Grotesk", system-ui, sans-serif;
   --font-body: "Familjen Grotesk", "Apfel Grotezk", system-ui, sans-serif;
 

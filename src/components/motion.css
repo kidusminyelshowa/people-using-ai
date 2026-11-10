@@ -29,3 +29,4 @@
 .reveal-text__word {
   display: inline;
 }
+.magnetic { display: inline-block; will-change: transform; }

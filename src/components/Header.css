@@ -133,3 +133,17 @@ html.menu-open {
     display: block;
   }
 }
+
+/* Over the home hero photo */
+.header--light {
+  color: #fff;
+}
+.header--light .header__link:hover {
+  background: rgb(255 255 255 / 0.16);
+}
+.header--light .header__toggle {
+  background: rgb(255 255 255 / 0.2);
+}
+.header--light .header__toggle span {
+  background: #fff;
+}

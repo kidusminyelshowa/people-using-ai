@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "motion/react";
-import { Placeholder, Reveal, SplitHeading, Stagger, StaggerItem, ease } from "../components/motion";
+import { CountUp, Placeholder, Reveal, SplitHeading, Stagger, StaggerItem, ease } from "../components/motion";
 import { CtaBand } from "../components/Footer";
 import { caseStudies } from "../content/caseStudies";
 import { links } from "../content/links";
@@ -53,8 +53,8 @@ export default function CaseStudy() {
         {cs.stats && (
           <Stagger className="cs-stats">
             {cs.stats.map((s, i) => (
-              <StaggerItem key={i} className="cs-stat">
-                <span className="cs-stat__value">{s.value}</span>
+              <StaggerItem key={i} className={`cs-stat cs-stat--${i}`}>
+                <CountUp value={s.value} className="cs-stat__value" />
                 <span className="cs-stat__label">{s.label}</span>
               </StaggerItem>
             ))}
@@ -164,7 +164,7 @@ export default function CaseStudy() {
             <Stagger className="cs-results">
               {cs.results.map((r, i) => (
                 <StaggerItem key={i} className="cs-result">
-                  <span className="cs-result__value">{r.value}</span>
+                  <CountUp value={r.value} className="cs-result__value" />
                   <span className="cs-result__label">{r.label}</span>
                 </StaggerItem>
               ))}

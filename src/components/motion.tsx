@@ -1,5 +1,5 @@
-import { Fragment, type ElementType, type ReactNode } from "react";
-import { motion, type Variants } from "motion/react";
+import { Fragment, useEffect, useRef, type ElementType, type ReactNode } from "react";
+import { animate, motion, useInView, useMotionValue, useSpring, useTransform, type Variants } from "motion/react";
 import "./motion.css";
 
 export const ease = [0.22, 1, 0.36, 1] as const;
@@ -159,5 +159,52 @@ export function Placeholder({
       </svg>
       <span>{label}</span>
     </Tag>
+  );
+}
+
+/** Pulls its child gently toward the pointer, then springs back. */
+export function Magnetic({ children, strength = 0.3 }: { children: ReactNode; strength?: number }) {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const sx = useSpring(x, { stiffness: 220, damping: 16, mass: 0.4 });
+  const sy = useSpring(y, { stiffness: 220, damping: 16, mass: 0.4 });
+  return (
+    <motion.span
+      className="magnetic"
+      style={{ x: sx, y: sy }}
+      onPointerMove={(e) => {
+        if (e.pointerType !== "mouse") return;
+        const r = e.currentTarget.getBoundingClientRect();
+        x.set((e.clientX - (r.left + r.width / 2)) * strength);
+        y.set((e.clientY - (r.top + r.height / 2)) * strength);
+      }}
+      onPointerLeave={() => {
+        x.set(0);
+        y.set(0);
+      }}
+    >
+      {children}
+    </motion.span>
+  );
+}
+
+/** Counts up to the number inside `value` (keeps any text around it, e.g. "[X]%"). */
+export function CountUp({ value, className }: { value: string; className?: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, amount: 0.6 });
+  const match = value.match(/^(\D*)(\d+)(.*)$/);
+  const target = match ? Number(match[2]) : 0;
+  const mv = useMotionValue(0);
+  const text = useTransform(mv, (v) => (match ? `${match[1]}${Math.round(v)}${match[3]}` : value));
+  useEffect(() => {
+    if (inView && match) {
+      const c = animate(mv, target, { duration: 1.6, ease });
+      return () => c.stop();
+    }
+  }, [inView]); // eslint-disable-line react-hooks/exhaustive-deps
+  return (
+    <motion.span ref={ref} className={className}>
+      {match ? text : value}
+    </motion.span>
   );
 }
