@@ -1,6 +1,6 @@
 import { useRef, type ElementType } from "react";
 import { motion, useScroll, useTransform, type MotionValue } from "motion/react";
-import "./ui.css";
+import "../motion.css";
 
 type Segment = string | { text: string; className?: string };
 

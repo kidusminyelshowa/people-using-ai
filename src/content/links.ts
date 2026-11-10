@@ -1,19 +1,37 @@
-// External destinations. Replace the "#" placeholders with real URLs.
+// External destinations and site navigation.
+const contactEmail = "hello@peopleusingai.org";
+
 export const links = {
-  bookConversation: "#", // TODO: booking / Calendly link
-  caseStudy: "#", // TODO: case study page or PDF
-  masterclassRegister: "#", // TODO: registration form
-  survey: "#", // TODO: survey form
+  contactEmail,
+  // "Work with us", "Bring AI learning to your team", "Partner with us", "Talk to us".
+  // Swap for a booking link (e.g. Calendly) when there is one.
+  workWithUs: `mailto:${contactEmail}?subject=${encodeURIComponent("Working with PUAI")}`,
+  partner: `mailto:${contactEmail}?subject=${encodeURIComponent("Research partnership")}`,
   linkedin: "https://www.linkedin.com/company/people-using-ai-org/about/",
   instagram: "https://www.instagram.com/peopleusingai?exln=N2o4Y2hmM2VpcnIx&utm_source=qr",
-  substack: "#", // TODO
 };
 
-export const masterclassDate = new Date("2026-11-21T09:00:00+03:00"); // Nairobi (EAT)
+// Header on the home page: in-page sections, then the other pages.
+export const homeNav = [
+  { to: "/#why-we-exist", label: "Why we exist" },
+  { to: "/#our-approach", label: "Our approach" },
+  { to: "/#what-we-do", label: "What we do" },
+  { to: "/community", label: "Community" },
+  { to: "/about", label: "About" },
+] as const;
 
-export const nav = [
+// Header on every other page.
+export const pageNav = [
   { to: "/", label: "Home" },
-  { to: "/work-with-us", label: "Work with us" },
-  { to: "/about", label: "About us" },
-  { to: "/get-involved", label: "Get involved" },
+  { to: "/#what-we-do", label: "What we do" },
+  { to: "/community", label: "Community" },
+  { to: "/about", label: "About" },
+] as const;
+
+export const footerNav = [
+  { to: "/", label: "Home" },
+  { to: "/#our-approach", label: "Our approach" },
+  { to: "/#what-we-do", label: "What we do" },
+  { to: "/community", label: "Community" },
+  { to: "/about", label: "About" },
 ] as const;
