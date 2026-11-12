@@ -11,9 +11,8 @@ export const links = {
   instagram: "https://www.instagram.com/peopleusingai?exln=N2o4Y2hmM2VpcnIx&utm_source=qr",
 };
 
-// Header navigation: pages only.
+// Header navigation: pages only. The logo already links home.
 export const mainNav = [
-  { to: "/", label: "Home" },
   { to: "/community", label: "Community" },
   { to: "/about", label: "About" },
 ] as const;
