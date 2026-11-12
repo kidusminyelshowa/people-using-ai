@@ -1,127 +1,328 @@
-import Hero from "../sections/home/Hero";
-import PinnedSteps from "../sections/home/PinnedSteps";
-import SectionHead from "../components/ui/SectionHead";
-import RevealText from "../components/ui/RevealText";
-import ParallaxImage from "../components/ui/ParallaxImage";
-import StackedPills from "../components/ui/StackedPills";
-import HoverList from "../components/ui/HoverList";
-import Closing from "../components/Closing";
-import { coverSizes } from "../content/images";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { Link } from "react-router-dom";
+import { AnimatePresence, motion, useMotionValueEvent, useReducedMotion, useScroll, useTransform, type MotionValue } from "motion/react";
+import { useLenis } from "lenis/react";
+import { Parallax, Reveal, Stagger, StaggerItem, Statement, ease } from "../components/motion";
+import { CtaBand } from "../components/Footer";
+import { photo, type PhotoName } from "../content/images";
+import { links } from "../content/links";
+import { caseStudies } from "../content/caseStudies";
 import "./Home.css";
+
+const moments = [
+  { when: "100,000 BCE", what: "Speech", line: "We could cooperate." },
+  { when: "3,200 BCE", what: "Writing", line: "Ideas outlived us." },
+  { when: "700 CE", what: "Printing", line: "Knowledge multiplied." },
+  { when: "1844", what: "Telegraph", line: "Messages crossed oceans in seconds." },
+  { when: "1990s", what: "Internet", line: "Humanity connected." },
+  { when: "2000s", what: "Social media", line: "Everyone gained a voice." },
+  { when: "2020s", what: "AI", line: "Machines began talking back." },
+];
+
+const skills = [
+  { name: "Read", line: "Understand how AI works, what it can do, and where it falls short." },
+  { name: "Write", line: "Give AI clear direction and context." },
+  { name: "Speak", line: "Refine ideas through back-and-forth conversation." },
+  { name: "Listen", line: "Check what comes back and decide what to keep." },
+];
+
+const heroPhotos: PhotoName[] = ["laptopMeeting", "clay", "headphones"];
+const HERO_STEP = 6;
+
+function Hero() {
+  const ref = useRef<HTMLElement>(null);
+  const reduce = useReducedMotion();
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    if (reduce) return;
+    const t = window.setTimeout(() => setI((n) => (n + 1) % heroPhotos.length), HERO_STEP * 1000);
+    return () => window.clearTimeout(t);
+  }, [i, reduce]);
+
+  // The photo drifts slowly inside its frame as you scroll away.
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const photoY = useTransform(scrollYProgress, [0, 1], ["0%", "14%"]);
+
+  // Large screens lay the words over the photo; phones stack them above it
+  // (see Home.css). The markup is the same for both.
+  return (
+    <section ref={ref} className="hero">
+      <div className="hero__stage">
+        <motion.div
+          className="hero__frame"
+          initial={{ clipPath: "inset(6% 3% 0% 3% round 32px)" }}
+          animate={{ clipPath: "inset(0% 0% 0% 0% round 32px)" }}
+          transition={{ duration: 1.4, ease }}
+        >
+          <motion.div className="hero__photos" style={{ y: photoY }}>
+            {heroPhotos.map((name, n) => (
+              <motion.img
+                key={name}
+                {...photo(name)}
+                sizes="100vw"
+                alt=""
+                initial={false}
+                animate={{ opacity: n === i ? 1 : 0, scale: n === i ? 1 : 1.08 }}
+                transition={{ opacity: { duration: 1.4, ease }, scale: { duration: HERO_STEP + 1.5, ease: "linear" } }}
+              />
+            ))}
+          </motion.div>
+          <div className="hero__shade" aria-hidden="true" />
+          <ol className="hero__dots" aria-hidden="true">
+            {heroPhotos.map((name, n) => (
+              <li key={name}>
+                <motion.span
+                  key={n === i ? `on-${i}` : "off"}
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: n === i && !reduce ? 1 : 0 }}
+                  transition={n === i ? { duration: HERO_STEP, ease: "linear" } : { duration: 0.3 }}
+                />
+              </li>
+            ))}
+          </ol>
+        </motion.div>
+
+        <div className="hero__copy">
+          <div className="container">
+            <motion.h1
+              className="hero__title"
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.2, delay: 0.35, ease }}
+            >
+              How did you get AI to do that?
+            </motion.h1>
+            <motion.div
+              className="hero__text"
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.2, delay: 0.6, ease }}
+            >
+              <p>Some people get far more out of AI. A lot comes down to how they communicate with it.</p>
+              <p>PUAI helps people build the communication skills to understand AI, guide it, question it, and put it to work.</p>
+              <Link className="btn btn--lg" to="/#our-approach">
+                Explore our approach <span className="btn__arrow">→</span>
+              </Link>
+            </motion.div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// The moments of communication history, pinned to the screen. Scrolling
+// moves through them one at a time; each gets most of a screen of scroll,
+// and the bars show where you are. Clicking a bar glides to that moment.
+const SCROLL_PER_MOMENT = 70; // svh
+function Moments() {
+  const ref = useRef<HTMLDivElement>(null);
+  const lenis = useLenis();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
+  const [i, setI] = useState(0);
+  const dir = useRef(1);
+  const N = moments.length;
+
+  useMotionValueEvent(scrollYProgress, "change", (v) => {
+    const next = Math.min(N - 1, Math.max(0, Math.floor(v * N)));
+    setI((cur) => {
+      if (next !== cur) dir.current = next > cur ? 1 : -1;
+      return next;
+    });
+  });
+
+  function goTo(n: number) {
+    const el = ref.current;
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY;
+    const travel = el.offsetHeight - window.innerHeight;
+    const y = top + ((n + 0.5) / N) * travel;
+    if (lenis) lenis.scrollTo(y, { duration: 1.2 });
+    else window.scrollTo({ top: y, behavior: "smooth" });
+  }
+
+  const m = moments[i];
+  return (
+    <div ref={ref} className="moments" style={{ height: `calc(${N * SCROLL_PER_MOMENT}svh + 100svh)` }}>
+      <div className="moments__sticky">
+        <div className="container moments__inner">
+          <div className="moments__stage" aria-live="polite">
+            <AnimatePresence mode="popLayout" initial={false} custom={dir.current}>
+              <motion.div
+                key={i}
+                className="moments__slide"
+                custom={dir.current}
+                variants={{
+                  enter: (d: number) => ({ opacity: 0, y: d * 60 }),
+                  center: { opacity: 1, y: 0 },
+                  exit: (d: number) => ({ opacity: 0, y: d * -60 }),
+                }}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{ duration: 0.7, ease }}
+              >
+                <p className="moments__when">{m.when}</p>
+                <h3 className={`moments__what ${m.what === "AI" ? "accent" : ""}`}>{m.what}</h3>
+                <p className="moments__line">{m.line}</p>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+          <ol className="moments__bars">
+            {moments.map((x, n) => (
+              <li key={x.what}>
+                <button type="button" onClick={() => goTo(n)} aria-current={n === i} aria-label={`${x.when}, ${x.what}`}>
+                  <span className="moments__track">
+                    <Fill progress={scrollYProgress} from={n / N} to={(n + 1) / N} />
+                  </span>
+                  <span className="moments__label">{x.what}</span>
+                </button>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Fill({ progress, from, to }: { progress: MotionValue<number>; from: number; to: number }) {
+  const scaleX = useTransform(progress, [from, to], [0, 1]);
+  return <motion.span className="moments__fill" style={{ scaleX }} />;
+}
+
+function Offer({
+  id,
+  n,
+  title,
+  body,
+  image,
+  flip,
+  children,
+}: {
+  id?: string;
+  n: string;
+  title: string;
+  body: string;
+  image: PhotoName;
+  flip?: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <article id={id} className={`offer ${flip ? "offer--flip" : ""}`}>
+      <Parallax {...photo(image)} sizes="(max-width: 860px) 100vw, 50vw" className="offer__photo" />
+      <Reveal className="offer__text">
+        <h3 className="h2 offer__title">
+          <span className="offer__n">{n}</span> {title}
+        </h3>
+        <p className="lede">{body}</p>
+        {children}
+      </Reveal>
+    </article>
+  );
+}
 
 export default function Home() {
   return (
-    <main id="main">
+    <main id="main" className="home">
       <Hero />
 
-      {/* Why */}
-      <section className="section" id="why" data-section="Why">
+      <section id="why-we-exist" className="block">
         <div className="container">
-          <SectionHead label="Why" />
-          <RevealText as="h2" className="display home-why__title">
-            {["AI access has gone global.", { text: "How people use it hasn’t caught up.", className: "serif" }]}
-          </RevealText>
+          <Statement className="display">Human progress moves at the speed of communication.</Statement>
         </div>
-      </section>
-
-      <section className="panel home-why__panel" data-section="Why">
-        <ParallaxImage
-          name="blueProfile"
-          alt="Close-up profile of a young man against a blue wall, looking ahead"
-          className="home-why__img"
-          sizes={coverSizes}
-          position="56% 58%"
-          strength={7}
-        />
-        <div className="home-why__cards">
-          <p className="home-why__card">
-            The way people understand, trust and use AI tools is shaped by where they live, the language they speak, the
-            work they do and the context they operate in.
-          </p>
-          <p className="home-why__card home-why__card--coral">
-            We bring an emerging-market perspective to AI adoption. Combining technology, business, communication and
-            human behaviour to make AI tools relevant to the way people live and work.
-          </p>
-        </div>
-      </section>
-
-      {/* How */}
-      <section className="section" data-section="How">
+        <Moments />
         <div className="container">
-          <SectionHead label="How" />
-          <RevealText as="h2" className="display home-how__title">
-            {["Between access and active use is a", { text: "learning curve.", className: "serif" }]}
-          </RevealText>
-          <div className="home-how__intro">
-            <p className="lede">
-              You don't need to be a developer or technical expert to use AI well. If you are a professional,
-              entrepreneur, freelancer or consultant with access to AI tools, you can learn to make them useful in the
-              way you work.
+          <Reveal className="block__close">
+            <p className="statement-text">
+              AI is the technology that will continue to change humanity. The skills to work with it are the ones we
+              already have: understanding, expressing, exchanging ideas, and interpreting what comes back.
             </p>
+          </Reveal>
+        </div>
+      </section>
+
+      <section id="our-approach" className="block">
+        <div className="container">
+          <Statement className="display">We teach communication.</Statement>
+          <Reveal>
+            <p className="h3 muted block__sub">Basic literacy, adapted for AI.</p>
+          </Reveal>
+          <Reveal className="skills__intro">
+            <p className="lede">Four skills you already use. Now applied to AI.</p>
+          </Reveal>
+          <Stagger className="skills">
+            {skills.map((s) => (
+              <StaggerItem key={s.name} as="article" className="skill">
+                <h3 className="h1">{s.name}</h3>
+                <p className="lede">{s.line}</p>
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </div>
+      </section>
+
+      <section id="what-we-do" className="block">
+        <div className="container">
+          <Statement className="display">Three ways to work with us.</Statement>
+          <div className="offers">
+            <Offer
+              id="workforce-upskilling"
+              n="01"
+              title="Workforce Upskilling"
+              image="workshop"
+              body="We help individuals and teams navigate the AI landscape, identify tools that fit their work, and build the communication skills to use them effectively, confidently, and with good judgment."
+            >
+              <ul className="cases">
+                {caseStudies.map((c) => (
+                  <li key={c.slug}>
+                    {c.published ? (
+                      <Link className="case" to={`/work/${c.slug}`}>
+                        <span className="case__name">{c.client}</span>
+                        <span className="case__kind">{c.kind}</span>
+                        <span className="case__go">
+                          View case study <span className="btn__arrow">→</span>
+                        </span>
+                      </Link>
+                    ) : (
+                      <div className="case case--soon">
+                        <span className="case__name">{c.client}</span>
+                        <span className="case__kind">{c.kind}</span>
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+              <a className="btn" href={links.workWithUs}>
+                Bring AI learning to your team <span className="btn__arrow">→</span>
+              </a>
+            </Offer>
+            <Offer
+              n="02"
+              title="Community & Storytelling"
+              image="conversation"
+              flip
+              body="AI is moving beyond the workplace into everyday life, from parenting and education to art and creativity. We serve as a space for those conversations and learnings."
+            >
+              <Link className="btn" to="/community">
+                Join the community <span className="btn__arrow">→</span>
+              </Link>
+            </Offer>
+            <Offer
+              n="03"
+              title="Anthropological Research"
+              image="teamTable"
+              body="We partner with leading universities, anthropologists, and researchers to study how AI is shaping human behaviour, work, and culture in East Africa."
+            >
+              <a className="btn" href={links.partner}>
+                Partner with us <span className="btn__arrow">→</span>
+              </a>
+            </Offer>
           </div>
         </div>
       </section>
 
-      <section className="panel home-who" data-section="Who it's for">
-        <ParallaxImage
-          name="glassSmile"
-          alt="A smiling woman reflected in a glass wall"
-          className="home-who__img"
-          sizes={coverSizes}
-          strength={8}
-        />
-        <div className="home-who__stack">
-          <StackedPills
-            items={[
-              { label: "Professional", color: "var(--cotton)" },
-              { label: "Entrepreneur", color: "var(--green)" },
-              { label: "Freelancer", color: "var(--yellow)" },
-              { label: "Consultant", color: "var(--night)", ink: "var(--cotton)" },
-            ]}
-          />
-        </div>
-      </section>
-
-      <section data-section="How">
-        <PinnedSteps />
-      </section>
-
-      {/* Where to start */}
-      <section className="section" data-section="Where to start">
-        <div className="container">
-          <SectionHead label="Where to start" />
-          <HoverList
-            items={[
-              {
-                title: "Corporate Training",
-                body: "Custom built in person AI training for your team.",
-                image: "workshop",
-                to: "/work-with-us#training",
-              },
-              {
-                title: "Upskilling Masterclass",
-                body: "A full-day in person masterclass. Nairobi, Nov 21 2026.",
-                image: "laptopMeeting",
-                to: "/work-with-us#masterclass",
-              },
-              {
-                title: "Join the community",
-                body: "Free learning, AI experiments, conversations and research.",
-                image: "officeMeeting",
-                to: "/work-with-us#community",
-              },
-              {
-                title: "Shape the research",
-                body: "Take 5 minutes to tell us how you use AI.",
-                image: "profileSkin",
-                to: "/get-involved#survey",
-              },
-            ]}
-          />
-        </div>
-      </section>
-
-      <Closing />
+      <CtaBand lines={["People first.", "AI in context."]} action={{ label: "Get to know PUAI", to: "/about" }} />
     </main>
   );
 }

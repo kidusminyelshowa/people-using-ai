@@ -1,44 +1,83 @@
-import { useEffect } from "react";
-import { Route, Routes, useLocation } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { AnimatePresence, MotionConfig, useReducedMotion } from "motion/react";
 import { ReactLenis, useLenis } from "lenis/react";
-import SectionIndicator from "./components/SectionIndicator";
-import QuickNav from "./components/QuickNav";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 import PageTransition from "./components/PageTransition";
 import Home from "./pages/Home";
-import WorkWithUs from "./pages/WorkWithUs";
 import About from "./pages/About";
-import GetInvolved from "./pages/GetInvolved";
+import Community from "./pages/Community";
+import CaseStudy from "./pages/CaseStudy";
 import NotFound from "./pages/NotFound";
 import ComingSoon from "./pages/ComingSoon";
 
-// Until launch, every URL shows the launching-soon page.
-// Set VITE_COMING_SOON=false to open the full site.
-const comingSoonOnly = import.meta.env.VITE_COMING_SOON !== "false";
+// Until launch, every production URL shows the launching-soon page.
+// Set VITE_COMING_SOON=false to open the full site. Vercel preview
+// deployments always show the full site so changes can be reviewed.
+const isPreview = import.meta.env.VERCEL_ENV === "preview";
+const comingSoonOnly = !isPreview && import.meta.env.VITE_COMING_SOON !== "false";
 
 const titles: Record<string, string> = {
-  "/": "People using ai",
-  "/work-with-us": "Work with us — People using ai",
-  "/about": "About us — People using ai",
-  "/get-involved": "Get involved — People using ai",
+  "/": "People Using AI",
+  "/about": "About — People Using AI",
+  "/community": "Community — People Using AI",
+  "/work/sierra-premium-breweries": "Sierra Premium Breweries — People Using AI",
 };
+
+const HEADER = 76;
 
 function ScrollManager() {
   const { pathname, hash } = useLocation();
   const lenis = useLenis();
 
   useEffect(() => {
-    document.title = titles[pathname] ?? "People using ai";
+    document.title = titles[pathname] ?? "People Using AI";
   }, [pathname]);
 
-  // Wait for the exit transition, then jump to the top (or to the #hash).
+  // On a new page, wait for the old one to leave; then jump to the top, or
+  // glide to the #hash once the new page has rendered it.
+  const prevPath = useRef(pathname);
   useEffect(() => {
-    const id = window.setTimeout(() => {
+    const changedPage = prevPath.current !== pathname;
+    prevPath.current = pathname;
+    let tries = 0;
+    let id = 0;
+    const top = (el: HTMLElement) => el.getBoundingClientRect().top + window.scrollY - HEADER;
+    const go = () => {
       const target = hash ? document.querySelector<HTMLElement>(hash) : null;
-      if (lenis) lenis.scrollTo(target ?? 0, { immediate: !target, offset: -24, force: true });
-      else if (target) target.scrollIntoView();
-      else window.scrollTo(0, 0);
-    }, 50);
+      if (hash && !target && tries++ < 30) {
+        id = window.setTimeout(go, 50);
+        return;
+      }
+      if (!changedPage && target && lenis) {
+        // Same page: glide there.
+        lenis.scrollTo(top(target), { force: true });
+        return;
+      }
+      // New page: let smooth scroll re-measure the new page, then jump
+      // straight there. Re-check once things settle (images, fonts), and
+      // correct if the layout moved underneath us.
+      lenis?.resize();
+      const jump = () => {
+        const y = target ? top(target) : 0;
+        if (lenis) lenis.scrollTo(y, { immediate: true, force: true });
+        else window.scrollTo(0, y);
+      };
+      jump();
+      if (target) {
+        let checks = 0;
+        const settle = () => {
+          if (Math.abs(target.getBoundingClientRect().top - HEADER) > 4) {
+            lenis?.resize();
+            jump();
+          }
+          if (++checks < 4) id = window.setTimeout(settle, 250);
+        };
+        id = window.setTimeout(settle, 250);
+      }
+    };
+    id = window.setTimeout(go, changedPage ? 360 : 0);
     return () => window.clearTimeout(id);
   }, [pathname, hash, lenis]);
 
@@ -65,17 +104,20 @@ export default function App() {
         Skip to content
       </a>
       <ScrollManager />
-      <SectionIndicator />
-      <QuickNav />
+      <Header />
       <AnimatePresence mode="wait">
         <PageTransition key={location.pathname}>
           <Routes location={location}>
             <Route path="/" element={<Home />} />
-            <Route path="/work-with-us" element={<WorkWithUs />} />
             <Route path="/about" element={<About />} />
-            <Route path="/get-involved" element={<GetInvolved />} />
+            <Route path="/community" element={<Community />} />
+            <Route path="/work/:slug" element={<CaseStudy />} />
+            {/* Old addresses */}
+            <Route path="/work-with-us" element={<Navigate to="/#what-we-do" replace />} />
+            <Route path="/get-involved" element={<Navigate to="/community" replace />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <Footer />
         </PageTransition>
       </AnimatePresence>
     </MotionConfig>

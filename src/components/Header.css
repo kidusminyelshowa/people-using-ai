@@ -1,0 +1,122 @@
+.header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 100;
+  background: #fff;
+  transition: box-shadow 0.4s var(--ease);
+}
+.header--scrolled {
+  box-shadow: 0 1px 0 var(--line);
+}
+.header--open {
+  box-shadow: none;
+}
+.header__bar {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  height: var(--header-h);
+}
+.header__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: auto;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+.header__brand img {
+  width: auto;
+  height: 44px;
+}
+.header__nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+.header__link {
+  font-size: 0.98rem;
+  text-decoration: none;
+  color: var(--ink);
+  transition: color 0.25s var(--ease);
+}
+.header__link:hover,
+.header__link.is-active {
+  color: var(--coral-deep);
+}
+
+.header__toggle {
+  display: none;
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--warm);
+  cursor: pointer;
+}
+.header__toggle span {
+  position: absolute;
+  left: 13px;
+  right: 13px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--ink);
+  transition:
+    transform 0.4s var(--ease),
+    top 0.4s var(--ease);
+}
+.header__toggle span:first-child {
+  top: 17px;
+}
+.header__toggle span:last-child {
+  top: 25px;
+}
+.header--open .header__toggle span:first-child {
+  top: 21px;
+  transform: rotate(45deg);
+}
+.header--open .header__toggle span:last-child {
+  top: 21px;
+  transform: rotate(-45deg);
+}
+
+.sheet {
+  position: fixed;
+  inset: var(--header-h) 0 0;
+  background: #fff;
+  overflow-y: auto;
+}
+.sheet__list {
+  display: grid;
+  gap: 4px;
+  padding-block: 32px 48px;
+}
+.sheet__list a:not(.btn) {
+  display: block;
+  padding: 8px 0;
+  font-family: var(--font-sans);
+  font-size: clamp(2rem, 9vw, 2.75rem);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  text-decoration: none;
+}
+.sheet__list .btn {
+  margin-top: 24px;
+}
+html.menu-open {
+  overflow: hidden;
+}
+
+@media (max-width: 720px) {
+  .header__nav,
+  .header__cta {
+    display: none;
+  }
+  .header__toggle {
+    display: block;
+  }
+}

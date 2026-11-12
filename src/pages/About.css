@@ -1,136 +1,85 @@
-.about-statement {
-  font-size: clamp(3.4rem, 11vw, 10.5rem);
-  letter-spacing: -0.03em;
-  line-height: 0.92;
+.about__hero {
+  padding-top: calc(var(--header-h) + clamp(64px, 10vw, 160px));
 }
-.about-statement .serif {
-  color: var(--coral);
+.about__hero .display {
+  max-width: 12ch;
 }
-.about-who {
-  display: grid;
-  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-  align-items: center;
-  gap: clamp(32px, 6vw, 96px);
-  margin-top: clamp(48px, 6vw, 88px);
-}
-.about-stat {
-  justify-self: start;
-  display: grid;
-  gap: 12px;
-  max-width: 340px;
-  padding: clamp(24px, 3vw, 36px);
-  border-radius: var(--radius-lg);
-  background: var(--coral);
-  color: #fff;
-}
-.about-stat__num {
-  font-size: clamp(5rem, 11vw, 9rem);
-  font-weight: 700;
-  letter-spacing: -0.033em;
-  line-height: 0.85;
-  font-variant-numeric: tabular-nums;
-}
-.about-stat__label {
-  font-size: 1.05rem;
-  line-height: 1.35;
+.about__intro {
+  max-width: 50ch;
+  margin-top: clamp(32px, 4vw, 56px);
 }
 
-.about-story {
-  padding-top: 0;
-}
-.about-story__grid {
+.story {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: clamp(32px, 6vw, 96px);
-  align-items: start;
+  gap: var(--space);
+  padding-top: var(--space);
 }
-.about-story__media {
-  position: sticky;
-  top: 96px;
+.story__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: clamp(40px, 7vw, 120px);
 }
-.about-story__img {
+.story__row--flip .story__text {
+  order: 2;
+}
+.story__text p {
+  max-width: 26ch;
+}
+.story__image {
   aspect-ratio: 4 / 5;
-  border-radius: var(--radius-xl);
-}
-.about-story__copy {
-  display: grid;
-  gap: clamp(40px, 12vh, 140px);
-  padding-block: clamp(24px, 12vh, 160px);
-}
-.about-story__para {
-  font-size: clamp(1.5rem, 2.6vw, 2.4rem);
-  font-weight: 700;
-  letter-spacing: -0.017em;
-  line-height: 1.15;
 }
 
-.about-focus {
-  min-height: 100svh;
-  display: flex;
-  align-items: center;
-  color: var(--cotton);
+.pov {
+  padding-top: var(--space);
 }
-.about-focus__img {
-  position: absolute;
-  inset: 0;
+.pov__title {
+  max-width: 22ch;
 }
-.about-focus__img::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgb(32 34 43 / 0.45);
+.pov__intro {
+  max-width: 48ch;
+  margin-top: clamp(24px, 3vw, 40px);
 }
-.about-focus__inner {
-  position: relative;
-  width: 100%;
-  padding: clamp(40px, 5vw, 72px) clamp(20px, 3.5vw, 56px) clamp(56px, 7vw, 100px);
-}
-.about-focus__intro {
-  margin-bottom: clamp(24px, 4vw, 48px);
-  font-size: clamp(1.4rem, 2.4vw, 2.2rem);
-  font-weight: 700;
-  letter-spacing: -0.011em;
-  text-align: center;
-}
-
-.about-nairobi {
+.pov__list {
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
-  align-items: end;
-  gap: 32px clamp(32px, 6vw, 96px);
+  grid-template-columns: 1fr 1fr;
+  column-gap: clamp(40px, 6vw, 96px);
+  grid-template-rows: repeat(13, auto);
+  grid-auto-flow: column;
+  margin-top: clamp(64px, 8vw, 120px);
 }
-.about-nairobi .serif {
+.pov__item {
+  display: grid;
+  grid-template-columns: 2.5em 1fr;
+  gap: 12px;
+  padding-block: 20px;
+  border-top: 1px solid var(--line);
+  font-size: clamp(1.05rem, 1.3vw, 1.2rem);
+  line-height: 1.45;
+}
+.pov__n {
   color: var(--coral);
+  font-family: var(--font-sans);
+  font-weight: 700;
 }
-.about-faces {
-  margin-top: clamp(48px, 6vw, 88px);
-}
-.about-faces__img {
-  width: clamp(180px, 20vw, 280px);
-  aspect-ratio: 3 / 4;
-  object-fit: cover;
-  margin-right: 14px;
-  border-radius: 999px 999px var(--radius-lg) var(--radius-lg);
-}
-.about-faces__img:nth-child(even) {
-  border-radius: var(--radius-lg) var(--radius-lg) 999px 999px;
+.pov__welcome {
+  max-width: 16ch;
+  margin-top: var(--space);
 }
 
 @media (max-width: 860px) {
-  .about-who,
-  .about-story__grid,
-  .about-nairobi {
+  .story__row,
+  .pov__list {
     grid-template-columns: 1fr;
   }
-  .about-story__media {
-    position: relative;
-    top: auto;
+  .pov__list {
+    grid-template-rows: none;
+    grid-auto-flow: row;
   }
-  .about-story__img {
-    aspect-ratio: 16 / 10;
+  .story__row--flip .story__text {
+    order: 0;
   }
-  .about-story__copy {
-    padding-block: 0;
-    gap: 40px;
+  .story__image {
+    aspect-ratio: 4 / 3;
   }
 }
