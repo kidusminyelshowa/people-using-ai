@@ -11,12 +11,9 @@ export const links = {
   instagram: "https://www.instagram.com/peopleusingai?exln=N2o4Y2hmM2VpcnIx&utm_source=qr",
 };
 
-// Header navigation, in the order of the copy.
+// Header navigation: pages only.
 export const mainNav = [
-  { to: "/#why-we-exist", label: "Why we exist" },
-  { to: "/#our-approach", label: "Our approach" },
-  { to: "/#what-we-do", label: "What we do" },
+  { to: "/", label: "Home" },
   { to: "/community", label: "Community" },
   { to: "/about", label: "About" },
 ] as const;
-

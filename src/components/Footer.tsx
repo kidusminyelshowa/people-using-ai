@@ -41,11 +41,6 @@ export function CtaBand({ lines, action }: { lines: string[]; action: Action }) 
 const groups = [
   [
     { to: "/", label: "Home" },
-    { to: "/#why-we-exist", label: "Why we exist" },
-    { to: "/#our-approach", label: "Our approach" },
-    { to: "/#what-we-do", label: "What we do" },
-  ],
-  [
     { to: "/community", label: "Community" },
     { to: "/about", label: "About" },
   ],

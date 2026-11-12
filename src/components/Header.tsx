@@ -45,7 +45,7 @@ export default function Header() {
               key={item.to}
               to={item.to}
               end
-              className={({ isActive }) => `header__link ${isActive && !item.to.includes("#") ? "is-active" : ""}`}
+              className={({ isActive }) => `header__link ${isActive ? "is-active" : ""}`}
             >
               {item.label}
             </NavLink>
