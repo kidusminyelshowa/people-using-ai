@@ -2,24 +2,19 @@
   position: fixed;
   inset: 0 0 auto;
   z-index: 100;
-  transition:
-    background-color 0.35s var(--ease),
-    box-shadow 0.35s var(--ease);
+  background: #fff;
+  transition: box-shadow 0.4s var(--ease);
 }
 .header--scrolled {
-  background: rgb(255 255 255 / 0.86);
-  backdrop-filter: saturate(1.6) blur(16px);
-  -webkit-backdrop-filter: saturate(1.6) blur(16px);
-  box-shadow: 0 1px 0 rgb(0 0 0 / 0.06);
+  box-shadow: 0 1px 0 var(--line);
 }
 .header--open {
-  background: #fff;
   box-shadow: none;
 }
 .header__bar {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 32px;
   height: var(--header-h);
 }
 .header__brand {
@@ -29,34 +24,27 @@
   margin-right: auto;
   font-family: var(--font-sans);
   font-weight: 700;
-  font-size: 1.02rem;
+  font-size: 1.05rem;
   letter-spacing: -0.01em;
   text-decoration: none;
 }
 .header__brand img {
-  width: 34px;
-  height: 34px;
-  border-radius: 9px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
 }
 .header__nav {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 28px;
 }
 .header__link {
-  position: relative;
-  padding: 8px 12px;
-  border-radius: 999px;
-  font-size: 0.95rem;
-  font-weight: 500;
+  font-size: 0.98rem;
   text-decoration: none;
-  transition:
-    background-color 0.25s var(--ease),
-    color 0.25s var(--ease);
+  color: var(--ink);
+  transition: color 0.25s var(--ease);
 }
-.header__link:hover {
-  background: var(--mist);
-}
+.header__link:hover,
 .header__link.is-active {
   color: var(--coral-deep);
 }
@@ -68,7 +56,7 @@
   height: 44px;
   border: 0;
   border-radius: 999px;
-  background: var(--mist);
+  background: var(--warm);
   cursor: pointer;
 }
 .header__toggle span {
@@ -105,26 +93,26 @@
 }
 .sheet__list {
   display: grid;
-  gap: 6px;
-  padding-block: 24px 48px;
+  gap: 4px;
+  padding-block: 32px 48px;
 }
 .sheet__list a:not(.btn) {
   display: block;
-  padding: 10px 0;
+  padding: 8px 0;
   font-family: var(--font-sans);
   font-size: clamp(2rem, 9vw, 2.75rem);
   font-weight: 700;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.035em;
   text-decoration: none;
 }
 .sheet__list .btn {
-  margin-top: 20px;
+  margin-top: 24px;
 }
 html.menu-open {
   overflow: hidden;
 }
 
-@media (max-width: 1020px) {
+@media (max-width: 1060px) {
   .header__nav,
   .header__cta {
     display: none;
@@ -132,18 +120,4 @@ html.menu-open {
   .header__toggle {
     display: block;
   }
-}
-
-/* Over the home hero photo */
-.header--light {
-  color: #fff;
-}
-.header--light .header__link:hover {
-  background: rgb(255 255 255 / 0.16);
-}
-.header--light .header__toggle {
-  background: rgb(255 255 255 / 0.2);
-}
-.header--light .header__toggle span {
-  background: #fff;
 }

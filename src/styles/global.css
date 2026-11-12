@@ -1,7 +1,8 @@
-/* People Using AI — design tokens & base styles.
-   Look and motion take cues from large-type, rounded-card fintech sites:
-   generous white space, big tight headlines, pill buttons, soft tinted
-   cards, and scroll-led motion. Brand colours and type stay PUAI's own. */
+/* People Using AI: design tokens and base styles.
+   Rules (see the reference analysis): a white canvas, one idea per
+   screen, coral as the only accent, very large headlines, one corner
+   radius, pill buttons, and a small set of slow scroll-led motions.
+   No eyebrow labels above headlines. */
 
 /* Apfel Grotezk (Collletttivo, SIL OFL 1.1 licence), self-hosted. */
 @font-face {
@@ -22,41 +23,26 @@
 }
 
 :root {
-  /* Brand */
   --coral: #f03c4f;
-  --coral-deep: #c9263a; /* buttons on white: better contrast than coral */
-  --coral-tint: #fdeced;
-  --coral-tint-2: #fbdde0;
-  /* Neutrals */
-  --white: #ffffff;
-  --cotton: #fffdfd;
+  --coral-deep: #c9263a; /* coral text and buttons on white */
   --ink: #151515;
+  --slate: #55555f;
+  --line: #e9e7e4;
+  --warm: #f7f3ef; /* the one warm neutral, for tiles and image wells */
+  --white: #ffffff;
+  /* used by the launching-soon page */
+  --cotton: #fffdfd;
   --night: #20222b;
-  --dark: #161616;
-  --slate: #5d5d6b;
-  --muted: #6b6b73;
-  --line: #ececec;
-  --mist: #f6f6f6;
-
-  /* Secondary accents from the brand guidelines, used for colour blocks */
-  --navy: #143d7a;
-  --yellow: #f5c81a;
-  --pink: #ffcad3;
-  --orange: #ff6f3b;
-  --green: #4de8a8;
-  --cream: #fff4e8;
 
   --font-sans: "Apfel Grotezk", "Familjen Grotesk", system-ui, sans-serif;
   --font-body: "Familjen Grotesk", "Apfel Grotezk", system-ui, sans-serif;
 
-  --gutter: clamp(20px, 4vw, 56px);
-  --max: 1240px;
-  --radius-xl: clamp(24px, 2.6vw, 40px);
-  --radius-lg: clamp(20px, 2vw, 28px);
-  --radius-md: 16px;
-  --header-h: 72px;
-  --ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
+  --gutter: clamp(20px, 5vw, 80px);
+  --max: 1280px;
+  --radius: clamp(20px, 2.2vw, 32px);
+  --header-h: 76px;
+  --space: clamp(120px, 16vw, 240px); /* between sections */
+  --ease: cubic-bezier(0.22, 0, 0.12, 1);
 }
 
 *,
@@ -79,7 +65,7 @@ body {
   background: var(--white);
   color: var(--ink);
   font-family: var(--font-body);
-  font-size: 1.0625rem;
+  font-size: 1.125rem;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
@@ -113,8 +99,8 @@ h3,
 h4 {
   font-family: var(--font-sans);
   font-weight: 700;
-  line-height: 1.04;
-  letter-spacing: -0.025em;
+  line-height: 1;
+  letter-spacing: -0.035em;
   text-wrap: balance;
 }
 p {
@@ -130,10 +116,17 @@ p {
   border-radius: 4px;
 }
 
-/* ---------- Utilities ---------- */
+/* ---------- Layout ---------- */
 .container {
   width: min(100% - 2 * var(--gutter), var(--max));
   margin-inline: auto;
+}
+.narrow {
+  width: min(100% - 2 * var(--gutter), 980px);
+  margin-inline: auto;
+}
+.section {
+  padding-block: calc(var(--space) / 2);
 }
 .visually-hidden {
   position: absolute !important;
@@ -160,114 +153,83 @@ p {
 .accent {
   color: var(--coral);
 }
-.dark .accent {
-  color: var(--coral);
-}
 
-.section {
-  padding-block: clamp(80px, 11vw, 160px);
-}
-.section--tight {
-  padding-block: clamp(56px, 7vw, 104px);
-}
-
-.eyebrow {
-  display: block;
-  margin-bottom: clamp(16px, 2vw, 24px);
-  color: var(--coral-deep);
+/* ---------- Type ---------- */
+.display,
+.h1,
+.h2,
+.h3 {
   font-family: var(--font-sans);
-  font-size: 0.78rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
 }
-.dark .eyebrow {
-  color: var(--coral);
-}
-
 .display {
-  font-size: clamp(2.75rem, 7.4vw, 6.5rem);
-  letter-spacing: -0.035em;
+  font-size: clamp(3rem, 9vw, 8.5rem);
+  letter-spacing: -0.05em;
+  line-height: 0.94;
+}
+.h1 {
+  font-size: clamp(2.6rem, 6.4vw, 6rem);
+  letter-spacing: -0.045em;
   line-height: 0.98;
 }
 .h2 {
-  font-size: clamp(2.1rem, 4.6vw, 4rem);
-  letter-spacing: -0.03em;
+  font-size: clamp(2.1rem, 4.4vw, 4rem);
+  letter-spacing: -0.04em;
 }
 .h3 {
-  font-size: clamp(1.4rem, 2vw, 1.75rem);
-  letter-spacing: -0.02em;
-  line-height: 1.1;
+  font-size: clamp(1.5rem, 2.2vw, 2rem);
+  letter-spacing: -0.025em;
+  line-height: 1.08;
 }
 .lede {
-  font-family: var(--font-sans);
-  font-size: clamp(1.2rem, 1.8vw, 1.6rem);
-  line-height: 1.35;
-  letter-spacing: -0.012em;
-}
-.body-lg {
-  font-size: clamp(1.05rem, 1.25vw, 1.2rem);
-  line-height: 1.55;
+  font-size: clamp(1.2rem, 1.7vw, 1.5rem);
+  line-height: 1.45;
   color: var(--slate);
 }
-.dark .body-lg {
-  color: rgb(255 255 255 / 0.7);
+.muted {
+  color: var(--slate);
 }
 
-.dark {
-  background: var(--dark);
-  color: #fff;
+/* long sentences set large: Apfel, but in the regular weight */
+.statement-text {
+  font-family: var(--font-sans);
+  font-size: clamp(1.6rem, 3vw, 2.6rem);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  text-wrap: pretty;
 }
 
-/* ---------- Buttons: pills ---------- */
+/* ---------- Buttons: one pill style ---------- */
 .btn {
   --btn-bg: var(--coral-deep);
   --btn-fg: #fff;
   --btn-hover: #a91c2f;
-  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.55em;
+  gap: 0.5em;
   min-height: 48px;
-  padding: 0.85em 1.5em;
+  padding: 0 1.6em;
   border: 0;
   border-radius: 999px;
   background: var(--btn-bg);
   color: var(--btn-fg);
   font: 700 1rem/1 var(--font-sans);
-  letter-spacing: -0.005em;
   text-decoration: none;
+  white-space: nowrap;
   cursor: pointer;
   transition:
     background-color 0.3s var(--ease),
-    color 0.3s var(--ease),
-    transform 0.5s var(--ease),
-    box-shadow 0.3s var(--ease);
+    color 0.3s var(--ease);
 }
 .btn:hover {
   background: var(--btn-hover);
 }
-.btn:active {
-  transform: scale(0.97);
-}
-.btn__arrow {
-  display: inline-block;
-  transition: transform 0.4s var(--ease);
-}
-.btn:hover .btn__arrow,
-.text-link:hover .btn__arrow {
-  transform: translateX(4px);
-}
 .btn--lg {
   min-height: 56px;
-  padding: 1em 1.75em;
+  padding: 0 1.9em;
   font-size: 1.0625rem;
-}
-.btn--sm {
-  min-height: 40px;
-  padding: 0.65em 1.15em;
-  font-size: 0.9rem;
 }
 .btn--white {
   --btn-bg: #fff;
@@ -279,10 +241,16 @@ p {
 }
 .btn--ink {
   --btn-bg: var(--ink);
-  --btn-fg: #fff;
-  --btn-hover: var(--coral-deep);
+  --btn-hover: #333;
 }
-
+.btn__arrow {
+  display: inline-block;
+  transition: transform 0.4s var(--ease);
+}
+.btn:hover .btn__arrow,
+.text-link:hover .btn__arrow {
+  transform: translateX(3px);
+}
 .text-link {
   display: inline-flex;
   align-items: center;
@@ -291,28 +259,35 @@ p {
   font-family: var(--font-sans);
   font-weight: 700;
   text-decoration: none;
-  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1.5px no-repeat;
-  transition: background-size 0.4s var(--ease);
 }
 .text-link:hover {
-  background-size: 100% 1.5px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
-/* ---------- Placeholder blocks (swap for real photos) ---------- */
+/* ---------- Media ---------- */
+.media {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--warm);
+}
+.media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 .placeholder {
   display: grid;
   place-items: center;
+  align-content: center;
   gap: 10px;
   padding: 24px;
-  border-radius: var(--radius-lg);
-  background: var(--mist);
-  color: var(--muted);
-  font-size: 0.85rem;
+  border-radius: var(--radius);
+  background: var(--warm);
+  color: var(--slate);
+  font-size: 0.9rem;
   text-align: center;
-}
-.placeholder--tint {
-  background: var(--coral-tint);
-  color: var(--coral-deep);
 }
 .placeholder svg {
   width: 28px;

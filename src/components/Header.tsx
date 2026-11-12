@@ -1,35 +1,28 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/react";
-import { iconCoral, iconWhite } from "../content/brand";
-import { homeNav, links, pageNav } from "../content/links";
+import { iconCoral } from "../content/brand";
+import { links, mainNav } from "../content/links";
 import { ease } from "./motion";
 import "./Header.css";
 
-// Sticky top bar. It slides away while you read down the page and comes back
-// as soon as you scroll up; once off the top it gains a frosted background.
+// A slim white bar. It steps aside while you read down the page and
+// returns as soon as you scroll up.
 export default function Header() {
   const { pathname, hash } = useLocation();
-  const nav = pathname === "/" ? homeNav : pageNav;
   const { scrollY } = useScroll();
   const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [overHero, setOverHero] = useState(true);
   const [open, setOpen] = useState(false);
 
   useMotionValueEvent(scrollY, "change", (y) => {
     const prev = scrollY.getPrevious() ?? 0;
     setScrolled(y > 8);
-    setOverHero(y < window.innerHeight - 80);
     if (open) return;
-    if (y > 240 && y > prev + 4) setHidden(true);
-    else if (y < prev - 4 || y < 240) setHidden(false);
+    if (y > 200 && y > prev + 4) setHidden(true);
+    else if (y < prev - 4 || y < 200) setHidden(false);
   });
 
-  // On the home page the bar sits over the full-bleed hero photo in white.
-  const onHero = pathname === "/" && overHero;
-
-  // Close the menu on navigation.
   useEffect(() => setOpen(false), [pathname, hash]);
   useEffect(() => {
     document.documentElement.classList.toggle("menu-open", open);
@@ -37,18 +30,18 @@ export default function Header() {
 
   return (
     <motion.header
-      className={`header ${scrolled && !onHero ? "header--scrolled" : ""} ${onHero && !open ? "header--light" : ""} ${open ? "header--open" : ""}`}
-      animate={{ y: hidden ? "-110%" : "0%" }}
-      transition={{ duration: 0.45, ease }}
+      className={`header ${scrolled ? "header--scrolled" : ""} ${open ? "header--open" : ""}`}
+      animate={{ y: hidden ? "-100%" : "0%" }}
+      transition={{ duration: 0.5, ease }}
     >
       <div className="header__bar container">
-        <Link to="/" className="header__brand" aria-label="People Using AI — home">
-          <img src={onHero && !open ? iconWhite : iconCoral} alt="" width={34} height={34} />
+        <Link to="/" className="header__brand" aria-label="People Using AI, home">
+          <img src={iconCoral} alt="" width={32} height={32} />
           <span>People Using AI</span>
         </Link>
 
         <nav className="header__nav" aria-label="Main">
-          {nav.map((item) => (
+          {mainNav.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
@@ -60,7 +53,7 @@ export default function Header() {
           ))}
         </nav>
 
-        <a className={`btn btn--sm header__cta ${onHero ? "btn--white" : "btn--ink"}`} href={links.workWithUs}>
+        <a className="btn header__cta" href={links.workWithUs}>
           Work with us
         </a>
 
@@ -82,21 +75,21 @@ export default function Header() {
           <motion.div
             id="mobile-menu"
             className="sheet"
-            initial={{ clipPath: "inset(0 0 100% 0)" }}
-            animate={{ clipPath: "inset(0 0 0% 0)" }}
-            exit={{ clipPath: "inset(0 0 100% 0)" }}
-            transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4, ease }}
           >
             <motion.ul
               className="sheet__list container"
               initial="hidden"
               animate="show"
-              variants={{ show: { transition: { staggerChildren: 0.06, delayChildren: 0.2 } } }}
+              variants={{ show: { transition: { staggerChildren: 0.05, delayChildren: 0.1 } } }}
             >
-              {homeNav.map((item) => (
+              {mainNav.map((item) => (
                 <motion.li
                   key={item.to}
-                  variants={{ hidden: { opacity: 0, y: 32 }, show: { opacity: 1, y: 0, transition: { duration: 0.7, ease } } }}
+                  variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.8, ease } } }}
                 >
                   <Link to={item.to} onClick={() => setOpen(false)}>
                     {item.label}
@@ -104,10 +97,10 @@ export default function Header() {
                 </motion.li>
               ))}
               <motion.li
-                variants={{ hidden: { opacity: 0, y: 32 }, show: { opacity: 1, y: 0, transition: { duration: 0.7, ease } } }}
+                variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.8, ease } } }}
               >
                 <a className="btn btn--lg" href={links.workWithUs}>
-                  Work with us <span className="btn__arrow">→</span>
+                  Work with us
                 </a>
               </motion.li>
             </motion.ul>

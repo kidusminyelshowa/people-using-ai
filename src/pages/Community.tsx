@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { SplitHeading, ease } from "../components/motion";
-import VelocityMarquee from "../components/ui/VelocityMarquee";
+import { ease } from "../components/motion";
+import Marquee from "../components/ui/Marquee";
 import { photo, type PhotoName } from "../content/images";
 import { EMAIL, subscribe } from "../lib/subscribe";
 import "./Community.css";
@@ -16,7 +16,7 @@ const fields = [
 ] as const;
 
 // Everyday life: parenting, education, art and creativity.
-const everyday: PhotoName[] = ["clay", "scooter", "headphones", "conversation", "scissors", "glassSmile", "teamWall", "goldenPortrait"];
+const everyday: PhotoName[] = ["clay", "scooter", "headphones", "conversation", "scissors", "glassSmile"];
 
 export default function Community() {
   const [state, setState] = useState<State>({ kind: "idle" });
@@ -37,56 +37,26 @@ export default function Community() {
     }
   }
 
+  const enter = (delay: number) => ({
+    initial: { opacity: 0, y: 16 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 1.1, delay, ease },
+  });
+
   return (
     <main id="main" className="community">
-      <motion.span
-        className="community__blob community__blob--a"
-        aria-hidden="true"
-        initial={{ scale: 0 }}
-        animate={{ scale: 1, rotate: [0, 12, 0] }}
-        transition={{ scale: { type: "spring", stiffness: 120, damping: 14, delay: 0.3 }, rotate: { duration: 9, repeat: Infinity } }}
-      />
-      <motion.span
-        className="community__blob community__blob--b"
-        aria-hidden="true"
-        initial={{ scale: 0 }}
-        animate={{ scale: 1, y: [0, -18, 0] }}
-        transition={{ scale: { type: "spring", stiffness: 120, damping: 14, delay: 0.5 }, y: { duration: 5, repeat: Infinity } }}
-      />
       <div className="container community__grid">
         <div className="community__copy">
-          <motion.span
-            className="eyebrow"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.1 }}
-          >
-            Community &amp; storytelling
-          </motion.span>
-          <SplitHeading
-            as="h1"
-            onMount
-            delay={0.15}
-            className="display community__title"
-            segments={["Be early to know about our", { text: "upcoming events.", className: "accent" }]}
-          />
-          <motion.p
-            className="body-lg community__body"
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.7, ease }}
-          >
+          <motion.h1 className="h1 community__title" {...enter(0.1)}>
+            Be early to know about our upcoming events.
+          </motion.h1>
+          <motion.p className="lede community__body" {...enter(0.3)}>
             AI is moving beyond the workplace into everyday life, from parenting and education to art and creativity. We
             serve as a space for those conversations and learnings.
           </motion.p>
         </div>
 
-        <motion.div
-          className="join"
-          initial={{ opacity: 0, y: 60, scale: 0.97 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 1.1, delay: 0.35, ease }}
-        >
+        <motion.div className="join" {...enter(0.45)}>
           <AnimatePresence mode="wait" initial={false}>
             {state.kind === "done" ? (
               <motion.div
@@ -95,16 +65,16 @@ export default function Community() {
                 role="status"
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, ease }}
+                transition={{ duration: 0.8, ease }}
               >
                 <span className="join__tick" aria-hidden="true">
                   ✓
                 </span>
                 <h2 className="h3">You’re on the list.</h2>
-                <p>We’ll be in touch about upcoming events.</p>
+                <p className="muted">We’ll be in touch about upcoming events.</p>
               </motion.div>
             ) : (
-              <motion.form key="form" className="join__form" onSubmit={onSubmit} noValidate exit={{ opacity: 0, y: -16 }}>
+              <motion.form key="form" className="join__form" onSubmit={onSubmit} noValidate exit={{ opacity: 0 }}>
                 <h2 className="h3">Join the community</h2>
                 {fields.map((f) => (
                   <label key={f.name} className="field">
@@ -133,17 +103,12 @@ export default function Community() {
         </motion.div>
       </div>
 
-      <motion.div
-        className="community__strip"
-        initial={{ opacity: 0, y: 60 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1.2, delay: 0.8, ease }}
-      >
-        <VelocityMarquee baseVelocity={-1.2}>
-          {everyday.map((name, i) => (
-            <img key={name} {...photo(name)} sizes="300px" alt="" loading="lazy" className={`community__photo community__photo--${i % 4}`} />
+      <motion.div className="community__strip" {...enter(0.7)}>
+        <Marquee speed={1.5}>
+          {everyday.map((name) => (
+            <img key={name} {...photo(name)} sizes="360px" alt="" loading="lazy" className="community__photo" />
           ))}
-        </VelocityMarquee>
+        </Marquee>
       </motion.div>
     </main>
   );

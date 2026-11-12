@@ -1,16 +1,3 @@
-.split__mask {
-  display: inline-block;
-  overflow: hidden;
-  /* room for descenders and the slight overshoot of the rise */
-  padding-bottom: 0.08em;
-  margin-bottom: -0.08em;
-  vertical-align: top;
-}
-.split__word {
-  display: inline-block;
-  will-change: transform;
-}
-
 /* ---------- Marquee ---------- */
 .marquee {
   overflow: hidden;
@@ -24,9 +11,3 @@
   display: flex;
   flex-shrink: 0;
 }
-
-/* ---------- Reveal text (words brighten on scroll) ---------- */
-.reveal-text__word {
-  display: inline;
-}
-.magnetic { display: inline-block; will-change: transform; }

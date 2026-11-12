@@ -1,91 +1,33 @@
-import { Fragment, useEffect, useRef, type ElementType, type ReactNode } from "react";
-import { animate, motion, useInView, useMotionValue, useSpring, useTransform, type Variants } from "motion/react";
-import "./motion.css";
+import { useEffect, useRef, type ElementType, type ReactNode } from "react";
+import { animate, motion, useInView, useMotionValue, useScroll, useTransform, type Variants } from "motion/react";
 
-export const ease = [0.22, 1, 0.36, 1] as const;
+// One easing curve and one reveal for the whole site: a slow, smooth
+// settle with no overshoot.
+export const ease = [0.22, 0, 0.12, 1] as const;
+const RISE = 16;
 
-type Segment = string | { text: string; className?: string };
-
-/**
- * Headline whose words rise out of a mask, one after another.
- * `segments` lets parts carry a class (e.g. the coral accent).
- * Plays on mount (`onMount`) or when scrolled into view.
- */
-export function SplitHeading({
-  as = "h2",
-  className,
-  segments,
-  delay = 0,
-  onMount = false,
-  stagger = 0.06,
-}: {
-  as?: "h1" | "h2" | "h3" | "p";
-  className?: string;
-  segments: Segment[];
-  delay?: number;
-  onMount?: boolean;
-  stagger?: number;
-}) {
-  const Tag = motion[as];
-  const parts = segments.map((s) => (typeof s === "string" ? { text: s } : s));
-  const words = parts.flatMap((p) =>
-    p.text
-      .split(/(\s+|<br>)/)
-      .filter((w) => w.trim())
-      .map((w) => ({ w, className: p.className }))
-  );
-  const label = parts.map((p) => p.text.replace(/<br>/g, " ")).join(" ").replace(/\s+/g, " ").trim();
-
-  const container: Variants = { hidden: {}, show: { transition: { staggerChildren: stagger, delayChildren: delay } } };
-  const word: Variants = {
-    hidden: { y: "110%" },
-    show: { y: "0%", transition: { duration: 0.9, ease } },
-  };
-
-  const trigger = onMount
-    ? { initial: "hidden", animate: "show" }
-    : { initial: "hidden", whileInView: "show", viewport: { once: true, amount: 0.4 } };
-
-  return (
-    <Tag className={`split ${className ?? ""}`} aria-label={label} variants={container} {...trigger}>
-      {words.map((wd, i) =>
-        wd.w === "<br>" ? (
-          <br key={i} />
-        ) : (
-          <Fragment key={i}>
-            <span className="split__mask" aria-hidden="true">
-              <motion.span className={`split__word ${wd.className ?? ""}`} variants={word}>
-                {wd.w}
-              </motion.span>
-            </span>{" "}
-          </Fragment>
-        )
-      )}
-    </Tag>
-  );
-}
-
-/** Fades and lifts its children in when scrolled into view. */
+/** Fades its children in and lifts them a little as they enter the screen. */
 export function Reveal({
   children,
   className,
   delay = 0,
-  y = 40,
   as = "div",
-  amount = 0.25,
+  amount = 0.3,
+  id,
 }: {
   children: ReactNode;
   className?: string;
   delay?: number;
-  y?: number;
-  as?: "div" | "section" | "li" | "p" | "figure" | "article";
+  as?: "div" | "section" | "li" | "p" | "figure" | "article" | "h1" | "h2" | "h3";
   amount?: number;
+  id?: string;
 }) {
   const Tag = motion[as];
   return (
     <Tag
+      id={id}
       className={className}
-      initial={{ opacity: 0, y }}
+      initial={{ opacity: 0, y: RISE }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount }}
       transition={{ duration: 1, delay, ease }}
@@ -95,18 +37,18 @@ export function Reveal({
   );
 }
 
-const staggerParent: Variants = { hidden: {}, show: { transition: { staggerChildren: 0.09 } } };
-export const staggerChild: Variants = {
-  hidden: { opacity: 0, y: 48 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.9, ease } },
+const staggerParent: Variants = { hidden: {}, show: { transition: { staggerChildren: 0.1 } } };
+const staggerChild: Variants = {
+  hidden: { opacity: 0, y: RISE },
+  show: { opacity: 1, y: 0, transition: { duration: 1, ease } },
 };
 
-/** A list whose items (StaggerItem) rise in one after another. */
+/** A group whose items (StaggerItem) come in one after another. */
 export function Stagger({
   children,
   className,
   as = "div",
-  amount = 0.15,
+  amount = 0.2,
 }: {
   children: ReactNode;
   className?: string;
@@ -138,20 +80,70 @@ export function StaggerItem({
   );
 }
 
-/** Soft card standing in for a photo that hasn't been supplied yet. */
-export function Placeholder({
-  label,
-  tint,
+/**
+ * A statement headline that grows slightly and comes into full colour
+ * as it travels up the screen.
+ */
+export function Statement({
+  children,
   className,
-  as: Tag = "div",
+  as = "h2",
+  id,
 }: {
-  label: string;
-  tint?: boolean;
+  children: ReactNode;
   className?: string;
-  as?: ElementType;
+  as?: "h1" | "h2" | "p";
+  id?: string;
 }) {
+  const ref = useRef<HTMLHeadingElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "center center"] });
+  const scale = useTransform(scrollYProgress, [0, 1], [0.92, 1]);
+  const opacity = useTransform(scrollYProgress, [0, 0.7], [0.2, 1]);
+  const Tag = motion[as];
   return (
-    <Tag className={`placeholder ${tint ? "placeholder--tint" : ""} ${className ?? ""}`} role="img" aria-label={label}>
+    <Tag ref={ref} id={id} className={className} style={{ scale, opacity, transformOrigin: "left center" }}>
+      {children}
+    </Tag>
+  );
+}
+
+/** A photo that drifts slowly inside its rounded frame as the page scrolls. */
+export function Parallax({
+  src,
+  srcSet,
+  sizes = "100vw",
+  alt = "",
+  className,
+  eager,
+}: {
+  src: string;
+  srcSet?: string;
+  sizes?: string;
+  alt?: string;
+  className?: string;
+  eager?: boolean;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const y = useTransform(scrollYProgress, [0, 1], ["-8%", "8%"]);
+  return (
+    <div ref={ref} className={`media ${className ?? ""}`}>
+      <motion.img
+        src={src}
+        srcSet={srcSet}
+        sizes={sizes}
+        alt={alt}
+        loading={eager ? "eager" : "lazy"}
+        style={{ y, scale: 1.18 }}
+      />
+    </div>
+  );
+}
+
+/** Stands in for a photo that hasn't been supplied yet. */
+export function Placeholder({ label, className, as: Tag = "div" }: { label: string; className?: string; as?: ElementType }) {
+  return (
+    <Tag className={`placeholder ${className ?? ""}`} role="img" aria-label={label}>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
         <rect x="3" y="4" width="18" height="16" rx="2.5" />
         <circle cx="9" cy="10" r="1.8" />
@@ -159,32 +151,6 @@ export function Placeholder({
       </svg>
       <span>{label}</span>
     </Tag>
-  );
-}
-
-/** Pulls its child gently toward the pointer, then springs back. */
-export function Magnetic({ children, strength = 0.3 }: { children: ReactNode; strength?: number }) {
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const sx = useSpring(x, { stiffness: 220, damping: 16, mass: 0.4 });
-  const sy = useSpring(y, { stiffness: 220, damping: 16, mass: 0.4 });
-  return (
-    <motion.span
-      className="magnetic"
-      style={{ x: sx, y: sy }}
-      onPointerMove={(e) => {
-        if (e.pointerType !== "mouse") return;
-        const r = e.currentTarget.getBoundingClientRect();
-        x.set((e.clientX - (r.left + r.width / 2)) * strength);
-        y.set((e.clientY - (r.top + r.height / 2)) * strength);
-      }}
-      onPointerLeave={() => {
-        x.set(0);
-        y.set(0);
-      }}
-    >
-      {children}
-    </motion.span>
   );
 }
 
@@ -198,7 +164,7 @@ export function CountUp({ value, className }: { value: string; className?: strin
   const text = useTransform(mv, (v) => (match ? `${match[1]}${Math.round(v)}${match[3]}` : value));
   useEffect(() => {
     if (inView && match) {
-      const c = animate(mv, target, { duration: 1.6, ease });
+      const c = animate(mv, target, { duration: 1.4, ease });
       return () => c.stop();
     }
   }, [inView]); // eslint-disable-line react-hooks/exhaustive-deps

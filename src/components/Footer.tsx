@@ -1,52 +1,37 @@
-import { useRef, type ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { motion, useScroll, useTransform } from "motion/react";
-import { iconWhite } from "../content/brand";
 import { footerNav, links } from "../content/links";
-import { SplitHeading } from "./motion";
+import { Reveal } from "./motion";
 import "./Footer.css";
 
 type Action = { label: string; to?: string; href?: string };
 
-/** The coral call-to-action band that closes every page. */
-export function CtaBand({
-  kicker,
-  title,
-  action,
-}: {
-  kicker?: ReactNode;
-  title: (string | { text: string; className?: string })[];
-  action: Action;
-}) {
-  const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end end"] });
-  const rotate = useTransform(scrollYProgress, [0, 1], [-24, 0]);
-  const y = useTransform(scrollYProgress, [0, 1], ["45%", "0%"]);
-
+/** The page's one coral band: a closing line or two and a single button. */
+export function CtaBand({ lines, action }: { lines: string[]; action: Action }) {
   const inner = (
     <>
       {action.label} <span className="btn__arrow">→</span>
     </>
   );
-
   return (
-    <section ref={ref} className="cta-band">
+    <section className="cta-band">
       <div className="container cta-band__inner">
-        <div>
-          {kicker && <p className="cta-band__kicker">{kicker}</p>}
-          <SplitHeading className="cta-band__title" segments={title} />
-        </div>
-        {action.to ? (
-          <Link className="btn btn--white btn--lg" to={action.to}>
-            {inner}
-          </Link>
-        ) : (
-          <a className="btn btn--white btn--lg" href={action.href}>
-            {inner}
-          </a>
-        )}
+        <Reveal as="h2" className="display cta-band__title">
+          {lines.map((l, i) => (
+            <span key={i}>{l}</span>
+          ))}
+        </Reveal>
+        <Reveal delay={0.15}>
+          {action.to ? (
+            <Link className="btn btn--white btn--lg" to={action.to}>
+              {inner}
+            </Link>
+          ) : (
+            <a className="btn btn--white btn--lg" href={action.href}>
+              {inner}
+            </a>
+          )}
+        </Reveal>
       </div>
-      <motion.img className="cta-band__icon" src={iconWhite} alt="" aria-hidden="true" style={{ rotate, y }} />
     </section>
   );
 }

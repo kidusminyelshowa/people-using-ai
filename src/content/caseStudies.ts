@@ -8,7 +8,6 @@ export type CaseStudy = {
   kind: string; // shown under the client's name on the home page
   published: boolean;
   backTo?: { label: string; to: string };
-  eyebrow?: string;
   summary?: string;
   stats?: { value: string; label: string }[];
   heroPhoto?: string;
@@ -35,7 +34,6 @@ export const caseStudies: CaseStudy[] = [
     kind: "Employee training",
     published: true,
     backTo: { label: "Workforce Upskilling", to: "/#what-we-do" },
-    eyebrow: "Case study · Employee training",
     summary: "[ONE-LINE SUMMARY: what Sierra’s back-office team can do now that they couldn’t before.]",
     stats: [
       { value: "14", label: "back-office staff trained" },
