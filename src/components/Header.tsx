@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/react";
-import { iconCoral } from "../content/brand";
+import wordmark from "../assets/brand/wordmark-dark.svg";
 import { links, mainNav } from "../content/links";
 import { ease } from "./motion";
 import "./Header.css";
@@ -36,8 +36,7 @@ export default function Header() {
     >
       <div className="header__bar container">
         <Link to="/" className="header__brand" aria-label="People Using AI, home">
-          <img src={iconCoral} alt="" width={32} height={32} />
-          <span>People Using AI</span>
+          <img src={wordmark} alt="" width={95} height={44} />
         </Link>
 
         <nav className="header__nav" aria-label="Main">

@@ -2,10 +2,10 @@
   padding-top: calc(var(--header-h) + clamp(64px, 10vw, 160px));
 }
 .about__hero .display {
-  max-width: 9ch;
+  max-width: 12ch;
 }
 .about__intro {
-  max-width: 36ch;
+  max-width: 50ch;
   margin-top: clamp(32px, 4vw, 56px);
 }
 
@@ -24,7 +24,7 @@
   order: 2;
 }
 .story__text p {
-  max-width: 20ch;
+  max-width: 26ch;
 }
 .story__image {
   aspect-ratio: 4 / 5;
@@ -34,10 +34,10 @@
   padding-top: var(--space);
 }
 .pov__title {
-  max-width: 18ch;
+  max-width: 22ch;
 }
 .pov__intro {
-  max-width: 34ch;
+  max-width: 48ch;
   margin-top: clamp(24px, 3vw, 40px);
 }
 .pov__list {
@@ -63,7 +63,7 @@
   font-weight: 700;
 }
 .pov__welcome {
-  max-width: 12ch;
+  max-width: 16ch;
   margin-top: var(--space);
 }
 

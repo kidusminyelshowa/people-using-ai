@@ -9,10 +9,10 @@
   gap: clamp(48px, 8vw, 140px);
 }
 .community__title {
-  max-width: 11ch;
+  max-width: 13ch;
 }
 .community__body {
-  max-width: 36ch;
+  max-width: 48ch;
   margin-top: clamp(28px, 3.4vw, 44px);
 }
 
@@ -34,7 +34,7 @@
 }
 .field__label {
   font-size: 0.95rem;
-  font-weight: 600;
+  font-weight: 700;
 }
 .field__input {
   width: 100%;

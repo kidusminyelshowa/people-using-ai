@@ -25,11 +25,10 @@
   flex-wrap: wrap;
   padding-block: 48px;
 }
-.footer__brand {
-  color: var(--ink);
-  font-family: var(--font-sans);
-  font-weight: 700;
-  text-decoration: none;
+.footer__brand img {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
 }
 .footer__nav {
   display: flex;

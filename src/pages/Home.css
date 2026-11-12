@@ -1,30 +1,81 @@
-/* ---------- Hero ---------- */
+/* ---------- Hero: full-bleed photos with the words over them ---------- */
 .hero {
-  padding-top: calc(var(--header-h) + clamp(64px, 10vw, 160px));
+  padding: var(--header-h) clamp(8px, 1.2vw, 16px) 0;
+}
+.hero__frame {
+  position: relative;
+  display: grid;
+  align-items: end;
+  height: calc(100svh - var(--header-h) - clamp(8px, 1.2vw, 16px));
+  min-height: 600px;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--ink);
+  color: #fff;
+}
+.hero__photos {
+  position: absolute;
+  inset: -4% 0 0;
+}
+.hero__photos img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.hero__shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to top, rgb(0 0 0 / 0.7) 0%, rgb(0 0 0 / 0.25) 45%, rgb(0 0 0 / 0) 70%),
+    linear-gradient(to right, rgb(0 0 0 / 0.35), rgb(0 0 0 / 0) 60%);
 }
 .hero__copy {
+  position: relative;
   display: grid;
   gap: clamp(32px, 4vw, 56px);
+  padding-bottom: clamp(32px, 5vw, 72px);
 }
 .hero__title {
-  max-width: 11ch;
+  max-width: 12ch;
+}
+.hero__bottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px 64px;
+  flex-wrap: wrap;
 }
 .hero__text {
   display: grid;
-  justify-items: start;
-  gap: 16px;
-  max-width: 40ch;
+  gap: 12px;
+  max-width: 54ch;
+  font-size: clamp(1.1rem, 1.4vw, 1.3rem);
+  line-height: 1.45;
+  color: rgb(255 255 255 / 0.88);
 }
-.hero__text .btn {
-  margin-top: 24px;
+.hero__actions {
+  display: grid;
+  justify-items: end;
+  gap: 24px;
 }
-.hero__media {
-  margin-top: clamp(80px, 10vw, 140px);
-  padding-inline: clamp(8px, 1.2vw, 16px);
-  transform-origin: center top;
+.hero__dots {
+  display: flex;
+  gap: 6px;
 }
-.hero__photo {
-  height: min(86svh, 900px);
+.hero__dots li {
+  width: 36px;
+  height: 3px;
+  border-radius: 3px;
+  background: rgb(255 255 255 / 0.35);
+  overflow: hidden;
+}
+.hero__dots span {
+  display: block;
+  height: 100%;
+  background: #fff;
+  transform-origin: left;
 }
 
 /* ---------- Content blocks: one idea per screen ---------- */
@@ -33,47 +84,64 @@
   scroll-margin-top: 0;
 }
 .block .display {
-  max-width: 14ch;
+  max-width: 16ch;
 }
 .block__sub {
   margin-top: clamp(20px, 2.4vw, 32px);
 }
 .block__close {
-  margin-top: var(--space);
+  margin-top: calc(var(--space) / 2);
 }
 .block__close p {
-  max-width: 30ch;
+  max-width: 38ch;
 }
 
-/* ---------- Moments carousel ---------- */
+/* ---------- Moments: pinned, scroll-driven ---------- */
 .moments {
-  margin-top: clamp(80px, 10vw, 160px);
+  position: relative;
+  margin-top: clamp(40px, 6vw, 80px);
+}
+.moments__sticky {
+  position: sticky;
+  top: 0;
+  display: grid;
+  align-items: center;
+  height: 100svh;
+  overflow: hidden;
+}
+.moments__inner {
+  display: grid;
+  gap: clamp(40px, 6vw, 80px);
 }
 .moments__stage {
   display: grid;
-  min-height: clamp(280px, 32vw, 440px);
-  align-content: center;
+  align-items: center;
+  min-height: clamp(300px, 34vw, 480px);
+}
+.moments__slide {
+  grid-area: 1 / 1;
 }
 .moments__when {
   color: var(--slate);
-  font-family: var(--font-sans);
-  font-size: clamp(1.1rem, 1.6vw, 1.4rem);
+  font-size: clamp(1.2rem, 1.8vw, 1.6rem);
   font-weight: 700;
 }
 .moments__what {
-  margin-top: 12px;
-  font-size: clamp(3.5rem, 12vw, 11rem);
-  letter-spacing: -0.055em;
-  line-height: 0.9;
+  margin-top: 16px;
+  font-size: clamp(3.75rem, 13vw, 12rem);
+  letter-spacing: -0.03em;
+  line-height: 0.95;
 }
 .moments__line {
-  margin-top: clamp(20px, 2.4vw, 32px);
+  margin-top: clamp(20px, 2.6vw, 36px);
+  font-size: clamp(1.4rem, 2.6vw, 2.4rem);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
 }
 .moments__bars {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 8px;
-  margin-top: clamp(40px, 5vw, 64px);
 }
 .moments__bars button {
   display: grid;
@@ -84,11 +152,13 @@
   background: none;
   color: var(--slate);
   font: inherit;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   text-align: left;
   cursor: pointer;
+  transition: color 0.3s var(--ease);
 }
-.moments__bars button[aria-current="true"] {
+.moments__bars button[aria-current="true"],
+.moments__bars button:hover {
   color: var(--ink);
 }
 .moments__track {
@@ -125,7 +195,7 @@
   background: var(--warm);
 }
 .skill .lede {
-  max-width: 26ch;
+  max-width: 34ch;
   color: var(--ink);
 }
 
@@ -156,7 +226,7 @@
   margin-top: 12px;
 }
 .offer__title {
-  max-width: 13ch;
+  max-width: 16ch;
 }
 .offer__n {
   color: var(--coral);
@@ -218,11 +288,10 @@ a.case:hover .btn__arrow {
     min-height: 0;
     gap: 32px;
   }
-  .hero__photo {
-    height: 70svh;
+  .hero__actions {
+    justify-items: start;
   }
   .moments__bars {
-    grid-template-columns: repeat(7, 1fr);
     gap: 4px;
   }
   .moments__label {

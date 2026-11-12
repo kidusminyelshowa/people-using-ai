@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { iconCoral } from "../content/brand";
 import { footerNav, links } from "../content/links";
 import { Reveal } from "./motion";
 import "./Footer.css";
@@ -40,8 +41,8 @@ export default function Footer() {
   return (
     <footer className="footer">
       <div className="container footer__inner">
-        <Link to="/" className="footer__brand">
-          People Using AI
+        <Link to="/" className="footer__brand" aria-label="People Using AI, home">
+          <img src={iconCoral} alt="" width={40} height={40} />
         </Link>
         <nav aria-label="Footer">
           <ul className="footer__nav">

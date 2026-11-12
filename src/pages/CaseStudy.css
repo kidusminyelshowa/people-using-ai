@@ -6,10 +6,10 @@
   margin-bottom: clamp(40px, 5vw, 72px);
 }
 .cs-hero__title {
-  max-width: 12ch;
+  max-width: 14ch;
 }
 .cs-hero__summary {
-  max-width: 36ch;
+  max-width: 50ch;
   margin-top: clamp(28px, 3.4vw, 44px);
 }
 .cs-stats {
@@ -31,7 +31,7 @@
   font-family: var(--font-sans);
   font-size: clamp(2.8rem, 5vw, 4.5rem);
   font-weight: 700;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.02em;
   line-height: 1;
 }
 .cs-stat__label,
@@ -55,17 +55,17 @@
   gap: clamp(32px, 4vw, 56px);
 }
 .cs-step__title {
-  max-width: 12ch;
+  max-width: 16ch;
 }
 .cs-step__body {
   display: grid;
   gap: 24px;
 }
 .cs-step__body .statement-text {
-  max-width: 30ch;
+  max-width: 40ch;
 }
 .cs-step__body .lede {
-  max-width: 44ch;
+  max-width: 56ch;
 }
 
 .cs-chart {
@@ -112,7 +112,7 @@
   display: flex;
   justify-content: space-between;
   gap: 16px;
-  font-weight: 600;
+  font-weight: 700;
 }
 .cs-bar__nums {
   flex-shrink: 0;
@@ -185,7 +185,7 @@
   margin-top: var(--space);
 }
 .cs-quote blockquote {
-  max-width: 20ch;
+  max-width: 26ch;
 }
 .cs-quote figcaption {
   margin-top: 24px;
