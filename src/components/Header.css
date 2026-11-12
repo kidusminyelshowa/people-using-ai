@@ -111,7 +111,7 @@ html.menu-open {
   overflow: hidden;
 }
 
-@media (max-width: 1060px) {
+@media (max-width: 720px) {
   .header__nav,
   .header__cta {
     display: none;
