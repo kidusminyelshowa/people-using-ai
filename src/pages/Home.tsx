@@ -41,65 +41,72 @@ function Hero() {
 
   // The photo drifts slowly inside its frame as you scroll away.
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const photoY = useTransform(scrollYProgress, [0, 1], ["0%", "12%"]);
+  const photoY = useTransform(scrollYProgress, [0, 1], ["0%", "14%"]);
 
+  // Large screens lay the words over the photo; phones stack them above it
+  // (see Home.css). The markup is the same for both.
   return (
-    <section ref={ref} className="hero container">
-      <div className="hero__copy">
-        <motion.h1
-          className="hero__title"
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, delay: 0.15, ease }}
-        >
-          How did you get AI to do that?
-        </motion.h1>
+    <section ref={ref} className="hero">
+      <div className="hero__stage">
         <motion.div
-          className="hero__text"
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, delay: 0.4, ease }}
+          className="hero__frame"
+          initial={{ clipPath: "inset(6% 3% 0% 3% round 32px)" }}
+          animate={{ clipPath: "inset(0% 0% 0% 0% round 32px)" }}
+          transition={{ duration: 1.4, ease }}
         >
-          <p>Some people get far more out of AI. A lot comes down to how they communicate with it.</p>
-          <p>PUAI helps people build the communication skills to understand AI, guide it, question it, and put it to work.</p>
-          <Link className="btn btn--lg" to="/#our-approach">
-            Explore our approach <span className="btn__arrow">→</span>
-          </Link>
-        </motion.div>
-      </div>
-
-      <motion.div
-        className="hero__frame"
-        initial={{ clipPath: "inset(12% 0% 0% 0% round 32px)", opacity: 0 }}
-        animate={{ clipPath: "inset(0% 0% 0% 0% round 32px)", opacity: 1 }}
-        transition={{ duration: 1.4, delay: 0.2, ease }}
-      >
-        <motion.div className="hero__photos" style={{ y: photoY }}>
-          {heroPhotos.map((name, n) => (
-            <motion.img
-              key={name}
-              {...photo(name)}
-              sizes="(max-width: 900px) 100vw, 50vw"
-              alt=""
-              initial={false}
-              animate={{ opacity: n === i ? 1 : 0, scale: n === i ? 1 : 1.08 }}
-              transition={{ opacity: { duration: 1.4, ease }, scale: { duration: HERO_STEP + 1.5, ease: "linear" } }}
-            />
-          ))}
-        </motion.div>
-        <ol className="hero__dots" aria-hidden="true">
-          {heroPhotos.map((name, n) => (
-            <li key={name}>
-              <motion.span
-                key={n === i ? `on-${i}` : "off"}
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: n === i && !reduce ? 1 : 0 }}
-                transition={n === i ? { duration: HERO_STEP, ease: "linear" } : { duration: 0.3 }}
+          <motion.div className="hero__photos" style={{ y: photoY }}>
+            {heroPhotos.map((name, n) => (
+              <motion.img
+                key={name}
+                {...photo(name)}
+                sizes="100vw"
+                alt=""
+                initial={false}
+                animate={{ opacity: n === i ? 1 : 0, scale: n === i ? 1 : 1.08 }}
+                transition={{ opacity: { duration: 1.4, ease }, scale: { duration: HERO_STEP + 1.5, ease: "linear" } }}
               />
-            </li>
-          ))}
-        </ol>
-      </motion.div>
+            ))}
+          </motion.div>
+          <div className="hero__shade" aria-hidden="true" />
+          <ol className="hero__dots" aria-hidden="true">
+            {heroPhotos.map((name, n) => (
+              <li key={name}>
+                <motion.span
+                  key={n === i ? `on-${i}` : "off"}
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: n === i && !reduce ? 1 : 0 }}
+                  transition={n === i ? { duration: HERO_STEP, ease: "linear" } : { duration: 0.3 }}
+                />
+              </li>
+            ))}
+          </ol>
+        </motion.div>
+
+        <div className="hero__copy">
+          <div className="container">
+            <motion.h1
+              className="hero__title"
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.2, delay: 0.35, ease }}
+            >
+              How did you get AI to do that?
+            </motion.h1>
+            <motion.div
+              className="hero__text"
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.2, delay: 0.6, ease }}
+            >
+              <p>Some people get far more out of AI. A lot comes down to how they communicate with it.</p>
+              <p>PUAI helps people build the communication skills to understand AI, guide it, question it, and put it to work.</p>
+              <Link className="btn btn--lg" to="/#our-approach">
+                Explore our approach <span className="btn__arrow">→</span>
+              </Link>
+            </motion.div>
+          </div>
+        </div>
+      </div>
     </section>
   );
 }

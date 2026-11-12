@@ -1,41 +1,23 @@
-/* ---------- Hero: words on white, a tall photo beside them ---------- */
+/* ---------- Hero ----------
+   Tablet and up: the words sit over a full-bleed photo.
+   Phones: the words sit on white with the photo beneath them. */
 .hero {
+  padding: var(--header-h) clamp(8px, 1.2vw, 16px) 0;
+}
+.hero__stage {
   display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-  align-items: center;
-  gap: clamp(40px, 6vw, 96px);
-  min-height: 100svh;
-  padding-top: calc(var(--header-h) + 24px);
-  padding-bottom: 24px;
 }
-.hero__copy {
-  display: grid;
-  gap: clamp(28px, 3.4vw, 44px);
-}
-.hero__title {
-  font-size: clamp(3rem, 6.2vw, 6.25rem);
-  letter-spacing: -0.025em;
-  line-height: 1;
-}
-.hero__text {
-  display: grid;
-  justify-items: start;
-  gap: 14px;
-  max-width: 46ch;
-  font-size: clamp(1.1rem, 1.35vw, 1.3rem);
-  line-height: 1.5;
-  color: var(--slate);
-}
-.hero__text .btn {
-  margin-top: 20px;
+.hero__stage > * {
+  grid-area: 1 / 1;
 }
 .hero__frame {
   position: relative;
-  height: min(calc(100svh - var(--header-h) - 48px), 860px);
-  min-height: 520px;
+  height: calc(100svh - var(--header-h) - clamp(8px, 1.2vw, 16px));
+  min-height: 560px;
+  max-height: 1000px;
   overflow: hidden;
   border-radius: var(--radius);
-  background: var(--warm);
+  background: var(--ink);
 }
 .hero__photos {
   position: absolute;
@@ -48,10 +30,46 @@
   height: 100%;
   object-fit: cover;
 }
+.hero__shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to right, rgb(0 0 0 / 0.55) 0%, rgb(0 0 0 / 0.3) 45%, rgb(0 0 0 / 0) 75%),
+    linear-gradient(to top, rgb(0 0 0 / 0.35), rgb(0 0 0 / 0) 50%);
+}
+.hero__copy {
+  position: relative;
+  z-index: 1;
+  align-self: center;
+  color: #fff;
+  pointer-events: none;
+}
+.hero__copy a {
+  pointer-events: auto;
+}
+.hero__title {
+  max-width: 12ch;
+  font-size: clamp(2.75rem, 5.4vw, 6.5rem);
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+}
+.hero__text {
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+  max-width: 48ch;
+  margin-top: clamp(20px, 2.4vw, 32px);
+  font-size: clamp(1.05rem, 1.1vw, 1.35rem);
+  line-height: 1.5;
+  color: rgb(255 255 255 / 0.9);
+}
+.hero__text .btn {
+  margin-top: clamp(16px, 2vw, 24px);
+}
 .hero__dots {
   position: absolute;
-  left: 24px;
-  bottom: 24px;
+  right: clamp(20px, 3vw, 40px);
+  bottom: clamp(20px, 3vw, 40px);
   display: flex;
   gap: 6px;
 }
@@ -59,7 +77,7 @@
   width: 36px;
   height: 3px;
   border-radius: 3px;
-  background: rgb(255 255 255 / 0.45);
+  background: rgb(255 255 255 / 0.4);
   overflow: hidden;
 }
 .hero__dots span {
@@ -67,6 +85,32 @@
   height: 100%;
   background: #fff;
   transform-origin: left;
+}
+
+@media (max-width: 720px) {
+  .hero {
+    padding-inline: 0;
+  }
+  .hero__stage {
+    display: flex;
+    flex-direction: column;
+  }
+  .hero__copy {
+    order: -1;
+    color: var(--ink);
+    padding-block: 40px 40px;
+  }
+  .hero__text {
+    color: var(--slate);
+  }
+  .hero__frame {
+    height: 68svh;
+    min-height: 0;
+    margin-inline: 8px;
+  }
+  .hero__shade {
+    display: none;
+  }
 }
 
 /* ---------- Content blocks: one idea per screen ---------- */
@@ -278,15 +322,6 @@ a.case:hover .btn__arrow {
   .skill {
     min-height: 0;
     gap: 32px;
-  }
-  .hero {
-    grid-template-columns: 1fr;
-    min-height: 0;
-    padding-top: calc(var(--header-h) + 48px);
-  }
-  .hero__frame {
-    height: 72svh;
-    min-height: 0;
   }
   .moments__bars {
     gap: 4px;
