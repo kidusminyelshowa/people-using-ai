@@ -1,21 +1,45 @@
-/* ---------- Hero: full-bleed photos with the words over them ---------- */
+/* ---------- Hero: words on white, a tall photo beside them ---------- */
 .hero {
-  padding: var(--header-h) clamp(8px, 1.2vw, 16px) 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(40px, 6vw, 96px);
+  min-height: 100svh;
+  padding-top: calc(var(--header-h) + 24px);
+  padding-bottom: 24px;
+}
+.hero__copy {
+  display: grid;
+  gap: clamp(28px, 3.4vw, 44px);
+}
+.hero__title {
+  font-size: clamp(3rem, 6.2vw, 6.25rem);
+  letter-spacing: -0.025em;
+  line-height: 1;
+}
+.hero__text {
+  display: grid;
+  justify-items: start;
+  gap: 14px;
+  max-width: 46ch;
+  font-size: clamp(1.1rem, 1.35vw, 1.3rem);
+  line-height: 1.5;
+  color: var(--slate);
+}
+.hero__text .btn {
+  margin-top: 20px;
 }
 .hero__frame {
   position: relative;
-  display: grid;
-  align-items: end;
-  height: calc(100svh - var(--header-h) - clamp(8px, 1.2vw, 16px));
-  min-height: 600px;
+  height: min(calc(100svh - var(--header-h) - 48px), 860px);
+  min-height: 520px;
   overflow: hidden;
   border-radius: var(--radius);
-  background: var(--ink);
-  color: #fff;
+  background: var(--warm);
 }
 .hero__photos {
   position: absolute;
-  inset: -4% 0 0;
+  inset: -6% 0 0;
 }
 .hero__photos img {
   position: absolute;
@@ -24,43 +48,10 @@
   height: 100%;
   object-fit: cover;
 }
-.hero__shade {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(to top, rgb(0 0 0 / 0.7) 0%, rgb(0 0 0 / 0.25) 45%, rgb(0 0 0 / 0) 70%),
-    linear-gradient(to right, rgb(0 0 0 / 0.35), rgb(0 0 0 / 0) 60%);
-}
-.hero__copy {
-  position: relative;
-  display: grid;
-  gap: clamp(32px, 4vw, 56px);
-  padding-bottom: clamp(32px, 5vw, 72px);
-}
-.hero__title {
-  max-width: 12ch;
-}
-.hero__bottom {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 32px 64px;
-  flex-wrap: wrap;
-}
-.hero__text {
-  display: grid;
-  gap: 12px;
-  max-width: 54ch;
-  font-size: clamp(1.1rem, 1.4vw, 1.3rem);
-  line-height: 1.45;
-  color: rgb(255 255 255 / 0.88);
-}
-.hero__actions {
-  display: grid;
-  justify-items: end;
-  gap: 24px;
-}
 .hero__dots {
+  position: absolute;
+  left: 24px;
+  bottom: 24px;
   display: flex;
   gap: 6px;
 }
@@ -68,7 +59,7 @@
   width: 36px;
   height: 3px;
   border-radius: 3px;
-  background: rgb(255 255 255 / 0.35);
+  background: rgb(255 255 255 / 0.45);
   overflow: hidden;
 }
 .hero__dots span {
@@ -288,8 +279,14 @@ a.case:hover .btn__arrow {
     min-height: 0;
     gap: 32px;
   }
-  .hero__actions {
-    justify-items: start;
+  .hero {
+    grid-template-columns: 1fr;
+    min-height: 0;
+    padding-top: calc(var(--header-h) + 48px);
+  }
+  .hero__frame {
+    height: 72svh;
+    min-height: 0;
   }
   .moments__bars {
     gap: 4px;

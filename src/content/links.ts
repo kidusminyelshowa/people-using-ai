@@ -20,10 +20,3 @@ export const mainNav = [
   { to: "/about", label: "About" },
 ] as const;
 
-export const footerNav = [
-  { to: "/", label: "Home" },
-  { to: "/#our-approach", label: "Our approach" },
-  { to: "/#what-we-do", label: "What we do" },
-  { to: "/community", label: "Community" },
-  { to: "/about", label: "About" },
-] as const;

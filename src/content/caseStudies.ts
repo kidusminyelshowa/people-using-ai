@@ -33,7 +33,7 @@ export const caseStudies: CaseStudy[] = [
     client: "Sierra Premium Breweries",
     kind: "Employee training",
     published: true,
-    backTo: { label: "Workforce Upskilling", to: "/#what-we-do" },
+    backTo: { label: "Workforce Upskilling", to: "/#workforce-upskilling" },
     summary: "[ONE-LINE SUMMARY: what Sierra’s back-office team can do now that they couldn’t before.]",
     stats: [
       { value: "14", label: "back-office staff trained" },

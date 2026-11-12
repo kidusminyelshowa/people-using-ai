@@ -4,7 +4,7 @@ import { AnimatePresence, motion, useMotionValueEvent, useReducedMotion, useScro
 import { useLenis } from "lenis/react";
 import { Parallax, Reveal, Stagger, StaggerItem, Statement, ease } from "../components/motion";
 import { CtaBand } from "../components/Footer";
-import { coverSizes, photo, type PhotoName } from "../content/images";
+import { photo, type PhotoName } from "../content/images";
 import { links } from "../content/links";
 import { caseStudies } from "../content/caseStudies";
 import "./Home.css";
@@ -39,27 +39,47 @@ function Hero() {
     return () => window.clearTimeout(t);
   }, [i, reduce]);
 
-  // As you scroll away, the photo sinks a little slower than the page and
-  // the words drift up and fade, so the hero hands over gently.
+  // The photo drifts slowly inside its frame as you scroll away.
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const photoY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
-  const copyY = useTransform(scrollYProgress, [0, 1], ["0%", "-25%"]);
-  const copyOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
+  const photoY = useTransform(scrollYProgress, [0, 1], ["0%", "12%"]);
 
   return (
-    <section ref={ref} className="hero">
+    <section ref={ref} className="hero container">
+      <div className="hero__copy">
+        <motion.h1
+          className="hero__title"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.2, delay: 0.15, ease }}
+        >
+          How did you get AI to do that?
+        </motion.h1>
+        <motion.div
+          className="hero__text"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.2, delay: 0.4, ease }}
+        >
+          <p>Some people get far more out of AI. A lot comes down to how they communicate with it.</p>
+          <p>PUAI helps people build the communication skills to understand AI, guide it, question it, and put it to work.</p>
+          <Link className="btn btn--lg" to="/#our-approach">
+            Explore our approach <span className="btn__arrow">→</span>
+          </Link>
+        </motion.div>
+      </div>
+
       <motion.div
         className="hero__frame"
-        initial={{ clipPath: "inset(6% 4% 0% 4% round 32px)" }}
-        animate={{ clipPath: "inset(0% 0% 0% 0% round 32px)" }}
-        transition={{ duration: 1.4, ease }}
+        initial={{ clipPath: "inset(12% 0% 0% 0% round 32px)", opacity: 0 }}
+        animate={{ clipPath: "inset(0% 0% 0% 0% round 32px)", opacity: 1 }}
+        transition={{ duration: 1.4, delay: 0.2, ease }}
       >
         <motion.div className="hero__photos" style={{ y: photoY }}>
           {heroPhotos.map((name, n) => (
             <motion.img
               key={name}
               {...photo(name)}
-              sizes={coverSizes}
+              sizes="(max-width: 900px) 100vw, 50vw"
               alt=""
               initial={false}
               animate={{ opacity: n === i ? 1 : 0, scale: n === i ? 1 : 1.08 }}
@@ -67,46 +87,18 @@ function Hero() {
             />
           ))}
         </motion.div>
-        <div className="hero__shade" aria-hidden="true" />
-
-        <motion.div className="container hero__copy" style={{ y: copyY, opacity: copyOpacity }}>
-          <motion.h1
-            className="display hero__title"
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, delay: 0.4, ease }}
-          >
-            How did you get AI to do that?
-          </motion.h1>
-          <motion.div
-            className="hero__bottom"
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, delay: 0.65, ease }}
-          >
-            <div className="hero__text">
-              <p>Some people get far more out of AI. A lot comes down to how they communicate with it.</p>
-              <p>PUAI helps people build the communication skills to understand AI, guide it, question it, and put it to work.</p>
-            </div>
-            <div className="hero__actions">
-              <Link className="btn btn--lg" to="/#our-approach">
-                Explore our approach <span className="btn__arrow">→</span>
-              </Link>
-              <ol className="hero__dots" aria-hidden="true">
-                {heroPhotos.map((name, n) => (
-                  <li key={name}>
-                    <motion.span
-                      key={n === i ? `on-${i}` : "off"}
-                      initial={{ scaleX: 0 }}
-                      animate={{ scaleX: n === i && !reduce ? 1 : 0 }}
-                      transition={n === i ? { duration: HERO_STEP, ease: "linear" } : { duration: 0.3 }}
-                    />
-                  </li>
-                ))}
-              </ol>
-            </div>
-          </motion.div>
-        </motion.div>
+        <ol className="hero__dots" aria-hidden="true">
+          {heroPhotos.map((name, n) => (
+            <li key={name}>
+              <motion.span
+                key={n === i ? `on-${i}` : "off"}
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: n === i && !reduce ? 1 : 0 }}
+                transition={n === i ? { duration: HERO_STEP, ease: "linear" } : { duration: 0.3 }}
+              />
+            </li>
+          ))}
+        </ol>
       </motion.div>
     </section>
   );
@@ -193,6 +185,7 @@ function Fill({ progress, from, to }: { progress: MotionValue<number>; from: num
 }
 
 function Offer({
+  id,
   n,
   title,
   body,
@@ -200,6 +193,7 @@ function Offer({
   flip,
   children,
 }: {
+  id?: string;
   n: string;
   title: string;
   body: string;
@@ -208,7 +202,7 @@ function Offer({
   children: ReactNode;
 }) {
   return (
-    <article className={`offer ${flip ? "offer--flip" : ""}`}>
+    <article id={id} className={`offer ${flip ? "offer--flip" : ""}`}>
       <Parallax {...photo(image)} sizes="(max-width: 860px) 100vw, 50vw" className="offer__photo" />
       <Reveal className="offer__text">
         <h3 className="h2 offer__title">
@@ -266,6 +260,7 @@ export default function Home() {
           <Statement className="display">Three ways to work with us.</Statement>
           <div className="offers">
             <Offer
+              id="workforce-upskilling"
               n="01"
               title="Workforce Upskilling"
               image="workshop"

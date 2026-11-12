@@ -25,6 +25,8 @@ const titles: Record<string, string> = {
   "/work/sierra-premium-breweries": "Sierra Premium Breweries — People Using AI",
 };
 
+const HEADER = 76;
+
 function ScrollManager() {
   const { pathname, hash } = useLocation();
   const lenis = useLenis();
@@ -41,15 +43,39 @@ function ScrollManager() {
     prevPath.current = pathname;
     let tries = 0;
     let id = 0;
+    const top = (el: HTMLElement) => el.getBoundingClientRect().top + window.scrollY - HEADER;
     const go = () => {
       const target = hash ? document.querySelector<HTMLElement>(hash) : null;
       if (hash && !target && tries++ < 30) {
         id = window.setTimeout(go, 50);
         return;
       }
-      if (lenis) lenis.scrollTo(target ?? 0, { immediate: !target || changedPage, offset: -72, force: true });
-      else if (target) target.scrollIntoView();
-      else window.scrollTo(0, 0);
+      if (!changedPage && target && lenis) {
+        // Same page: glide there.
+        lenis.scrollTo(top(target), { force: true });
+        return;
+      }
+      // New page: let smooth scroll re-measure the new page, then jump
+      // straight there. Re-check once things settle (images, fonts), and
+      // correct if the layout moved underneath us.
+      lenis?.resize();
+      const jump = () => {
+        const y = target ? top(target) : 0;
+        if (lenis) lenis.scrollTo(y, { immediate: true, force: true });
+        else window.scrollTo(0, y);
+      };
+      jump();
+      if (target) {
+        let checks = 0;
+        const settle = () => {
+          if (Math.abs(target.getBoundingClientRect().top - HEADER) > 4) {
+            lenis?.resize();
+            jump();
+          }
+          if (++checks < 4) id = window.setTimeout(settle, 250);
+        };
+        id = window.setTimeout(settle, 250);
+      }
     };
     id = window.setTimeout(go, changedPage ? 360 : 0);
     return () => window.clearTimeout(id);

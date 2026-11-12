@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { iconCoral } from "../content/brand";
-import { footerNav, links } from "../content/links";
+import { links } from "../content/links";
+import { useLenis } from "lenis/react";
 import { Reveal } from "./motion";
 import "./Footer.css";
 
@@ -37,33 +38,73 @@ export function CtaBand({ lines, action }: { lines: string[]; action: Action }) 
   );
 }
 
+const groups = [
+  [
+    { to: "/", label: "Home" },
+    { to: "/#why-we-exist", label: "Why we exist" },
+    { to: "/#our-approach", label: "Our approach" },
+    { to: "/#what-we-do", label: "What we do" },
+  ],
+  [
+    { to: "/community", label: "Community" },
+    { to: "/about", label: "About" },
+  ],
+];
+
 export default function Footer() {
+  const lenis = useLenis();
   return (
     <footer className="footer">
-      <div className="container footer__inner">
-        <Link to="/" className="footer__brand" aria-label="People Using AI, home">
-          <img src={iconCoral} alt="" width={40} height={40} />
-        </Link>
-        <nav aria-label="Footer">
-          <ul className="footer__nav">
-            {footerNav.map((n) => (
-              <li key={n.to}>
-                <Link to={n.to}>{n.label}</Link>
-              </li>
+      <div className="container">
+        <div className="footer__top">
+          <div className="footer__brand">
+            <Link to="/" aria-label="People Using AI, home">
+              <img src={iconCoral} alt="" width={56} height={56} />
+            </Link>
+            <a className="footer__email" href={`mailto:${links.contactEmail}`}>
+              {links.contactEmail}
+            </a>
+            <p className="footer__place">Nairobi, Kenya</p>
+          </div>
+
+          <nav className="footer__nav" aria-label="Footer">
+            {groups.map((g, i) => (
+              <ul key={i}>
+                {g.map((n) => (
+                  <li key={n.to}>
+                    <Link to={n.to}>{n.label}</Link>
+                  </li>
+                ))}
+              </ul>
             ))}
-            <li>
-              <a href={links.linkedin} target="_blank" rel="noopener noreferrer">
-                LinkedIn
-              </a>
-            </li>
-            <li>
-              <a href={links.instagram} target="_blank" rel="noopener noreferrer">
-                Instagram
-              </a>
-            </li>
-          </ul>
-        </nav>
-        <p className="footer__meta">Nairobi, Kenya · © {new Date().getFullYear()} PUAI</p>
+            <ul>
+              <li>
+                <a href={links.workWithUs}>Work with us</a>
+              </li>
+              <li>
+                <a href={links.linkedin} target="_blank" rel="noopener noreferrer">
+                  LinkedIn
+                </a>
+              </li>
+              <li>
+                <a href={links.instagram} target="_blank" rel="noopener noreferrer">
+                  Instagram
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+
+        <div className="footer__bottom">
+          <p>© {new Date().getFullYear()} PUAI</p>
+          <button
+            type="button"
+            className="footer__top-link"
+            onClick={() => (lenis ? lenis.scrollTo(0, { duration: 1.4 }) : window.scrollTo({ top: 0, behavior: "smooth" }))}
+          >
+            Back to top <span aria-hidden="true">↑</span>
+          </button>
+        </div>
       </div>
     </footer>
   );
