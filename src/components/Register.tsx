@@ -66,7 +66,7 @@ export function RegisterProvider({ children }: { children: ReactNode }) {
     e.preventDefault();
     if (!topic) return;
     const data = new FormData(e.currentTarget);
-    if (data.get("company")) return setState({ kind: "done" }); // bots fill the hidden field
+    if (data.get("puai_check")) return setState({ kind: "done" }); // bots fill the hidden field
     const get = (k: string) => String(data.get(k) ?? "").trim();
     if (!get("name")) return setState({ kind: "error", message: "Please tell us your full name." });
     if (!get("phone")) return setState({ kind: "error", message: "Please add a phone number with its country code." });
@@ -144,7 +144,7 @@ export function RegisterProvider({ children }: { children: ReactNode }) {
                       />
                     </label>
                   ))}
-                  <input className="visually-hidden" type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" />
+                  <input className="visually-hidden" type="text" name="puai_check" tabIndex={-1} autoComplete="one-time-code" aria-hidden="true" />
                   <button className="btn btn--lg register__submit" type="submit" disabled={state.kind === "sending"}>
                     {state.kind === "sending" ? "Registering…" : "Register"}
                   </button>
