@@ -1,0 +1,13 @@
+/* ---------- Marquee ---------- */
+.marquee {
+  overflow: hidden;
+}
+.marquee__track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+.marquee__chunk {
+  display: flex;
+  flex-shrink: 0;
+}
