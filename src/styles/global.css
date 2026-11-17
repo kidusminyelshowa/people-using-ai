@@ -53,9 +53,6 @@
 }
 html {
   -webkit-text-size-adjust: 100%;
-  /* Type grows a little on large screens so they don't feel empty:
-     16px up to ~1440px wide, rising to 20px at ~2560px. */
-  font-size: clamp(16px, 0.36vw + 10.8px, 20px);
 }
 html.lenis,
 html.lenis body {
