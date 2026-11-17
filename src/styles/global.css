@@ -23,15 +23,17 @@
 }
 
 :root {
+  /* Brand palette (see scripts/template/brand.mjs) */
   --coral: #f03c4f;
-  --ink: #151515;
-  --slate: #55555f;
-  --line: #e9e7e4;
-  --warm: #f7f3ef; /* the one warm neutral, for tiles and image wells */
-  --white: #ffffff;
-  /* used by the launching-soon page */
-  --cotton: #fffdfd;
   --night: #20222b;
+  --slate: #5d5d6b;
+  --mist: #f4f4f5; /* tiles, panels and image wells */
+  --white: #ffffff;
+  --cotton: #fffdfd; /* used by the launching-soon page */
+  /* Aliases used across the site */
+  --ink: var(--night);
+  --warm: var(--mist);
+  --line: #e4e4e7; /* hairlines: night at about 12% */
 
   --font-sans: "Apfel Grotezk", system-ui, sans-serif;
   --font-body: var(--font-sans);

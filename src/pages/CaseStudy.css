@@ -98,7 +98,7 @@
   background: var(--coral);
 }
 .cs-legend .cs-legend__before {
-  background: #cfcac4;
+  background: #c9c9cf;
 }
 .cs-bar {
   display: grid;
@@ -132,7 +132,7 @@
   transform-origin: left;
 }
 .cs-bar__fill--before {
-  background: #cfcac4;
+  background: #c9c9cf;
 }
 .cs-chart__note {
   margin-top: 16px;

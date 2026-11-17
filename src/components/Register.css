@@ -5,7 +5,7 @@
   display: grid;
   place-items: center;
   padding: 16px;
-  background: rgb(21 21 21 / 0.55);
+  background: rgb(32 34 43 / 0.55);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
 }
@@ -75,7 +75,7 @@
     background-color 0.25s var(--ease);
 }
 .field__input:hover {
-  border-color: #cfcac4;
+  border-color: #c9c9cf;
 }
 .field__input:focus {
   outline: none;
