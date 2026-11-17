@@ -144,7 +144,7 @@ export function RegisterProvider({ children }: { children: ReactNode }) {
                       />
                     </label>
                   ))}
-                  <input className="visually-hidden" type="text" name="puai_check" tabIndex={-1} autoComplete="one-time-code" aria-hidden="true" />
+                  <input className="visually-hidden" type="text" name="puai_check" tabIndex={-1} autoComplete="off" aria-hidden="true" />
                   <button className="btn btn--lg register__submit" type="submit" disabled={state.kind === "sending"}>
                     {state.kind === "sending" ? "Registering…" : "Register"}
                   </button>

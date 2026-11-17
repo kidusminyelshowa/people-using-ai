@@ -119,7 +119,7 @@ export default function ComingSoon() {
               )}
             </AnimatePresence>
             {/* Honeypot: hidden from people, tempting to bots. */}
-            <input className="soon__hp" type="text" name="puai_check" tabIndex={-1} autoComplete="one-time-code" aria-hidden="true" />
+            <input className="soon__hp" type="text" name="puai_check" tabIndex={-1} autoComplete="off" aria-hidden="true" />
             {state.kind === "error" && (
               <p id="soon-error" className="soon__error" role="alert">
                 {state.message}
