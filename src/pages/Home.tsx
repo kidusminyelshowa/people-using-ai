@@ -7,10 +7,10 @@ import { useRegister, workshop, type Topic } from "../components/Register";
 import { photo, type PhotoName } from "../content/images";
 import "./Home.css";
 
-// When a hero video is supplied, put it in public/video and name it here
-// (e.g. "/video/hero.mp4"); it replaces the photos. Keep it short, muted
-// and compressed (around 2–4 MB) so it loads fast.
-const HERO_VIDEO: string | null = null;
+// Hero video in public/video, compressed from the 15 MB master: AV1 for
+// browsers that play it (3.7 MB), H.264 otherwise (5.3 MB), and a 720p
+// H.264 cut for phones (3 MB). Set to false to fall back to the photos.
+const HERO_VIDEO = true;
 const heroPhotos: PhotoName[] = ["laptopMeeting", "clay", "headphones"];
 const HERO_STEP = 6;
 
@@ -65,7 +65,11 @@ function Hero() {
         >
           <motion.div className="hero__media" style={{ y: mediaY }}>
             {HERO_VIDEO ? (
-              <video src={HERO_VIDEO} poster={photo(heroPhotos[0]).src} autoPlay muted loop playsInline preload="auto" />
+              <video poster="/video/hero-poster.webp" autoPlay={!reduce} muted loop playsInline preload="auto" aria-hidden="true">
+                <source src="/video/hero-720.mp4" type="video/mp4" media="(max-width: 720px)" />
+                <source src="/video/hero-1080-av1.mp4" type='video/mp4; codecs="av01.0.08M.08"' />
+                <source src="/video/hero-1080.mp4" type="video/mp4" />
+              </video>
             ) : (
               heroPhotos.map((name, n) => (
                 <motion.img
