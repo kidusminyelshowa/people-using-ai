@@ -15,7 +15,7 @@ const heroPhotos: PhotoName[] = ["laptopMeeting", "clay", "headphones"];
 const HERO_STEP = 6;
 
 const faces: { name: PhotoName; className: string; speed: number }[] = [
-  { name: "braids", className: "face--a", speed: -60 },
+  { name: "headphones", className: "face--a", speed: -60 },
   { name: "goldenPortrait", className: "face--b", speed: 40 },
   { name: "glasses", className: "face--c", speed: -100 },
   { name: "portraitCalm", className: "face--d", speed: 70 },
