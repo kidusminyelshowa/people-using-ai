@@ -91,7 +91,7 @@
   cursor: progress;
 }
 .register__error {
-  color: var(--coral-deep);
+  color: var(--coral);
   font-size: 0.95rem;
 }
 .register__done {

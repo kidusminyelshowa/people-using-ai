@@ -24,7 +24,6 @@
 
 :root {
   --coral: #f03c4f;
-  --coral-deep: #c9263a; /* coral text and buttons on white */
   --ink: #151515;
   --slate: #55555f;
   --line: #e9e7e4;
@@ -202,9 +201,9 @@ p {
 
 /* ---------- Buttons: one pill style ---------- */
 .btn {
-  --btn-bg: var(--coral-deep);
+  --btn-bg: var(--coral);
   --btn-fg: #fff;
-  --btn-hover: #a91c2f;
+  --btn-hover: var(--night);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -241,7 +240,7 @@ p {
 }
 .btn--ink {
   --btn-bg: var(--ink);
-  --btn-hover: #333;
+  --btn-hover: var(--night);
 }
 .btn__arrow {
   display: inline-block;
@@ -255,7 +254,7 @@ p {
   display: inline-flex;
   align-items: center;
   gap: 0.4em;
-  color: var(--coral-deep);
+  color: var(--coral);
   font-family: var(--font-sans);
   font-weight: 700;
   text-decoration: none;

@@ -45,7 +45,7 @@
 }
 .header__link:hover,
 .header__link.is-active {
-  color: var(--coral-deep);
+  color: var(--coral);
 }
 
 .header__toggle {

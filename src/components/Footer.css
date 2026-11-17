@@ -44,7 +44,7 @@
   transition: color 0.3s var(--ease);
 }
 .footer__email:hover {
-  color: var(--coral-deep);
+  color: var(--coral);
 }
 .footer__place {
   color: var(--slate);
@@ -65,7 +65,7 @@
   transition: color 0.25s var(--ease);
 }
 .footer__nav a:hover {
-  color: var(--coral-deep);
+  color: var(--coral);
 }
 .footer__bottom {
   display: flex;
