@@ -26,7 +26,7 @@ export default function ComingSoon() {
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
-    if (data.get("company")) return setState({ kind: "done" }); // bots fill the hidden field
+    if (data.get("puai_check")) return setState({ kind: "done" }); // bots fill the hidden field
     if (!EMAIL.test(email.trim())) {
       return setState({ kind: "error", message: "Please enter a valid email address." });
     }
@@ -119,7 +119,7 @@ export default function ComingSoon() {
               )}
             </AnimatePresence>
             {/* Honeypot: hidden from people, tempting to bots. */}
-            <input className="soon__hp" type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" />
+            <input className="soon__hp" type="text" name="puai_check" tabIndex={-1} autoComplete="off" aria-hidden="true" />
             {state.kind === "error" && (
               <p id="soon-error" className="soon__error" role="alert">
                 {state.message}
