@@ -11,12 +11,6 @@ import CaseStudy from "./pages/CaseStudy";
 import NotFound from "./pages/NotFound";
 import ComingSoon from "./pages/ComingSoon";
 
-// Until launch, every production URL shows the launching-soon page.
-// Set VITE_COMING_SOON=false to open the full site. Vercel preview
-// deployments always show the full site so changes can be reviewed.
-const isPreview = import.meta.env.VERCEL_ENV === "preview";
-const comingSoonOnly = !isPreview && import.meta.env.VITE_COMING_SOON !== "false";
-
 const titles: Record<string, string> = {
   "/": "People Using AI",
   "/work/sierra-premium-breweries": "Sierra Premium Breweries — People Using AI",
@@ -85,8 +79,9 @@ export default function App() {
   const location = useLocation();
   const reduce = useReducedMotion();
 
-  // The launching-soon page stands alone: no site navigation around it.
-  if (comingSoonOnly || location.pathname === "/coming-soon") {
+  // The site is live. The old launching-soon page is kept at /coming-soon,
+  // on its own with no site navigation around it.
+  if (location.pathname === "/coming-soon") {
     return (
       <MotionConfig reducedMotion="user">
         <ComingSoon />
