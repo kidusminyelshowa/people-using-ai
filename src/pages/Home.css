@@ -50,7 +50,7 @@
 }
 .hero__title {
   max-width: 15ch;
-  font-size: clamp(2.5rem, 4.8vw, 5.75rem);
+  font-size: clamp(2.5rem, 4.8vw, 7.5rem);
   letter-spacing: -0.02em;
   line-height: 1.02;
 }
@@ -124,7 +124,7 @@
 /* ---------- AI didn't come with a manual ---------- */
 .manual__grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
   align-items: center;
   gap: clamp(40px, 6vw, 96px);
 }
@@ -133,7 +133,8 @@
   gap: clamp(24px, 3vw, 40px);
 }
 .manual__title {
-  max-width: 11ch;
+  font-size: clamp(2.5rem, 4.4vw, 7rem);
+  line-height: 1.05;
 }
 .manual__copy .statement-text {
   max-width: 26ch;

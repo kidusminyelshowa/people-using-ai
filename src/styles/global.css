@@ -38,11 +38,11 @@
   --font-sans: "Apfel Grotezk", system-ui, sans-serif;
   --font-body: var(--font-sans);
 
-  --gutter: clamp(20px, 5vw, 80px);
-  --max: 1280px;
+  --gutter: clamp(20px, 4vw, 72px);
+  --max: 2240px;
   --radius: clamp(20px, 2.2vw, 32px);
   --header-h: 76px;
-  --space: clamp(120px, 16vw, 240px); /* between sections */
+  --space: clamp(96px, 11vw, 200px); /* between sections */
   --ease: cubic-bezier(0.22, 0, 0.12, 1);
 }
 
@@ -53,6 +53,9 @@
 }
 html {
   -webkit-text-size-adjust: 100%;
+  /* Type grows a little on large screens so they don't feel empty:
+     16px up to ~1440px wide, rising to 20px at ~2560px. */
+  font-size: clamp(16px, 0.36vw + 10.8px, 20px);
 }
 html.lenis,
 html.lenis body {
