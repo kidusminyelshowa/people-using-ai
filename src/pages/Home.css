@@ -280,6 +280,12 @@
 .rating p {
   max-width: 44ch;
 }
+.rating__endorse {
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  color: var(--slate);
+  font-size: 0.95rem;
+}
 .stars {
   display: inline-flex;
   gap: 4px;

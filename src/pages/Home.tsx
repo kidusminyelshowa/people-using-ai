@@ -319,6 +319,7 @@ function Ways() {
                   See case study <span className="btn__arrow">→</span>
                 </Link>
               </p>
+              <p className="rating__endorse">Endorsed by OpenAI and Anthropic, the makers of Claude.</p>
             </div>
             <div className="workshop">
               <h4 className="workshop__label">Upcoming workshop</h4>
