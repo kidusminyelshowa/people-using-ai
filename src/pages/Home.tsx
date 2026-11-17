@@ -1,50 +1,59 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { AnimatePresence, motion, useMotionValueEvent, useReducedMotion, useScroll, useTransform, type MotionValue } from "motion/react";
-import { useLenis } from "lenis/react";
-import { Parallax, Reveal, Stagger, StaggerItem, Statement, ease } from "../components/motion";
+import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { Parallax, Reveal, Stagger, StaggerItem, ease } from "../components/motion";
 import { CtaBand } from "../components/Footer";
+import { useRegister, workshop, type Topic } from "../components/Register";
 import { photo, type PhotoName } from "../content/images";
-import { links } from "../content/links";
-import { caseStudies } from "../content/caseStudies";
 import "./Home.css";
 
-const moments = [
-  { when: "100,000 BCE", what: "Speech", line: "We could cooperate." },
-  { when: "3,200 BCE", what: "Writing", line: "Ideas outlived us." },
-  { when: "700 CE", what: "Printing", line: "Knowledge multiplied." },
-  { when: "1844", what: "Telegraph", line: "Messages crossed oceans in seconds." },
-  { when: "1990s", what: "Internet", line: "Humanity connected." },
-  { when: "2000s", what: "Social media", line: "Everyone gained a voice." },
-  { when: "2020s", what: "AI", line: "Machines began talking back." },
+// When a hero video is supplied, put it in public/video and name it here
+// (e.g. "/video/hero.mp4"); it replaces the photos. Keep it short, muted
+// and compressed (around 2–4 MB) so it loads fast.
+const HERO_VIDEO: string | null = null;
+const heroPhotos: PhotoName[] = ["laptopMeeting", "clay", "headphones"];
+const HERO_STEP = 6;
+
+const faces: { name: PhotoName; className: string; speed: number }[] = [
+  { name: "braids", className: "face--a", speed: -60 },
+  { name: "goldenPortrait", className: "face--b", speed: 40 },
+  { name: "glasses", className: "face--c", speed: -100 },
+  { name: "portraitCalm", className: "face--d", speed: 70 },
+  { name: "glassSmile", className: "face--e", speed: -30 },
 ];
 
 const skills = [
-  { name: "Read", line: "Understand how AI works, what it can do, and where it falls short." },
-  { name: "Write", line: "Give AI clear direction and context." },
-  { name: "Speak", line: "Refine ideas through back-and-forth conversation." },
-  { name: "Listen", line: "Check what comes back and decide what to keep." },
+  { name: "Read", line: "Understand how AI works, what its tools can do and where their limitations and risks lie." },
+  { name: "Write", line: "Give your ideas direction through clear instructions, relevant context and defined intentions." },
+  { name: "Speak", line: "Develop ideas through questions, dialogue, experimentation and exchange." },
+  { name: "Listen", line: "Evaluate what AI gives back. Check accuracy, question assumptions and decide what is useful." },
+] as const;
+
+const quotes = [
+  { text: "Eye-opener! I didn’t know AI was capable of so much.", by: "Yvonne Wandia Wamuyu" },
+  { text: "Excellent delivery. I enjoyed every bit of it, and I look forward to doing more with AI tools.", by: "Korir Kipkirui Isaac" },
+  {
+    text: "The training was insightful and practical providing good understanding of how AI tools like Claude can be leveraged to improve productivity and simplify day-to-day tasks.",
+    by: "Julius Mutie Safari",
+  },
 ];
 
-const heroPhotos: PhotoName[] = ["laptopMeeting", "clay", "headphones"];
-const HERO_STEP = 6;
+/* ---------- Hero ---------- */
 
 function Hero() {
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
   const [i, setI] = useState(0);
   useEffect(() => {
-    if (reduce) return;
+    if (reduce || HERO_VIDEO) return;
     const t = window.setTimeout(() => setI((n) => (n + 1) % heroPhotos.length), HERO_STEP * 1000);
     return () => window.clearTimeout(t);
   }, [i, reduce]);
 
-  // The photo drifts slowly inside its frame as you scroll away.
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const photoY = useTransform(scrollYProgress, [0, 1], ["0%", "14%"]);
+  const mediaY = useTransform(scrollYProgress, [0, 1], ["0%", "14%"]);
 
-  // Large screens lay the words over the photo; phones stack them above it
-  // (see Home.css). The markup is the same for both.
+  // Tablet and up lay the words over the media; phones stack them above it.
   return (
     <section ref={ref} className="hero">
       <div className="hero__stage">
@@ -54,32 +63,38 @@ function Hero() {
           animate={{ clipPath: "inset(0% 0% 0% 0% round 32px)" }}
           transition={{ duration: 1.4, ease }}
         >
-          <motion.div className="hero__photos" style={{ y: photoY }}>
-            {heroPhotos.map((name, n) => (
-              <motion.img
-                key={name}
-                {...photo(name)}
-                sizes="100vw"
-                alt=""
-                initial={false}
-                animate={{ opacity: n === i ? 1 : 0, scale: n === i ? 1 : 1.08 }}
-                transition={{ opacity: { duration: 1.4, ease }, scale: { duration: HERO_STEP + 1.5, ease: "linear" } }}
-              />
-            ))}
+          <motion.div className="hero__media" style={{ y: mediaY }}>
+            {HERO_VIDEO ? (
+              <video src={HERO_VIDEO} poster={photo(heroPhotos[0]).src} autoPlay muted loop playsInline preload="auto" />
+            ) : (
+              heroPhotos.map((name, n) => (
+                <motion.img
+                  key={name}
+                  {...photo(name)}
+                  sizes="100vw"
+                  alt=""
+                  initial={false}
+                  animate={{ opacity: n === i ? 1 : 0, scale: n === i ? 1 : 1.08 }}
+                  transition={{ opacity: { duration: 1.4, ease }, scale: { duration: HERO_STEP + 1.5, ease: "linear" } }}
+                />
+              ))
+            )}
           </motion.div>
           <div className="hero__shade" aria-hidden="true" />
-          <ol className="hero__dots" aria-hidden="true">
-            {heroPhotos.map((name, n) => (
-              <li key={name}>
-                <motion.span
-                  key={n === i ? `on-${i}` : "off"}
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: n === i && !reduce ? 1 : 0 }}
-                  transition={n === i ? { duration: HERO_STEP, ease: "linear" } : { duration: 0.3 }}
-                />
-              </li>
-            ))}
-          </ol>
+          {!HERO_VIDEO && (
+            <ol className="hero__dots" aria-hidden="true">
+              {heroPhotos.map((name, n) => (
+                <li key={name}>
+                  <motion.span
+                    key={n === i ? `on-${i}` : "off"}
+                    initial={{ scaleX: 0 }}
+                    animate={{ scaleX: n === i && !reduce ? 1 : 0 }}
+                    transition={n === i ? { duration: HERO_STEP, ease: "linear" } : { duration: 0.3 }}
+                  />
+                </li>
+              ))}
+            </ol>
+          )}
         </motion.div>
 
         <div className="hero__copy">
@@ -90,7 +105,7 @@ function Hero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.2, delay: 0.35, ease }}
             >
-              How did you get AI to do that?
+              Upskilling the future workforce in an AI enabled world.
             </motion.h1>
             <motion.div
               className="hero__text"
@@ -98,9 +113,8 @@ function Hero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.2, delay: 0.6, ease }}
             >
-              <p>Some people get far more out of AI. A lot comes down to how they communicate with it.</p>
-              <p>PUAI helps people build the communication skills to understand AI, guide it, question it, and put it to work.</p>
-              <Link className="btn btn--lg" to="/#our-approach">
+              <p>We help people understand, explore, and apply AI, grounded in African contexts.</p>
+              <Link className="btn btn--lg" to="/#approach">
                 Explore our approach <span className="btn__arrow">→</span>
               </Link>
             </motion.div>
@@ -111,97 +125,130 @@ function Hero() {
   );
 }
 
-// The moments of communication history, pinned to the screen. Scrolling
-// moves through them one at a time; each gets most of a screen of scroll,
-// and the bars show where you are. Clicking a bar glides to that moment.
-const SCROLL_PER_MOMENT = 70; // svh
-function Moments() {
+/* ---------- AI didn't come with a manual ---------- */
+
+function Face({ name, className, speed }: (typeof faces)[number]) {
   const ref = useRef<HTMLDivElement>(null);
-  const lenis = useLenis();
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
-  const [i, setI] = useState(0);
-  const dir = useRef(1);
-  const N = moments.length;
-
-  useMotionValueEvent(scrollYProgress, "change", (v) => {
-    const next = Math.min(N - 1, Math.max(0, Math.floor(v * N)));
-    setI((cur) => {
-      if (next !== cur) dir.current = next > cur ? 1 : -1;
-      return next;
-    });
-  });
-
-  function goTo(n: number) {
-    const el = ref.current;
-    if (!el) return;
-    const top = el.getBoundingClientRect().top + window.scrollY;
-    const travel = el.offsetHeight - window.innerHeight;
-    const y = top + ((n + 0.5) / N) * travel;
-    if (lenis) lenis.scrollTo(y, { duration: 1.2 });
-    else window.scrollTo({ top: y, behavior: "smooth" });
-  }
-
-  const m = moments[i];
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const y = useTransform(scrollYProgress, [0, 1], [speed, -speed]);
   return (
-    <div ref={ref} className="moments" style={{ height: `calc(${N * SCROLL_PER_MOMENT}svh + 100svh)` }}>
-      <div className="moments__sticky">
-        <div className="container moments__inner">
-          <div className="moments__stage" aria-live="polite">
-            <AnimatePresence mode="popLayout" initial={false} custom={dir.current}>
-              <motion.div
-                key={i}
-                className="moments__slide"
-                custom={dir.current}
-                variants={{
-                  enter: (d: number) => ({ opacity: 0, y: d * 60 }),
-                  center: { opacity: 1, y: 0 },
-                  exit: (d: number) => ({ opacity: 0, y: d * -60 }),
-                }}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ duration: 0.7, ease }}
-              >
-                <p className="moments__when">{m.when}</p>
-                <h3 className={`moments__what ${m.what === "AI" ? "accent" : ""}`}>{m.what}</h3>
-                <p className="moments__line">{m.line}</p>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-          <ol className="moments__bars">
-            {moments.map((x, n) => (
-              <li key={x.what}>
-                <button type="button" onClick={() => goTo(n)} aria-current={n === i} aria-label={`${x.when}, ${x.what}`}>
-                  <span className="moments__track">
-                    <Fill progress={scrollYProgress} from={n / N} to={(n + 1) / N} />
-                  </span>
-                  <span className="moments__label">{x.what}</span>
-                </button>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </div>
-    </div>
+    <motion.div ref={ref} className={`face ${className}`} style={{ y }}>
+      <motion.img
+        {...photo(name)}
+        sizes="240px"
+        alt=""
+        loading="lazy"
+        initial={{ scale: 0.6, opacity: 0 }}
+        whileInView={{ scale: 1, opacity: 1 }}
+        viewport={{ once: true, amount: 0.5 }}
+        transition={{ duration: 1.1, ease }}
+      />
+    </motion.div>
   );
 }
 
-function Fill({ progress, from, to }: { progress: MotionValue<number>; from: number; to: number }) {
-  const scaleX = useTransform(progress, [from, to], [0, 1]);
-  return <motion.span className="moments__fill" style={{ scaleX }} />;
+function Manual() {
+  return (
+    <section id="why" className="block manual">
+      <div className="container manual__grid">
+        <div className="manual__copy">
+          <Reveal as="h2" className="display manual__title">
+            AI didn’t come with a manual.
+          </Reveal>
+          <Reveal delay={0.1}>
+            <p className="statement-text">It’s changing how we work, communicate and live, faster than we can keep up.</p>
+          </Reveal>
+          <Reveal delay={0.2}>
+            <p className="lede">
+              People Using AI helps everyday people understand, explore and apply AI in ways that are practical, accessible
+              and grounded in African contexts, whatever their technical background.
+            </p>
+          </Reveal>
+        </div>
+        <div className="manual__faces" aria-hidden="true">
+          {faces.map((f) => (
+            <Face key={f.name} {...f} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 }
+
+/* ---------- Framework ---------- */
+
+function SkillIcon({ name }: { name: (typeof skills)[number]["name"] }) {
+  const common = { fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round" } as const;
+  return (
+    <svg viewBox="0 0 48 48" className="skill__icon" aria-hidden="true">
+      {name === "Read" && (
+        <g {...common}>
+          <path d="M24 13c-4-3-10-4-16-3v25c6-1 12 0 16 3 4-3 10-4 16-3V10c-6-1-12 0-16 3Z" />
+          <path d="M24 13v25" />
+        </g>
+      )}
+      {name === "Write" && (
+        <g {...common}>
+          <path d="M31 9l8 8-20 20-10 2 2-10 20-20Z" />
+          <path d="M27 13l8 8" />
+        </g>
+      )}
+      {name === "Speak" && (
+        <g {...common}>
+          <path d="M8 12h24v16H18l-7 6v-6H8z" />
+          <path d="M36 18h4v14h-3v5l-6-5h-9" />
+        </g>
+      )}
+      {name === "Listen" && (
+        <g {...common}>
+          <path d="M8 24h4M15 17v14M22 11v26M29 15v18M36 20v8M40 24h0" />
+        </g>
+      )}
+    </svg>
+  );
+}
+
+function Framework() {
+  return (
+    <section id="approach" className="block framework">
+      <div className="container">
+        <div className="framework__head">
+          <Reveal as="h2" className="h1 framework__title">
+            Our Framework
+          </Reveal>
+          <Reveal delay={0.1}>
+            <p className="lede">
+              We put critical thinking and human judgment at the heart of working with AI. Our framework adapts four
+              essential human skills to the AI context. Reading to understand, writing to express, speaking to exchange
+              ideas, and listening to make sense.
+            </p>
+          </Reveal>
+        </div>
+        <Stagger className="skills">
+          {skills.map((s) => (
+            <StaggerItem key={s.name} as="article" className="skill">
+              <SkillIcon name={s.name} />
+              <h3 className="skill__name">{s.name}</h3>
+              <p className="skill__line">{s.line}</p>
+            </StaggerItem>
+          ))}
+        </Stagger>
+      </div>
+    </section>
+  );
+}
+
+/* ---------- Three ways to work with us ---------- */
 
 function Offer({
   id,
-  n,
   title,
   body,
   image,
   flip,
   children,
 }: {
-  id?: string;
-  n: string;
+  id: string;
   title: string;
   body: string;
   image: PhotoName;
@@ -212,9 +259,7 @@ function Offer({
     <article id={id} className={`offer ${flip ? "offer--flip" : ""}`}>
       <Parallax {...photo(image)} sizes="(max-width: 860px) 100vw, 50vw" className="offer__photo" />
       <Reveal className="offer__text">
-        <h3 className="h2 offer__title">
-          <span className="offer__n">{n}</span> {title}
-        </h3>
+        <h3 className="h2 offer__title">{title}</h3>
         <p className="lede">{body}</p>
         {children}
       </Reveal>
@@ -222,107 +267,205 @@ function Offer({
   );
 }
 
+function Stars({ value }: { value: number }) {
+  return (
+    <span className="stars" role="img" aria-label={`${value} out of 5 stars`}>
+      {[0, 1, 2, 3, 4].map((n) => {
+        const fill = Math.max(0, Math.min(1, value - n));
+        return (
+          <svg key={n} viewBox="0 0 24 24" aria-hidden="true">
+            <defs>
+              <linearGradient id={`star-${n}`}>
+                <stop offset={fill} stopColor="var(--coral)" />
+                <stop offset={fill} stopColor="var(--line)" />
+              </linearGradient>
+            </defs>
+            <path
+              fill={`url(#star-${n})`}
+              d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"
+            />
+          </svg>
+        );
+      })}
+    </span>
+  );
+}
+
+function Ways() {
+  const register = useRegister();
+  const open = (t: Topic) => () => register(t);
+  return (
+    <section id="what-we-do" className="block">
+      <div className="container">
+        <Reveal as="h2" className="display ways__title">
+          Three ways to work with us.
+        </Reveal>
+        <div className="offers">
+          <Offer
+            id="training"
+            title="Workforce Upskilling"
+            image="workshop"
+            body="We help individuals and teams explore AI, discover relevant tools, and build the skills to use them confidently and effectively."
+          >
+            <div className="rating">
+              <Stars value={4.5} />
+              <p>
+                Our curriculum has been rated 4.5/5 stars by previous cohorts.{" "}
+                <Link className="text-link" to="/work/sierra-premium-breweries">
+                  See case study <span className="btn__arrow">→</span>
+                </Link>
+              </p>
+            </div>
+            <div className="workshop">
+              <h4 className="workshop__label">Upcoming workshop</h4>
+              <p className="workshop__title">{workshop.title}</p>
+              <p className="workshop__meta">{workshop.meta}</p>
+              <button type="button" className="btn" onClick={open("workshop")}>
+                Register here <span className="btn__arrow">→</span>
+              </button>
+            </div>
+          </Offer>
+          <Offer
+            id="research"
+            title="Anthropological Research"
+            image="teamTable"
+            flip
+            body="We explore how AI is shaping human behaviour, communication, and everyday life, and how culture and context influence its adoption across East Africa."
+          >
+            <button type="button" className="btn" onClick={open("research")}>
+              Be part of the research <span className="btn__arrow">→</span>
+            </button>
+          </Offer>
+          <Offer
+            id="community"
+            title="Community & Storytelling"
+            image="conversation"
+            body="We bring people together to share experiences, exchange ideas, and explore AI's role in everyday life, from work and education to parenting and creativity."
+          >
+            <button type="button" className="btn" onClick={open("community")}>
+              Join our community <span className="btn__arrow">→</span>
+            </button>
+          </Offer>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------- What others say ---------- */
+
+const QUOTE_STEP = 8;
+function Testimonials() {
+  const reduce = useReducedMotion();
+  const [i, setI] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const playing = !reduce && !paused;
+  useEffect(() => {
+    if (!playing) return;
+    const t = window.setTimeout(() => setI((n) => (n + 1) % quotes.length), QUOTE_STEP * 1000);
+    return () => window.clearTimeout(t);
+  }, [i, playing]);
+  const q = quotes[i];
+  const initials = q.by
+    .split(" ")
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join("");
+
+  return (
+    <section id="voices" className="block">
+      <div className="container">
+        <Reveal as="h2" className="h1 voices__title">
+          What others say
+        </Reveal>
+        <Reveal
+          className="voices"
+          amount={0.4}
+        >
+          <div
+            className="voices__card"
+            onMouseEnter={() => setPaused(true)}
+            onMouseLeave={() => setPaused(false)}
+            onFocus={() => setPaused(true)}
+            onBlur={() => setPaused(false)}
+          >
+            <svg className="voices__mark" viewBox="0 0 48 36" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M0 36V22C0 9.5 6.2 2.2 18.6 0l2 5.2C13.4 7 9.9 11.3 9.6 18H20v18H0Zm27 0V22C27 9.5 33.2 2.2 45.6 0l2 5.2C40.4 7 36.9 11.3 36.6 18H47v18H27Z"
+              />
+            </svg>
+            <div className="voices__stage" aria-live="polite">
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.figure
+                  key={i}
+                  className="voices__quote"
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -12 }}
+                  transition={{ duration: 0.6, ease }}
+                >
+                  <blockquote>{q.text}</blockquote>
+                  <figcaption>
+                    <span className="voices__avatar" aria-hidden="true">
+                      {initials}
+                    </span>
+                    {q.by}
+                  </figcaption>
+                </motion.figure>
+              </AnimatePresence>
+            </div>
+            <div className="voices__nav">
+              <ol className="voices__bars">
+                {quotes.map((x, n) => (
+                  <li key={x.by}>
+                    <button type="button" onClick={() => setI(n)} aria-label={`Quote from ${x.by}`} aria-current={n === i}>
+                      <span className="voices__track">
+                        <motion.span
+                          key={n === i ? `on-${i}-${playing}` : "off"}
+                          className="voices__fill"
+                          initial={{ scaleX: n === i && !playing ? 1 : 0 }}
+                          animate={{ scaleX: n === i ? 1 : 0 }}
+                          transition={n === i && playing ? { duration: QUOTE_STEP, ease: "linear" } : { duration: 0.3 }}
+                        />
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ol>
+              <div className="voices__arrows">
+                <button
+                  type="button"
+                  aria-label="Previous quote"
+                  onClick={() => setI((n) => (n - 1 + quotes.length) % quotes.length)}
+                >
+                  ←
+                </button>
+                <button type="button" aria-label="Next quote" onClick={() => setI((n) => (n + 1) % quotes.length)}>
+                  →
+                </button>
+              </div>
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
 export default function Home() {
+  const register = useRegister();
   return (
     <main id="main" className="home">
       <Hero />
-
-      <section id="why-we-exist" className="block">
-        <div className="container">
-          <Statement className="display">Human progress moves at the speed of communication.</Statement>
-        </div>
-        <Moments />
-        <div className="container">
-          <Reveal className="block__close">
-            <p className="statement-text">
-              AI is the technology that will continue to change humanity. The skills to work with it are the ones we
-              already have: understanding, expressing, exchanging ideas, and interpreting what comes back.
-            </p>
-          </Reveal>
-        </div>
-      </section>
-
-      <section id="our-approach" className="block">
-        <div className="container">
-          <Statement className="display">We teach communication.</Statement>
-          <Reveal>
-            <p className="h3 muted block__sub">Basic literacy, adapted for AI.</p>
-          </Reveal>
-          <Reveal className="skills__intro">
-            <p className="lede">Four skills you already use. Now applied to AI.</p>
-          </Reveal>
-          <Stagger className="skills">
-            {skills.map((s) => (
-              <StaggerItem key={s.name} as="article" className="skill">
-                <h3 className="h1">{s.name}</h3>
-                <p className="lede">{s.line}</p>
-              </StaggerItem>
-            ))}
-          </Stagger>
-        </div>
-      </section>
-
-      <section id="what-we-do" className="block">
-        <div className="container">
-          <Statement className="display">Three ways to work with us.</Statement>
-          <div className="offers">
-            <Offer
-              id="workforce-upskilling"
-              n="01"
-              title="Workforce Upskilling"
-              image="workshop"
-              body="We help individuals and teams navigate the AI landscape, identify tools that fit their work, and build the communication skills to use them effectively, confidently, and with good judgment."
-            >
-              <ul className="cases">
-                {caseStudies.map((c) => (
-                  <li key={c.slug}>
-                    {c.published ? (
-                      <Link className="case" to={`/work/${c.slug}`}>
-                        <span className="case__name">{c.client}</span>
-                        <span className="case__kind">{c.kind}</span>
-                        <span className="case__go">
-                          View case study <span className="btn__arrow">→</span>
-                        </span>
-                      </Link>
-                    ) : (
-                      <div className="case case--soon">
-                        <span className="case__name">{c.client}</span>
-                        <span className="case__kind">{c.kind}</span>
-                      </div>
-                    )}
-                  </li>
-                ))}
-              </ul>
-              <a className="btn" href={links.workWithUs}>
-                Bring AI learning to your team <span className="btn__arrow">→</span>
-              </a>
-            </Offer>
-            <Offer
-              n="02"
-              title="Community & Storytelling"
-              image="conversation"
-              flip
-              body="AI is moving beyond the workplace into everyday life, from parenting and education to art and creativity. We serve as a space for those conversations and learnings."
-            >
-              <Link className="btn" to="/community">
-                Join the community <span className="btn__arrow">→</span>
-              </Link>
-            </Offer>
-            <Offer
-              n="03"
-              title="Anthropological Research"
-              image="teamTable"
-              body="We partner with leading universities, anthropologists, and researchers to study how AI is shaping human behaviour, work, and culture in East Africa."
-            >
-              <a className="btn" href={links.partner}>
-                Partner with us <span className="btn__arrow">→</span>
-              </a>
-            </Offer>
-          </div>
-        </div>
-      </section>
-
-      <CtaBand lines={["People first.", "AI in context."]} action={{ label: "Get to know PUAI", to: "/about" }} />
+      <Manual />
+      <Framework />
+      <Ways />
+      <Testimonials />
+      <CtaBand
+        lines={["AI creates possibilities.", "People shape what comes next."]}
+        action={{ label: "Register for upcoming workshops", onClick: () => register("workshop") }}
+      />
     </main>
   );
 }

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/react";
 import wordmark from "../assets/brand/wordmark-dark.svg";
-import { links, mainNav } from "../content/links";
+import { mainNav } from "../content/links";
+import { useRegister } from "./Register";
 import { ease } from "./motion";
 import "./Header.css";
 
@@ -14,6 +15,7 @@ export default function Header() {
   const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const register = useRegister();
 
   useMotionValueEvent(scrollY, "change", (y) => {
     const prev = scrollY.getPrevious() ?? 0;
@@ -41,20 +43,15 @@ export default function Header() {
 
         <nav className="header__nav" aria-label="Main">
           {mainNav.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end
-              className={({ isActive }) => `header__link ${isActive ? "is-active" : ""}`}
-            >
+            <Link key={item.to} to={item.to} className="header__link">
               {item.label}
-            </NavLink>
+            </Link>
           ))}
         </nav>
 
-        <a className="btn header__cta" href={links.workWithUs}>
-          Work with us
-        </a>
+        <button type="button" className="btn header__cta" onClick={() => register("workshop")}>
+          Register for upcoming workshops
+        </button>
 
         <button
           type="button"
@@ -98,9 +95,16 @@ export default function Header() {
               <motion.li
                 variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.8, ease } } }}
               >
-                <a className="btn btn--lg" href={links.workWithUs}>
-                  Work with us
-                </a>
+                <button
+                  type="button"
+                  className="btn btn--lg"
+                  onClick={() => {
+                    setOpen(false);
+                    register("workshop");
+                  }}
+                >
+                  Register for upcoming workshops
+                </button>
               </motion.li>
             </motion.ul>
           </motion.div>

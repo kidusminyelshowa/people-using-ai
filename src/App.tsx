@@ -5,9 +5,8 @@ import { ReactLenis, useLenis } from "lenis/react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import PageTransition from "./components/PageTransition";
+import { RegisterProvider } from "./components/Register";
 import Home from "./pages/Home";
-import About from "./pages/About";
-import Community from "./pages/Community";
 import CaseStudy from "./pages/CaseStudy";
 import NotFound from "./pages/NotFound";
 import ComingSoon from "./pages/ComingSoon";
@@ -20,8 +19,6 @@ const comingSoonOnly = !isPreview && import.meta.env.VITE_COMING_SOON !== "false
 
 const titles: Record<string, string> = {
   "/": "People Using AI",
-  "/about": "About — People Using AI",
-  "/community": "Community — People Using AI",
   "/work/sierra-premium-breweries": "Sierra Premium Breweries — People Using AI",
 };
 
@@ -103,23 +100,25 @@ export default function App() {
       <a className="skip-link" href="#main">
         Skip to content
       </a>
+      <RegisterProvider>
       <ScrollManager />
       <Header />
       <AnimatePresence mode="wait">
         <PageTransition key={location.pathname}>
           <Routes location={location}>
             <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/community" element={<Community />} />
             <Route path="/work/:slug" element={<CaseStudy />} />
             {/* Old addresses */}
+            <Route path="/about" element={<Navigate to="/" replace />} />
+            <Route path="/community" element={<Navigate to="/#community" replace />} />
             <Route path="/work-with-us" element={<Navigate to="/#what-we-do" replace />} />
-            <Route path="/get-involved" element={<Navigate to="/community" replace />} />
+            <Route path="/get-involved" element={<Navigate to="/#community" replace />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <Footer />
         </PageTransition>
       </AnimatePresence>
+      </RegisterProvider>
     </MotionConfig>
   );
 }

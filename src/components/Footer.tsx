@@ -5,7 +5,7 @@ import { useLenis } from "lenis/react";
 import { Reveal } from "./motion";
 import "./Footer.css";
 
-type Action = { label: string; to?: string; href?: string };
+type Action = { label: string; to?: string; href?: string; onClick?: () => void };
 
 /** The page's one coral band: a closing line or two and a single button. */
 export function CtaBand({ lines, action }: { lines: string[]; action: Action }) {
@@ -23,7 +23,11 @@ export function CtaBand({ lines, action }: { lines: string[]; action: Action }) 
           ))}
         </Reveal>
         <Reveal delay={0.15}>
-          {action.to ? (
+          {action.onClick ? (
+            <button type="button" className="btn btn--white btn--lg" onClick={action.onClick}>
+              {inner}
+            </button>
+          ) : action.to ? (
             <Link className="btn btn--white btn--lg" to={action.to}>
               {inner}
             </Link>
@@ -40,9 +44,9 @@ export function CtaBand({ lines, action }: { lines: string[]; action: Action }) 
 
 const groups = [
   [
-    { to: "/", label: "Home" },
-    { to: "/community", label: "Community" },
-    { to: "/about", label: "About" },
+    { to: "/#training", label: "Training" },
+    { to: "/#research", label: "Research" },
+    { to: "/#community", label: "Community" },
   ],
 ];
 
