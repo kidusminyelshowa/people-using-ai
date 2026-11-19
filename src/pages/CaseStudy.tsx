@@ -37,18 +37,16 @@ export default function CaseStudy() {
     <main id="main" className="cs">
       <section className="cs-top">
         <div className="container cs-top__inner">
-          <div className="cs-top__brand">
-            {cs.backTo && (
-              <motion.div {...enter(0)}>
-                <Link className="text-link cs-back" to={cs.backTo.to}>
-                  ← {cs.backTo.label}
-                </Link>
-              </motion.div>
-            )}
-            <motion.h1 className="cs-logo" {...enter(0.1)}>
-              {cs.logo ? <img src={cs.logo} alt={cs.client} /> : <span className="display">{cs.client}</span>}
-            </motion.h1>
-          </div>
+          {cs.backTo && (
+            <motion.div className="cs-back-wrap" {...enter(0)}>
+              <Link className="cs-back" to={cs.backTo.to} aria-label={`Back to ${cs.backTo.label}`}>
+                ←
+              </Link>
+            </motion.div>
+          )}
+          <motion.h1 className="cs-logo" {...enter(0.1)}>
+            {cs.logo ? <img src={cs.logo} alt={cs.client} /> : <span className="display">{cs.client}</span>}
+          </motion.h1>
 
           {cs.timeline && (
             <ol className="cs-timeline">

@@ -4,19 +4,30 @@
   padding-top: calc(var(--header-h) + clamp(48px, 6vw, 112px));
   padding-bottom: clamp(56px, 7vw, 120px);
 }
+/* Desktop: back button, logo and timeline in one row, all centred vertically. */
 .cs-top__inner {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(48px, 6vw, 120px);
-  align-items: start;
-}
-.cs-top__brand {
-  display: grid;
-  align-content: start;
-  gap: clamp(40px, 5vw, 72px);
+  grid-template-columns: auto 1fr 1fr;
+  gap: clamp(32px, 5vw, 96px);
+  align-items: center;
 }
 .cs-back {
-  justify-self: start;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 1.5px solid var(--night);
+  border-radius: 50%;
+  color: var(--night);
+  font-size: 1.5rem;
+  transition:
+    background-color 0.3s var(--ease),
+    color 0.3s var(--ease);
+}
+.cs-back:hover,
+.cs-back:focus-visible {
+  background: var(--night);
+  color: var(--yellow);
 }
 .cs-logo .display {
   display: block;
@@ -27,9 +38,6 @@
   display: block;
   width: min(100%, 380px);
   height: auto;
-}
-.cs-top .cs-back {
-  color: var(--night);
 }
 
 .cs-timeline {
@@ -166,6 +174,7 @@
 @media (max-width: 860px) {
   .cs-top__inner {
     grid-template-columns: 1fr;
+    align-items: start;
   }
   .cs-row {
     grid-template-columns: 1fr 1fr;
