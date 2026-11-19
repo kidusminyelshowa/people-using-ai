@@ -14,7 +14,7 @@ function Gallery({ slugs, sizes, className, alt }: { slugs: string[]; sizes: str
     <Stagger className={className}>
       {slugs.map((slug) => (
         <StaggerItem key={slug} className="cs-shot">
-          <img {...photoBySlug(slug)} sizes={sizes} alt={alt} loading="lazy" decoding="async" />
+          <img {...photoBySlug(slug)} sizes={sizes} alt={alt} className="photo--colour" loading="lazy" decoding="async" />
         </StaggerItem>
       ))}
     </Stagger>

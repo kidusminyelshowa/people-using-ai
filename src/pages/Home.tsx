@@ -385,6 +385,17 @@ function Testimonials() {
               />
             </svg>
             <div className="voices__stage" aria-live="polite">
+              {/* Invisible copies of every quote keep the card at the height of
+                  the longest one, so the controls don't jump between quotes. */}
+              {quotes.map((x) => (
+                <figure key={x.by} className="voices__quote voices__sizer" aria-hidden="true">
+                  <blockquote>{x.text}</blockquote>
+                  <figcaption>
+                    <span className="voices__avatar" />
+                    {x.by}
+                  </figcaption>
+                </figure>
+              ))}
               <AnimatePresence mode="wait" initial={false}>
                 <motion.figure
                   key={i}

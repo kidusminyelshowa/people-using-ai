@@ -1,5 +1,5 @@
 // Case studies. Each one renders at /work/<slug> with the same layout:
-// a coloured top block (client logo + a challenge → deliverable timeline),
+// a top block (client logo + challenge, deliverable and outcome),
 // then a photo gallery with a partnership and rating band.
 // A study with `published: false` is listed on the home page without a link.
 
@@ -12,7 +12,7 @@ export type CaseStudy = {
   // Path to the client's logo (e.g. /logos/sierra.svg). Without one the
   // client's name is set as a wordmark instead.
   logo?: string;
-  // Read top to bottom on the dotted timeline.
+  // Shown top to bottom beside the logo.
   timeline?: { label: string; text: string; by?: string }[];
   // Photo slugs from public/images (see src/content/image-manifest.json).
   photos?: { top: string[]; bottom: string[] };
@@ -27,6 +27,7 @@ export const caseStudies: CaseStudy[] = [
     kind: "Employee training",
     published: true,
     backTo: { label: "Workforce Upskilling", to: "/#training" },
+    logo: "/logos/sierra.webp",
     timeline: [
       {
         label: "Challenge",
@@ -44,7 +45,10 @@ export const caseStudies: CaseStudy[] = [
     ],
     photos: {
       top: ["sierra-workshop-01", "sierra-workshop-02", "sierra-workshop-03"],
-      bottom: ["sierra-workshop-04", "sierra-workshop-05", "sierra-workshop-06", "sierra-workshop-07", "sierra-workshop-08"],
+      bottom: ["sierra-workshop-04", "sierra-workshop-05", "sierra-workshop-06", "sierra-workshop-07", "sierra-workshop-08",
+        "sierra-workshop-09", "sierra-workshop-10", "sierra-workshop-11", "sierra-workshop-12", "sierra-workshop-13",
+        "sierra-workshop-14", "sierra-workshop-15", "sierra-workshop-16", "sierra-workshop-17", "sierra-workshop-18",
+      ],
     },
     partners: ["OpenAI Community Nairobi", "Claude Community Nairobi"],
     rating: 4.5,
