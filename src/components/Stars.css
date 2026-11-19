@@ -1,0 +1,8 @@
+.stars {
+  display: inline-flex;
+  gap: 4px;
+}
+.stars svg {
+  width: 22px;
+  height: 22px;
+}

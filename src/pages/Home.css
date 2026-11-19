@@ -282,14 +282,6 @@
   color: var(--slate);
   font-size: 0.95rem;
 }
-.stars {
-  display: inline-flex;
-  gap: 4px;
-}
-.stars svg {
-  width: 22px;
-  height: 22px;
-}
 
 .workshop {
   display: grid;
@@ -322,6 +314,7 @@
   margin-top: clamp(40px, 5vw, 64px);
 }
 .voices__card {
+  overflow: hidden; /* clips the slide at the card's edge, not the text's */
   display: grid;
   gap: clamp(28px, 4vw, 48px);
   padding: clamp(28px, 4.5vw, 64px);
@@ -335,9 +328,15 @@
 }
 .voices__stage {
   display: grid;
-  overflow: hidden;
-  min-height: clamp(200px, 18vw, 260px);
   align-items: start;
+}
+/* Every quote, and its invisible sizers, share one grid cell. */
+.voices__stage > * {
+  grid-area: 1 / 1;
+}
+.voices__sizer {
+  visibility: hidden;
+  pointer-events: none;
 }
 .voices__quote blockquote {
   max-width: 30ch;
@@ -432,6 +431,19 @@
   }
 }
 @media (max-width: 860px) {
+  .voices__quote blockquote {
+    font-size: 1.35rem;
+    line-height: 1.25;
+  }
+  .voices__nav {
+    gap: 16px;
+  }
+  .voices__bars {
+    gap: 6px;
+  }
+  .voices__track {
+    width: 28px;
+  }
   .framework__title {
     white-space: normal;
   }

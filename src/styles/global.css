@@ -279,7 +279,7 @@ p {
   background: var(--warm);
 }
 /* Every photo is a contrasty black and white, like the launching-soon page */
-img[src^="/images/"]:not(.soon__photo) {
+img[src^="/images/"]:not(.soon__photo):not(.photo--colour) {
   filter: grayscale(1) contrast(1.25);
 }
 .media img {

@@ -32,7 +32,11 @@ export function CtaBand({ lines, action }: { lines: string[]; action: Action }) 
               {inner}
             </Link>
           ) : (
-            <a className="btn btn--white btn--lg" href={action.href}>
+            <a
+              className="btn btn--white btn--lg"
+              href={action.href}
+              {...(action.href?.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+            >
               {inner}
             </a>
           )}

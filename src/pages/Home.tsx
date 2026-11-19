@@ -5,7 +5,9 @@ import { Parallax, Reveal, Stagger, StaggerItem, ease } from "../components/moti
 import { CtaBand } from "../components/Footer";
 import { useRegister, workshop, type Topic } from "../components/Register";
 import { photo, type PhotoName } from "../content/images";
+import { links } from "../content/links";
 import Flower from "../components/Flower";
+import { Stars } from "../components/Stars";
 import "./Home.css";
 
 // Hero video in public/video: a vertical cut for phones and a horizontal
@@ -268,30 +270,6 @@ function Offer({
   );
 }
 
-function Stars({ value }: { value: number }) {
-  return (
-    <span className="stars" role="img" aria-label={`${value} out of 5 stars`}>
-      {[0, 1, 2, 3, 4].map((n) => {
-        const fill = Math.max(0, Math.min(1, value - n));
-        return (
-          <svg key={n} viewBox="0 0 24 24" aria-hidden="true">
-            <defs>
-              <linearGradient id={`star-${n}`}>
-                <stop offset={fill} stopColor="var(--coral)" />
-                <stop offset={fill} stopColor="var(--line)" />
-              </linearGradient>
-            </defs>
-            <path
-              fill={`url(#star-${n})`}
-              d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"
-            />
-          </svg>
-        );
-      })}
-    </span>
-  );
-}
-
 function Ways() {
   const register = useRegister();
   const open = (t: Topic) => () => register(t);
@@ -321,9 +299,9 @@ function Ways() {
               <h4 className="workshop__label">Upcoming workshop</h4>
               <p className="workshop__title">{workshop.title}</p>
               <p className="workshop__meta">{workshop.meta}</p>
-              <button type="button" className="btn" onClick={open("workshop")}>
+              <a className="btn" href={links.workshopForm} target="_blank" rel="noopener noreferrer">
                 Register here <span className="btn__arrow">→</span>
-              </button>
+              </a>
             </div>
           </Offer>
           <Offer
@@ -340,7 +318,7 @@ function Ways() {
           <Offer
             id="community"
             title="Community & Storytelling"
-            image="conversation"
+            image="community"
             body="We bring people together to share experiences, exchange ideas, and explore AI's role in everyday life, from work and education to parenting and creativity."
           >
             <button type="button" className="btn" onClick={open("community")}>
@@ -408,6 +386,17 @@ function Testimonials() {
               />
             </svg>
             <div className="voices__stage" aria-live="polite">
+              {/* Invisible copies of every quote keep the card at the height of
+                  the longest one, so the controls don't jump between quotes. */}
+              {quotes.map((x) => (
+                <figure key={x.by} className="voices__quote voices__sizer" aria-hidden="true">
+                  <blockquote>{x.text}</blockquote>
+                  <figcaption>
+                    <span className="voices__avatar" />
+                    {x.by}
+                  </figcaption>
+                </figure>
+              ))}
               <AnimatePresence mode="wait" initial={false}>
                 <motion.figure
                   key={i}
@@ -474,7 +463,6 @@ function Testimonials() {
 }
 
 export default function Home() {
-  const register = useRegister();
   return (
     <main id="main" className="home">
       <Hero />
@@ -484,7 +472,7 @@ export default function Home() {
       <Testimonials />
       <CtaBand
         lines={["AI creates possibilities.", "People shape what comes next."]}
-        action={{ label: "Register for upcoming workshops", onClick: () => register("workshop") }}
+        action={{ label: "Register for upcoming workshops", href: links.workshopForm }}
       />
     </main>
   );

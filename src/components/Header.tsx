@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/react";
 import wordmark from "../assets/brand/wordmark-dark.svg";
-import { mainNav } from "../content/links";
-import { useRegister } from "./Register";
+import { links, mainNav } from "../content/links";
 import { ease } from "./motion";
 import "./Header.css";
 
@@ -15,7 +14,6 @@ export default function Header() {
   const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const register = useRegister();
 
   useMotionValueEvent(scrollY, "change", (y) => {
     const prev = scrollY.getPrevious() ?? 0;
@@ -49,9 +47,9 @@ export default function Header() {
           ))}
         </nav>
 
-        <button type="button" className="btn header__cta" onClick={() => register("workshop")}>
+        <a className="btn header__cta" href={links.workshopForm} target="_blank" rel="noopener noreferrer">
           Register for upcoming workshops
-        </button>
+        </a>
 
         <button
           type="button"
@@ -95,16 +93,15 @@ export default function Header() {
               <motion.li
                 variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0, transition: { duration: 0.8, ease } } }}
               >
-                <button
-                  type="button"
+                <a
                   className="btn btn--lg"
-                  onClick={() => {
-                    setOpen(false);
-                    register("workshop");
-                  }}
+                  href={links.workshopForm}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setOpen(false)}
                 >
                   Register for upcoming workshops
-                </button>
+                </a>
               </motion.li>
             </motion.ul>
           </motion.div>
