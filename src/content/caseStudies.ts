@@ -9,12 +9,15 @@ export type CaseStudy = {
   kind: string; // shown under the client's name on the home page
   published: boolean;
   backTo?: { label: string; to: string };
-  // Path to the client’s logo: a one-colour SVG with no background, in
-  // night (#20222b), e.g. /logos/sierra.svg. Without one the
-  // client's name is set as a wordmark instead.
+  // The client's brand colour for the top block, and the colour of the
+  // logo and text on it. Defaults to yellow with night text.
+  theme?: { bg: string; fg: string };
+  // Path to the client's logo: a one-colour SVG with no background, drawn
+  // in theme.fg, e.g. /logos/sierra.svg. Without one the client's name is
+  // set as a wordmark instead.
   logo?: string;
-  // Shown top to bottom beside the logo.
-  timeline?: { label: string; text: string; by?: string }[];
+  // Shown top to bottom beside the logo. `items` renders as a list.
+  timeline?: { label: string; text?: string; items?: string[]; by?: string }[];
   // Photo slugs from public/images (see src/content/image-manifest.json).
   photos?: { top: string[]; bottom: string[] };
   partners?: string[];
@@ -28,15 +31,24 @@ export const caseStudies: CaseStudy[] = [
     kind: "Employee training",
     published: true,
     backTo: { label: "Workforce Upskilling", to: "/#training" },
+    // Sierra's label green, sampled from their logo.
+    theme: { bg: "#18401b", fg: "#f2efd9" },
     logo: "/logos/sierra.svg",
     timeline: [
       {
         label: "Challenge",
-        text: "Sierra’s back-office team had access to AI but used it rarely, or only for simple tasks.",
+        text: "Sierra Breweries' staff were already using AI, but mostly for individual tasks, with limited business impact. Without shared tools, training, or guidelines, AI use was fragmented, output quality varied, and some workflows created more work for others. Staff also lacked clarity on which tasks were best suited for AI.",
       },
       {
-        label: "Deliverable",
-        text: "A gap assessment for every participant, then a custom curriculum delivered in person to 14 back-office staff over two half-day sessions, using Claude Team.",
+        label: "What we delivered",
+        items: [
+          "Gap assessments for 14 back-office staff to identify skills gaps and AI opportunities.",
+          "A tailored curriculum based on individual needs and real workplace challenges.",
+          "Claude Team setup to bring AI use onto one shared platform.",
+          "Two half-day training sessions combining AI fundamentals with hands-on practice.",
+          "Technical support and live demos using participants' own business challenges.",
+          "A trial phase to evaluate performance on the new platform.",
+        ],
       },
       {
         label: "Outcome",

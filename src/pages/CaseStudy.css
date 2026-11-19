@@ -1,6 +1,7 @@
 /* Top block on a solid colour: client logo left, challenge / deliverable / outcome right. */
 .cs-top {
-  background: var(--yellow);
+  background: var(--cs-bg, var(--yellow));
+  color: var(--cs-fg, var(--night));
   padding-top: calc(var(--header-h) + clamp(48px, 6vw, 112px));
   padding-bottom: clamp(56px, 7vw, 120px);
 }
@@ -12,7 +13,7 @@
   align-items: center;
 }
 .cs-top .cs-back {
-  color: var(--night);
+  color: inherit;
   font-size: clamp(2.4rem, 3.6vw, 3.6rem);
   line-height: 1;
 }
@@ -20,7 +21,7 @@
   display: block;
   max-width: 10ch;
 }
-/* Logos are one-colour, background-free SVGs in night. */
+/* Logos are one-colour, background-free SVGs in the theme's fg colour. */
 .cs-logo img {
   display: block;
   width: min(100%, 380px);
@@ -41,8 +42,28 @@
   line-height: 1.45;
 }
 .cs-timeline__by {
-  color: rgb(32 34 43 / 0.75); /* night, readable on the yellow */
+  opacity: 0.75;
   font-size: 0.95rem !important;
+}
+.cs-timeline__list {
+  display: grid;
+  gap: 8px;
+  font-size: clamp(1rem, 1.1vw, 1.15rem);
+  line-height: 1.45;
+}
+.cs-timeline__list li {
+  position: relative;
+  padding-left: 1.2em;
+}
+.cs-timeline__list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 0.4em;
+  height: 0.4em;
+  border-radius: 50%;
+  background: currentColor;
 }
 
 /* Photo gallery with the partnership band between the two rows. */
