@@ -43,11 +43,13 @@ export const caseStudies: CaseStudy[] = [
         by: "Sierra Breweries Finance Team",
       },
     ],
+    // Balanced between both facilitators.
     photos: {
-      top: ["sierra-workshop-01", "sierra-workshop-02", "sierra-workshop-03"],
-      bottom: ["sierra-workshop-04", "sierra-workshop-05", "sierra-workshop-06", "sierra-workshop-07", "sierra-workshop-08",
-        "sierra-workshop-09", "sierra-workshop-10", "sierra-workshop-11", "sierra-workshop-12", "sierra-workshop-13",
-        "sierra-workshop-14", "sierra-workshop-15", "sierra-workshop-16", "sierra-workshop-17", "sierra-workshop-18",
+      top: ["sierra-workshop-19", "sierra-workshop-01", "sierra-workshop-20"],
+      bottom: [
+        "sierra-workshop-04", "sierra-workshop-21", "sierra-workshop-06", "sierra-workshop-07", "sierra-workshop-08",
+        "sierra-workshop-09", "sierra-workshop-11", "sierra-workshop-02", "sierra-workshop-23", "sierra-workshop-03",
+        "sierra-workshop-22", "sierra-workshop-12", "sierra-workshop-13", "sierra-workshop-24", "sierra-workshop-18",
       ],
     },
     partners: ["OpenAI Community Nairobi", "Claude Community Nairobi"],
