@@ -39,8 +39,8 @@ export default function CaseStudy() {
         <div className="container cs-top__inner">
           {cs.backTo && (
             <motion.div className="cs-back-wrap" {...enter(0)}>
-              <Link className="text-link cs-back" to={cs.backTo.to}>
-                ← {cs.backTo.label}
+              <Link className="text-link cs-back" to={cs.backTo.to} aria-label={`Back to ${cs.backTo.label}`}>
+                ←
               </Link>
             </motion.div>
           )}
