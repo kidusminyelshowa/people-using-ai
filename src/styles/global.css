@@ -30,6 +30,11 @@
   --mist: #f4f4f5; /* tiles, panels and image wells */
   --white: #ffffff;
   --cotton: #fffdfd; /* used by the launching-soon page */
+  /* Playful brand colours, used sparingly with the flower shape */
+  --navy: #143d73;
+  --yellow: #f5c814;
+  --green: #4fedaa;
+  --pink: #ffc4d3;
   /* Aliases used across the site */
   --ink: var(--night);
   --warm: var(--mist);
@@ -272,6 +277,10 @@ p {
   overflow: hidden;
   border-radius: var(--radius);
   background: var(--warm);
+}
+/* Every photo is a contrasty black and white, like the launching-soon page */
+img[src^="/images/"]:not(.soon__photo) {
+  filter: grayscale(1) contrast(1.25);
 }
 .media img {
   width: 100%;

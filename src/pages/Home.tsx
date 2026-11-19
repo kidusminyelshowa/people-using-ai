@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { Parallax, Reveal, Stagger, StaggerItem, ease } from "../components/motion";
 import { CtaBand } from "../components/Footer";
 import { useRegister, workshop, type Topic } from "../components/Register";
 import { photo, type PhotoName } from "../content/images";
+import Flower from "../components/Flower";
 import "./Home.css";
 
 // Hero video in public/video, compressed from the 15 MB master: AV1 for
@@ -14,13 +15,21 @@ const HERO_VIDEO = true;
 const heroPhotos: PhotoName[] = ["laptopMeeting", "clay", "headphones"];
 const HERO_STEP = 6;
 
-const faces: { name: PhotoName; className: string; speed: number }[] = [
-  { name: "headphones", className: "face--a", speed: -60 },
-  { name: "goldenPortrait", className: "face--b", speed: 40 },
-  { name: "glasses", className: "face--c", speed: -100 },
-  { name: "portraitCalm", className: "face--d", speed: 70 },
-  { name: "glassSmile", className: "face--e", speed: -30 },
+// Faces in flower-shaped frames, with a few solid brand-colour flowers
+// between them. Each drifts at its own speed as the section scrolls by.
+type Bloom = { className: string; speed: number; spin?: number } & ({ name: PhotoName } | { color: string });
+const blooms: Bloom[] = [
+  { className: "bloom--a", name: "headphones", speed: -40 },
+  { className: "bloom--b", name: "goldenPortrait", speed: 30 },
+  { className: "bloom--c", name: "glasses", speed: -60 },
+  { className: "bloom--d", name: "portraitCalm", speed: 50 },
+  { className: "bloom--e", color: "var(--yellow)", speed: -90, spin: 40 },
+  { className: "bloom--f", color: "var(--green)", speed: 70, spin: -50 },
+  { className: "bloom--g", color: "var(--pink)", speed: -20, spin: 30 },
 ];
+
+// Each skill gets one of the brand's playful colours.
+const skillTone = { Read: "yellow", Write: "green", Speak: "pink", Listen: "navy" } as const;
 
 const skills = [
   { name: "Read", line: "Understand how AI works, what its tools can do and where their limitations and risks lie." },
@@ -35,6 +44,10 @@ const quotes = [
   {
     text: "The training was insightful and practical providing good understanding of how AI tools like Claude can be leveraged to improve productivity and simplify day-to-day tasks.",
     by: "Julius Mutie Safari",
+  },
+  {
+    text: "I’ve done Jan 2025 to June 2026 audit prep and financials prep in 4 hours with Claude. Would have taken me days… days of sleepless nights! Thank you",
+    by: "Sierra Breweries Finance Team",
   },
 ];
 
@@ -131,22 +144,28 @@ function Hero() {
 
 /* ---------- AI didn't come with a manual ---------- */
 
-function Face({ name, className, speed }: (typeof faces)[number]) {
+function BloomShape(b: Bloom) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], [speed, -speed]);
+  const y = useTransform(scrollYProgress, [0, 1], [b.speed, -b.speed]);
+  const rotate = useTransform(scrollYProgress, [0, 1], [-(b.spin ?? 0), b.spin ?? 0]);
   return (
-    <motion.div ref={ref} className={`face ${className}`} style={{ y }}>
-      <motion.img
-        {...photo(name)}
-        sizes="240px"
-        alt=""
-        loading="lazy"
+    <motion.div ref={ref} className={`bloom ${b.className}`} style={{ y }}>
+      <motion.div
+        className="bloom__inner"
         initial={{ scale: 0.6, opacity: 0 }}
         whileInView={{ scale: 1, opacity: 1 }}
         viewport={{ once: true, amount: 0.5 }}
         transition={{ duration: 1.1, ease }}
-      />
+      >
+        {"name" in b ? (
+          <img {...photo(b.name)} sizes="(max-width: 860px) 50vw, 25vw" alt="" loading="lazy" />
+        ) : (
+          <motion.div style={{ rotate }}>
+            <Flower color={b.color} />
+          </motion.div>
+        )}
+      </motion.div>
     </motion.div>
   );
 }
@@ -169,8 +188,8 @@ function Manual() {
           </Reveal>
         </div>
         <div className="manual__faces" aria-hidden="true">
-          {faces.map((f) => (
-            <Face key={f.name} {...f} />
+          {blooms.map((b) => (
+            <BloomShape key={b.className} {...b} />
           ))}
         </div>
       </div>
@@ -179,37 +198,6 @@ function Manual() {
 }
 
 /* ---------- Framework ---------- */
-
-function SkillIcon({ name }: { name: (typeof skills)[number]["name"] }) {
-  const common = { fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round" } as const;
-  return (
-    <svg viewBox="0 0 48 48" className="skill__icon" aria-hidden="true">
-      {name === "Read" && (
-        <g {...common}>
-          <path d="M24 13c-4-3-10-4-16-3v25c6-1 12 0 16 3 4-3 10-4 16-3V10c-6-1-12 0-16 3Z" />
-          <path d="M24 13v25" />
-        </g>
-      )}
-      {name === "Write" && (
-        <g {...common}>
-          <path d="M31 9l8 8-20 20-10 2 2-10 20-20Z" />
-          <path d="M27 13l8 8" />
-        </g>
-      )}
-      {name === "Speak" && (
-        <g {...common}>
-          <path d="M8 12h24v16H18l-7 6v-6H8z" />
-          <path d="M36 18h4v14h-3v5l-6-5h-9" />
-        </g>
-      )}
-      {name === "Listen" && (
-        <g {...common}>
-          <path d="M8 24h4M15 17v14M22 11v26M29 15v18M36 20v8M40 24h0" />
-        </g>
-      )}
-    </svg>
-  );
-}
 
 function Framework() {
   return (
@@ -226,11 +214,15 @@ function Framework() {
           </Reveal>
         </div>
         <Stagger className="skills">
-          {skills.map((s) => (
-            <StaggerItem key={s.name} as="article" className="skill">
-              <SkillIcon name={s.name} />
+          {skills.map((s, n) => (
+            <StaggerItem key={s.name} as="article" className={`skill skill--${skillTone[s.name]}`}>
+              <span className="skill__badge" aria-hidden="true">
+                <Flower />
+                <span>{String(n + 1).padStart(2, "0")}</span>
+              </span>
               <h3 className="skill__name">{s.name}</h3>
               <p className="skill__line">{s.line}</p>
+              <Flower className="skill__bloom" />
             </StaggerItem>
           ))}
         </Stagger>
@@ -258,7 +250,7 @@ function Offer({
 }) {
   return (
     <article id={id} className={`offer ${flip ? "offer--flip" : ""}`}>
-      <Parallax {...photo(image)} sizes="(max-width: 860px) 100vw, 50vw" className="offer__photo" />
+      <Parallax {...photo(image)} sizes="(max-width: 860px) 100vw, 95vw" className="offer__photo" />
       <Reveal className="offer__text">
         <h3 className="h2 offer__title">{title}</h3>
         <p className="lede">{body}</p>
@@ -305,7 +297,7 @@ function Ways() {
           <Offer
             id="training"
             title="Workforce Upskilling"
-            image="workshop"
+            image="laptopMeeting"
             body="We help individuals and teams explore AI, discover relevant tools, and build the skills to use them confidently and effectively."
           >
             <div className="rating">
@@ -329,7 +321,7 @@ function Ways() {
           <Offer
             id="research"
             title="Anthropological Research"
-            image="teamTable"
+            image="teamWall"
             flip
             body="We explore how AI is shaping human behaviour, communication, and everyday life, and how culture and context influence its adoption across East Africa."
           >
@@ -355,98 +347,119 @@ function Ways() {
 
 /* ---------- What others say ---------- */
 
-const QUOTE_STEP = 8;
+// A row of quote cards you can swipe, drag or step through with the arrows.
+// It moves on by itself every few seconds until you take over; hovering
+// or focusing it holds it still.
+const QUOTE_STEP = 5;
+const quoteTones = ["yellow", "pink", "green", "navy"] as const;
+
 function Testimonials() {
   const reduce = useReducedMotion();
+  const track = useRef<HTMLOListElement>(null);
   const [i, setI] = useState(0);
-  const [paused, setPaused] = useState(false);
-  const playing = !reduce && !paused;
+  const [held, setHeld] = useState(false);
+  const [taken, setTaken] = useState(false); // the visitor has stepped through themselves
+  const [inView, setInView] = useState(false);
+  const playing = !reduce && !held && !taken && inView;
+
+  const go = (n: number) => {
+    const el = track.current;
+    if (!el) return;
+    const card = el.children[(n + quotes.length) % quotes.length] as HTMLElement;
+    el.scrollTo({ left: card.offsetLeft - el.offsetLeft, behavior: reduce ? "auto" : "smooth" });
+  };
+  const step = (d: number) => {
+    setTaken(true);
+    go(i + d);
+  };
+
+  // Which card is in front follows the scroll position, however it got there.
+  useEffect(() => {
+    const el = track.current;
+    if (!el) return;
+    const onScroll = () => {
+      const first = el.children[0] as HTMLElement;
+      const second = el.children[1] as HTMLElement;
+      const pitch = second.offsetLeft - first.offsetLeft;
+      const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 4;
+      setI(atEnd ? quotes.length - 1 : Math.round(el.scrollLeft / pitch));
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { threshold: 0.4 });
+    io.observe(el);
+    return () => {
+      el.removeEventListener("scroll", onScroll);
+      io.disconnect();
+    };
+  }, []);
+
   useEffect(() => {
     if (!playing) return;
-    const t = window.setTimeout(() => setI((n) => (n + 1) % quotes.length), QUOTE_STEP * 1000);
+    const t = window.setTimeout(() => go(i + 1), QUOTE_STEP * 1000);
     return () => window.clearTimeout(t);
-  }, [i, playing]);
-  const q = quotes[i];
-  const initials = q.by
-    .split(" ")
-    .slice(0, 2)
-    .map((w) => w[0])
-    .join("");
+  }, [i, playing]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <section id="voices" className="block">
       <div className="container">
-        <Reveal as="h2" className="h1 voices__title">
-          What others say
-        </Reveal>
-        <Reveal
-          className="voices"
-          amount={0.4}
-        >
-          <div
-            className="voices__card"
-            onMouseEnter={() => setPaused(true)}
-            onMouseLeave={() => setPaused(false)}
-            onFocus={() => setPaused(true)}
-            onBlur={() => setPaused(false)}
+        <div className="voices__head">
+          <Reveal as="h2" className="h1 voices__title">
+            What others say
+          </Reveal>
+          <div className="voices__arrows">
+            <button type="button" aria-label="Previous quote" onClick={() => step(-1)}>
+              ←
+            </button>
+            <button type="button" aria-label="Next quote" onClick={() => step(1)}>
+              →
+            </button>
+          </div>
+        </div>
+        <Reveal amount={0.3}>
+          <ol
+            ref={track}
+            className="voices__track"
+            aria-label="Testimonials"
+            onMouseEnter={() => setHeld(true)}
+            onMouseLeave={() => setHeld(false)}
+            onFocus={() => setHeld(true)}
+            onBlur={() => setHeld(false)}
+            onPointerDown={() => setTaken(true)}
+            onWheel={(e) => Math.abs(e.deltaX) > Math.abs(e.deltaY) && setTaken(true)}
           >
-            <svg className="voices__mark" viewBox="0 0 48 36" aria-hidden="true">
-              <path
-                fill="currentColor"
-                d="M0 36V22C0 9.5 6.2 2.2 18.6 0l2 5.2C13.4 7 9.9 11.3 9.6 18H20v18H0Zm27 0V22C27 9.5 33.2 2.2 45.6 0l2 5.2C40.4 7 36.9 11.3 36.6 18H47v18H27Z"
-              />
-            </svg>
-            <div className="voices__stage" aria-live="polite">
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.figure
-                  key={i}
-                  className="voices__quote"
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -12 }}
-                  transition={{ duration: 0.6, ease }}
-                >
-                  <blockquote>{q.text}</blockquote>
-                  <figcaption>
-                    <span className="voices__avatar" aria-hidden="true">
-                      {initials}
-                    </span>
-                    {q.by}
-                  </figcaption>
-                </motion.figure>
-              </AnimatePresence>
-            </div>
-            <div className="voices__nav">
-              <ol className="voices__bars">
-                {quotes.map((x, n) => (
-                  <li key={x.by}>
-                    <button type="button" onClick={() => setI(n)} aria-label={`Quote from ${x.by}`} aria-current={n === i}>
-                      <span className="voices__track">
-                        <motion.span
-                          key={n === i ? `on-${i}-${playing}` : "off"}
-                          className="voices__fill"
-                          initial={{ scaleX: n === i && !playing ? 1 : 0 }}
-                          animate={{ scaleX: n === i ? 1 : 0 }}
-                          transition={n === i && playing ? { duration: QUOTE_STEP, ease: "linear" } : { duration: 0.3 }}
-                        />
-                      </span>
-                    </button>
-                  </li>
-                ))}
-              </ol>
-              <div className="voices__arrows">
-                <button
-                  type="button"
-                  aria-label="Previous quote"
-                  onClick={() => setI((n) => (n - 1 + quotes.length) % quotes.length)}
-                >
-                  ←
-                </button>
-                <button type="button" aria-label="Next quote" onClick={() => setI((n) => (n + 1) % quotes.length)}>
-                  →
-                </button>
-              </div>
-            </div>
+            {quotes.map((q, n) => (
+              <li key={q.by} className={`voice voice--${quoteTones[n % quoteTones.length]}`}>
+                <Flower className="voice__bloom" />
+                <blockquote>“{q.text}”</blockquote>
+                <p className="voice__by">{q.by}</p>
+              </li>
+            ))}
+          </ol>
+          <div className="voices__dots">
+            {quotes.map((q, n) => (
+              <button
+                key={q.by}
+                type="button"
+                aria-label={`Quote from ${q.by}`}
+                aria-current={n === i}
+                onClick={() => {
+                  setTaken(true);
+                  go(n);
+                }}
+              >
+                <span className="voices__dot">
+                  {n === i && (
+                    <motion.span
+                      key={`${i}-${playing}`}
+                      className="voices__fill"
+                      initial={{ scaleX: playing ? 0 : 1 }}
+                      animate={{ scaleX: 1 }}
+                      transition={playing ? { duration: QUOTE_STEP, ease: "linear" } : { duration: 0 }}
+                    />
+                  )}
+                </span>
+              </button>
+            ))}
           </div>
         </Reveal>
       </div>

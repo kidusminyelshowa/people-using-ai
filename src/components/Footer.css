@@ -30,9 +30,9 @@
   gap: 24px;
 }
 .footer__brand img {
-  width: 56px;
-  height: 56px;
-  border-radius: 14px;
+  width: 88px;
+  height: 88px;
+  border-radius: 20px;
 }
 .footer__email {
   margin-top: 16px;

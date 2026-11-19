@@ -124,63 +124,54 @@
 /* ---------- AI didn't come with a manual ---------- */
 .manual__grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: center;
-  gap: clamp(40px, 6vw, 96px);
+  gap: clamp(40px, 6vw, 120px);
 }
 .manual__copy {
   display: grid;
-  gap: clamp(24px, 3vw, 40px);
+  gap: clamp(20px, 2.4vw, 36px);
 }
 .manual__title {
   font-size: clamp(2.5rem, 4.4vw, 7rem);
   line-height: 1.05;
 }
 .manual__copy .statement-text {
-  max-width: 26ch;
+  max-width: 24ch;
 }
 .manual__copy .lede {
-  max-width: 50ch;
+  max-width: 44ch;
 }
+/* A square stage; every bloom is placed in % of it */
 .manual__faces {
   position: relative;
-  aspect-ratio: 1 / 1.05;
+  aspect-ratio: 1;
 }
-.face {
+.bloom {
   position: absolute;
 }
-.face img {
+.bloom__inner > img,
+.bloom__inner svg {
+  display: block;
   width: 100%;
-  aspect-ratio: 1;
-  border-radius: 50%;
+  aspect-ratio: 597.93 / 619.89;
+}
+.bloom__inner > img {
   object-fit: cover;
-  box-shadow: 0 24px 48px -24px rgb(0 0 0 / 0.35);
+  -webkit-mask: url("/shapes/flower.svg") center / contain no-repeat;
+  mask: url("/shapes/flower.svg") center / contain no-repeat;
 }
-.face--a {
-  top: 2%;
-  left: 8%;
-  width: 40%;
+/* A soft shadow traces the flower edge, so pale photos keep their shape */
+.bloom__inner:has(> img) {
+  filter: drop-shadow(0 18px 22px rgb(32 34 43 / 0.2));
 }
-.face--b {
-  top: 0;
-  right: 2%;
-  width: 28%;
-}
-.face--c {
-  top: 38%;
-  right: 10%;
-  width: 36%;
-}
-.face--d {
-  bottom: 2%;
-  left: 2%;
-  width: 30%;
-}
-.face--e {
-  top: 50%;
-  left: 34%;
-  width: 20%;
-}
+.bloom--a { top: 0; left: 0; width: 50%; }
+.bloom--b { top: 6%; right: 2%; width: 34%; }
+.bloom--c { bottom: 0; right: 0; width: 44%; }
+.bloom--d { bottom: 4%; left: 8%; width: 30%; }
+.bloom--e { top: 42%; left: 44%; width: 16%; }
+.bloom--f { top: 0; left: 52%; width: 10%; }
+.bloom--g { bottom: 2%; left: 0; width: 9%; }
 
 /* ---------- Framework: all four skills in one view ---------- */
 .framework__head {
@@ -203,40 +194,72 @@
   margin-top: clamp(40px, 5vw, 64px);
 }
 .skill {
+  --tone: var(--yellow);
+  --fg: var(--night);
+  --badge: var(--night);
+  --bloom: rgb(255 255 255 / 0.4);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: grid;
   grid-template-rows: auto auto 1fr;
   gap: 14px;
-  min-height: clamp(240px, 21vw, 300px);
+  min-height: clamp(280px, 24vw, 380px);
   padding: clamp(24px, 2.6vw, 36px);
   border-radius: var(--radius);
-  background: var(--warm);
-  transition:
-    background-color 0.5s var(--ease),
-    color 0.5s var(--ease);
+  background: var(--tone);
+  color: var(--fg);
 }
-.skill__icon {
-  width: 48px;
-  height: 48px;
-  margin-bottom: clamp(16px, 2.4vw, 32px);
-  color: var(--coral);
-  transition: color 0.5s var(--ease);
+.skill--green { --tone: var(--green); }
+.skill--pink { --tone: var(--pink); }
+.skill--navy {
+  --tone: var(--navy);
+  --fg: #fff;
+  --badge: var(--yellow);
+  --bloom: rgb(255 255 255 / 0.1);
+}
+.skill__badge {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  margin-bottom: clamp(16px, 2.4vw, 40px);
+  color: var(--badge);
+}
+.skill__badge svg {
+  width: 100%;
+  transition: transform 0.9s var(--ease);
+}
+.skill__badge span {
+  position: absolute;
+  color: var(--tone);
+  font: 700 1rem/1 var(--font-sans);
+  letter-spacing: 0;
 }
 .skill__name {
   font-size: clamp(1.9rem, 2.8vw, 2.75rem);
   letter-spacing: -0.02em;
 }
 .skill__line {
-  color: var(--slate);
+  max-width: 30ch;
   line-height: 1.45;
-  transition: color 0.5s var(--ease);
+  opacity: 0.82;
 }
-.skill:hover {
-  background: var(--coral);
-  color: #fff;
+/* A large flower bleeds off the corner and turns on hover */
+.skill__bloom {
+  position: absolute;
+  z-index: -1;
+  right: -30%;
+  bottom: -36%;
+  width: 70%;
+  color: var(--bloom);
+  transition: transform 1.2s var(--ease);
 }
-.skill:hover .skill__icon,
-.skill:hover .skill__line {
-  color: #fff;
+.skill:hover .skill__bloom {
+  transform: rotate(40deg) scale(1.06);
+}
+.skill:hover .skill__badge svg {
+  transform: rotate(-45deg);
 }
 
 /* ---------- Three ways to work with us ---------- */
@@ -322,80 +345,101 @@
 }
 
 /* ---------- What others say ---------- */
-.voices {
-  margin-top: clamp(40px, 5vw, 64px);
-}
-.voices__card {
-  display: grid;
-  gap: clamp(28px, 4vw, 48px);
-  padding: clamp(28px, 4.5vw, 64px);
-  border-radius: var(--radius);
-  background: var(--ink);
-  color: #fff;
-}
-.voices__mark {
-  width: clamp(44px, 5vw, 64px);
-  color: var(--coral);
-}
-.voices__stage {
-  display: grid;
-  min-height: clamp(200px, 18vw, 260px);
-  align-items: start;
-}
-.voices__quote blockquote {
-  max-width: 30ch;
-  margin: 0;
-  font-size: clamp(1.6rem, 3.2vw, 3rem);
-  font-weight: 700;
-  letter-spacing: -0.015em;
-  line-height: 1.15;
-}
-.voices__quote figcaption {
+.voices__head {
   display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-top: clamp(24px, 3vw, 36px);
-  color: rgb(255 255 255 / 0.85);
-  font-weight: 700;
-}
-.voices__avatar {
-  display: grid;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: var(--coral);
-  color: #fff;
-  font-size: 0.95rem;
-}
-.voices__nav {
-  display: flex;
-  align-items: center;
+  align-items: end;
   justify-content: space-between;
   gap: 24px;
+  margin-bottom: clamp(32px, 4vw, 56px);
 }
-.voices__bars {
+.voices__track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: clamp(300px, 42%, 760px);
+  gap: clamp(12px, 1.4vw, 20px);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  /* let the row run to the screen edge while cards still line up with the page */
+  margin-right: calc(-1 * var(--gutter));
+  padding-right: var(--gutter);
+  scroll-padding-inline: 0;
+}
+.voices__track::-webkit-scrollbar {
+  display: none;
+}
+.voice {
+  --tone: var(--yellow);
+  --fg: var(--night);
+  --bloom: rgb(255 255 255 / 0.4);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: flex;
-  gap: 8px;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 32px;
+  min-height: clamp(300px, 26vw, 420px);
+  padding: clamp(28px, 3vw, 48px);
+  border-radius: var(--radius);
+  background: var(--tone);
+  color: var(--fg);
+  scroll-snap-align: start;
 }
-.voices__bars button {
+.voice--pink { --tone: var(--pink); }
+.voice--green { --tone: var(--green); }
+.voice--navy {
+  --tone: var(--navy);
+  --fg: #fff;
+  --bloom: rgb(255 255 255 / 0.1);
+}
+.voice blockquote {
+  margin: 0;
+  font-size: clamp(1.35rem, 2vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.012em;
+  line-height: 1.22;
+  text-wrap: pretty;
+}
+.voice__by {
+  font-weight: 700;
+  opacity: 0.8;
+}
+.voice__bloom {
+  position: absolute;
+  z-index: -1;
+  right: -14%;
+  bottom: -30%;
+  width: 46%;
+  color: var(--bloom);
+}
+.voices__dots {
+  display: flex;
+  gap: 6px;
+  margin-top: 20px;
+}
+.voices__dots button {
   padding: 12px 0;
   border: 0;
   background: none;
   cursor: pointer;
 }
-.voices__track {
+.voices__dot {
   display: block;
-  width: clamp(40px, 6vw, 72px);
-  height: 3px;
-  border-radius: 3px;
-  background: rgb(255 255 255 / 0.25);
+  width: 40px;
+  height: 4px;
+  border-radius: 4px;
+  background: var(--line);
   overflow: hidden;
+}
+.voices__dots button[aria-current="true"] .voices__dot {
+  width: 64px;
 }
 .voices__fill {
   display: block;
   height: 100%;
-  background: #fff;
+  background: var(--coral);
   transform-origin: left;
 }
 .voices__arrows {
@@ -403,22 +447,29 @@
   gap: 8px;
 }
 .voices__arrows button {
-  width: 48px;
-  height: 48px;
-  border: 1px solid rgb(255 255 255 / 0.3);
+  width: 52px;
+  height: 52px;
+  border: 1px solid var(--line);
   border-radius: 50%;
-  background: none;
-  color: #fff;
+  background: #fff;
+  color: var(--ink);
   font: inherit;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   cursor: pointer;
   transition:
     background-color 0.3s var(--ease),
-    color 0.3s var(--ease);
+    color 0.3s var(--ease),
+    border-color 0.3s var(--ease);
 }
 .voices__arrows button:hover {
-  background: #fff;
-  color: var(--ink);
+  border-color: var(--ink);
+  background: var(--ink);
+  color: #fff;
+}
+@media (max-width: 720px) {
+  .voices__track {
+    grid-auto-columns: 86%;
+  }
 }
 
 @media (max-width: 1000px) {
@@ -452,10 +503,12 @@
     min-height: 0;
     padding: 18px;
   }
-  .skill__icon {
-    width: 36px;
-    height: 36px;
+  .skill__badge {
+    width: 44px;
     margin-bottom: 8px;
+  }
+  .skill__badge span {
+    font-size: 0.8rem;
   }
   .skill__name {
     font-size: 1.5rem;

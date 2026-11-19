@@ -30,7 +30,7 @@
 }
 .header__brand img {
   width: auto;
-  height: 44px;
+  height: 56px;
 }
 .header__nav {
   display: flex;
@@ -46,6 +46,13 @@
 .header__link:hover,
 .header__link.is-active {
   color: var(--coral);
+}
+
+/* Quieter than the page's main buttons */
+.header__cta {
+  min-height: 38px;
+  padding: 0 1.1em;
+  font-size: 0.9rem;
 }
 
 .header__toggle {
