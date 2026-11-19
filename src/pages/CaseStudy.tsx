@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "motion/react";
 import { Reveal, Stagger, StaggerItem, ease } from "../components/motion";
@@ -35,27 +36,35 @@ export default function CaseStudy() {
 
   return (
     <main id="main" className="cs">
-      <section className="cs-top">
+      <section
+        className="cs-top"
+        style={cs.theme && ({ "--cs-bg": cs.theme.bg, "--cs-fg": cs.theme.fg } as CSSProperties)}
+      >
         <div className="container cs-top__inner">
-          <div className="cs-top__brand">
-            {cs.backTo && (
-              <motion.div {...enter(0)}>
-                <Link className="text-link cs-back" to={cs.backTo.to}>
-                  ← {cs.backTo.label}
-                </Link>
-              </motion.div>
-            )}
-            <motion.h1 className="cs-logo" {...enter(0.1)}>
-              {cs.logo ? <img src={cs.logo} alt={cs.client} /> : <span className="display">{cs.client}</span>}
-            </motion.h1>
-          </div>
+          {cs.backTo && (
+            <motion.div className="cs-back-wrap" {...enter(0)}>
+              <Link className="text-link cs-back" to={cs.backTo.to} aria-label={`Back to ${cs.backTo.label}`}>
+                ←
+              </Link>
+            </motion.div>
+          )}
+          <motion.h1 className="cs-logo" {...enter(0.1)}>
+            {cs.logo ? <img src={cs.logo} alt={cs.client} /> : <span className="display">{cs.client}</span>}
+          </motion.h1>
 
           {cs.timeline && (
             <ol className="cs-timeline">
               {cs.timeline.map((t, i) => (
                 <motion.li key={t.label} className="cs-timeline__item" {...enter(0.25 + i * 0.15)}>
                   <h2 className="h3">{t.label}</h2>
-                  <p>{t.text}</p>
+                  {t.text && <p>{t.text}</p>}
+                  {t.items && (
+                    <ul className="cs-timeline__list">
+                      {t.items.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  )}
                   {t.by && <p className="cs-timeline__by">{t.by}</p>}
                 </motion.li>
               ))}
