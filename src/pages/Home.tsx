@@ -305,7 +305,7 @@ function Ways() {
           <Offer
             id="training"
             title="Workforce Upskilling"
-            image="laptopMeeting"
+            image="officeMeeting"
             body="We help individuals and teams explore AI, discover relevant tools, and build the skills to use them confidently and effectively."
           >
             <div className="rating">
