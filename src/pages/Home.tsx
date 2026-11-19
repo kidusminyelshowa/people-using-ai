@@ -157,15 +157,14 @@ function Manual() {
       <div className="container manual__grid">
         <div className="manual__copy">
           <Reveal as="h2" className="display manual__title">
-            AI didn’t come with a manual.
+            AI is moving faster than most of us can keep up with.
           </Reveal>
           <Reveal delay={0.1}>
-            <p className="statement-text">It’s changing how we work, communicate and live, faster than we can keep up.</p>
+            <p className="statement-text">The tools are here, but contextually practical guidance on how to apply them is hard to find.</p>
           </Reveal>
           <Reveal delay={0.2}>
             <p className="lede">
-              People Using AI helps everyday people understand, explore and apply AI in ways that are practical, accessible
-              and grounded in African contexts, whatever their technical background.
+              We close that gap for everyday AI users in Africa.
             </p>
           </Reveal>
         </div>
@@ -222,9 +221,7 @@ function Framework() {
           </Reveal>
           <Reveal delay={0.1}>
             <p className="lede">
-              We put critical thinking and human judgment at the heart of working with AI. Our framework adapts four
-              essential human skills to the AI context. Reading to understand, writing to express, speaking to exchange
-              ideas, and listening to make sense.
+              We put critical thinking and human judgment at the heart of working with AI. Our framework adapts four essential human skills to the AI context.
             </p>
           </Reveal>
         </div>
@@ -319,7 +316,6 @@ function Ways() {
                   See case study <span className="btn__arrow">→</span>
                 </Link>
               </p>
-              <p className="rating__endorse">Endorsed by OpenAI and Anthropic.</p>
             </div>
             <div className="workshop">
               <h4 className="workshop__label">Upcoming workshop</h4>
