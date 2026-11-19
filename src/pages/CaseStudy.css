@@ -1,5 +1,6 @@
-/* Top block: client logo left, challenge / deliverable / outcome right. */
+/* Top block on a solid colour: client logo left, challenge / deliverable / outcome right. */
 .cs-top {
+  background: var(--yellow);
   padding-top: calc(var(--header-h) + clamp(48px, 6vw, 112px));
   padding-bottom: clamp(56px, 7vw, 120px);
 }
@@ -21,12 +22,14 @@
   display: block;
   max-width: 10ch;
 }
-/* The Sierra file is 200px square, so it's kept at that size to stay sharp. */
+/* Logos are one-colour, background-free SVGs in night. */
 .cs-logo img {
   display: block;
-  width: min(100%, 200px);
+  width: min(100%, 380px);
   height: auto;
-  border-radius: var(--radius);
+}
+.cs-top .cs-back {
+  color: var(--night);
 }
 
 .cs-timeline {
@@ -43,7 +46,7 @@
   line-height: 1.45;
 }
 .cs-timeline__by {
-  color: var(--slate);
+  color: rgb(32 34 43 / 0.75); /* night, readable on the yellow */
   font-size: 0.95rem !important;
 }
 

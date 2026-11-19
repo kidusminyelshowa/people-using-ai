@@ -1,5 +1,5 @@
 // Case studies. Each one renders at /work/<slug> with the same layout:
-// a top block (client logo + challenge, deliverable and outcome),
+// a solid-colour top block (client logo + challenge, deliverable and outcome),
 // then a photo gallery with a partnership and rating band.
 // A study with `published: false` is listed on the home page without a link.
 
@@ -9,7 +9,8 @@ export type CaseStudy = {
   kind: string; // shown under the client's name on the home page
   published: boolean;
   backTo?: { label: string; to: string };
-  // Path to the client's logo (e.g. /logos/sierra.svg). Without one the
+  // Path to the client’s logo: a one-colour SVG with no background, in
+  // night (#20222b), e.g. /logos/sierra.svg. Without one the
   // client's name is set as a wordmark instead.
   logo?: string;
   // Shown top to bottom beside the logo.
@@ -27,7 +28,7 @@ export const caseStudies: CaseStudy[] = [
     kind: "Employee training",
     published: true,
     backTo: { label: "Workforce Upskilling", to: "/#training" },
-    logo: "/logos/sierra.webp",
+    logo: "/logos/sierra.svg",
     timeline: [
       {
         label: "Challenge",
