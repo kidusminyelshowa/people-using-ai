@@ -5,22 +5,32 @@ import { Parallax, Reveal, Stagger, StaggerItem, ease } from "../components/moti
 import { CtaBand } from "../components/Footer";
 import { useRegister, workshop, type Topic } from "../components/Register";
 import { photo, type PhotoName } from "../content/images";
+import Flower from "../components/Flower";
 import "./Home.css";
 
-// Hero video in public/video, compressed from the 15 MB master: AV1 for
-// browsers that play it (3.7 MB), H.264 otherwise (5.3 MB), and a 720p
-// H.264 cut for phones (3 MB). Set to false to fall back to the photos.
+// Hero video in public/video: a vertical cut for phones and a horizontal
+// one elsewhere, each as AV1 (about 2.7 MB) with an H.264 fallback.
+// Set HERO_VIDEO to false to fall back to the photos.
+const PHONE = "(max-width: 720px)";
 const HERO_VIDEO = true;
 const heroPhotos: PhotoName[] = ["laptopMeeting", "clay", "headphones"];
 const HERO_STEP = 6;
 
-const faces: { name: PhotoName; className: string; speed: number }[] = [
-  { name: "headphones", className: "face--a", speed: -60 },
-  { name: "goldenPortrait", className: "face--b", speed: 40 },
-  { name: "glasses", className: "face--c", speed: -100 },
-  { name: "portraitCalm", className: "face--d", speed: 70 },
-  { name: "glassSmile", className: "face--e", speed: -30 },
+// Faces in flower-shaped frames, with a few solid brand-colour flowers
+// between them. Each drifts at its own speed as the section scrolls by.
+type Bloom = { className: string; speed: number; spin?: number } & ({ name: PhotoName } | { color: string });
+const blooms: Bloom[] = [
+  { className: "bloom--a", name: "headphones", speed: -40 },
+  { className: "bloom--b", name: "goldenPortrait", speed: 30 },
+  { className: "bloom--c", name: "glasses", speed: -60 },
+  { className: "bloom--d", name: "portraitCalm", speed: 50 },
+  { className: "bloom--e", color: "var(--yellow)", speed: -90, spin: 40 },
+  { className: "bloom--f", color: "var(--green)", speed: 70, spin: -50 },
+  { className: "bloom--g", color: "var(--pink)", speed: -20, spin: 30 },
 ];
+
+// Each skill gets one of the brand's playful colours.
+const skillTone = { Read: "yellow", Write: "green", Speak: "pink", Listen: "navy" } as const;
 
 const skills = [
   { name: "Read", line: "Understand how AI works, what its tools can do and where their limitations and risks lie." },
@@ -35,6 +45,10 @@ const quotes = [
   {
     text: "The training was insightful and practical providing good understanding of how AI tools like Claude can be leveraged to improve productivity and simplify day-to-day tasks.",
     by: "Julius Mutie Safari",
+  },
+  {
+    text: "I’ve done Jan 2025 to June 2026 audit prep and financials prep in 4 hours with Claude. Would have taken me days… days of sleepless nights! Thank you",
+    by: "Sierra Breweries Finance Team",
   },
 ];
 
@@ -65,10 +79,19 @@ function Hero() {
         >
           <motion.div className="hero__media" style={{ y: mediaY }}>
             {HERO_VIDEO ? (
-              <video poster="/video/hero-poster.webp" autoPlay={!reduce} muted loop playsInline preload="auto" aria-hidden="true">
-                <source src="/video/hero-720.mp4" type="video/mp4" media="(max-width: 720px)" />
-                <source src="/video/hero-1080-av1.mp4" type='video/mp4; codecs="av01.0.08M.08"' />
-                <source src="/video/hero-1080.mp4" type="video/mp4" />
+              <video
+                poster={window.matchMedia(PHONE).matches ? "/video/hero-v-poster.webp" : "/video/hero-h-poster.webp"}
+                autoPlay={!reduce}
+                muted
+                loop
+                playsInline
+                preload="auto"
+                aria-hidden="true"
+              >
+                <source src="/video/hero-v-av1.mp4" type='video/mp4; codecs="av01.0.08M.08"' media={PHONE} />
+                <source src="/video/hero-v.mp4" type="video/mp4" media={PHONE} />
+                <source src="/video/hero-h-av1.mp4" type='video/mp4; codecs="av01.0.08M.08"' />
+                <source src="/video/hero-h.mp4" type="video/mp4" />
               </video>
             ) : (
               heroPhotos.map((name, n) => (
@@ -131,22 +154,28 @@ function Hero() {
 
 /* ---------- AI didn't come with a manual ---------- */
 
-function Face({ name, className, speed }: (typeof faces)[number]) {
+function BloomShape(b: Bloom) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], [speed, -speed]);
+  const y = useTransform(scrollYProgress, [0, 1], [b.speed, -b.speed]);
+  const rotate = useTransform(scrollYProgress, [0, 1], [-(b.spin ?? 0), b.spin ?? 0]);
   return (
-    <motion.div ref={ref} className={`face ${className}`} style={{ y }}>
-      <motion.img
-        {...photo(name)}
-        sizes="240px"
-        alt=""
-        loading="lazy"
+    <motion.div ref={ref} className={`bloom ${b.className}`} style={{ y }}>
+      <motion.div
+        className="bloom__inner"
         initial={{ scale: 0.6, opacity: 0 }}
         whileInView={{ scale: 1, opacity: 1 }}
         viewport={{ once: true, amount: 0.5 }}
         transition={{ duration: 1.1, ease }}
-      />
+      >
+        {"name" in b ? (
+          <img {...photo(b.name)} sizes="(max-width: 860px) 50vw, 25vw" alt="" loading="lazy" />
+        ) : (
+          <motion.div style={{ rotate }}>
+            <Flower color={b.color} />
+          </motion.div>
+        )}
+      </motion.div>
     </motion.div>
   );
 }
@@ -169,8 +198,8 @@ function Manual() {
           </Reveal>
         </div>
         <div className="manual__faces" aria-hidden="true">
-          {faces.map((f) => (
-            <Face key={f.name} {...f} />
+          {blooms.map((b) => (
+            <BloomShape key={b.className} {...b} />
           ))}
         </div>
       </div>
@@ -179,37 +208,6 @@ function Manual() {
 }
 
 /* ---------- Framework ---------- */
-
-function SkillIcon({ name }: { name: (typeof skills)[number]["name"] }) {
-  const common = { fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round" } as const;
-  return (
-    <svg viewBox="0 0 48 48" className="skill__icon" aria-hidden="true">
-      {name === "Read" && (
-        <g {...common}>
-          <path d="M24 13c-4-3-10-4-16-3v25c6-1 12 0 16 3 4-3 10-4 16-3V10c-6-1-12 0-16 3Z" />
-          <path d="M24 13v25" />
-        </g>
-      )}
-      {name === "Write" && (
-        <g {...common}>
-          <path d="M31 9l8 8-20 20-10 2 2-10 20-20Z" />
-          <path d="M27 13l8 8" />
-        </g>
-      )}
-      {name === "Speak" && (
-        <g {...common}>
-          <path d="M8 12h24v16H18l-7 6v-6H8z" />
-          <path d="M36 18h4v14h-3v5l-6-5h-9" />
-        </g>
-      )}
-      {name === "Listen" && (
-        <g {...common}>
-          <path d="M8 24h4M15 17v14M22 11v26M29 15v18M36 20v8M40 24h0" />
-        </g>
-      )}
-    </svg>
-  );
-}
 
 function Framework() {
   return (
@@ -227,10 +225,12 @@ function Framework() {
         </div>
         <Stagger className="skills">
           {skills.map((s) => (
-            <StaggerItem key={s.name} as="article" className="skill">
-              <SkillIcon name={s.name} />
-              <h3 className="skill__name">{s.name}</h3>
-              <p className="skill__line">{s.line}</p>
+            <StaggerItem key={s.name} as="article" className={`skill skill--${skillTone[s.name]}`}>
+              <Flower className="skill__shape" />
+              <div className="skill__body">
+                <h3 className="skill__name">{s.name}</h3>
+                <p className="skill__line">{s.line}</p>
+              </div>
             </StaggerItem>
           ))}
         </Stagger>
@@ -258,7 +258,7 @@ function Offer({
 }) {
   return (
     <article id={id} className={`offer ${flip ? "offer--flip" : ""}`}>
-      <Parallax {...photo(image)} sizes="(max-width: 860px) 100vw, 50vw" className="offer__photo" />
+      <Parallax {...photo(image)} sizes="(max-width: 860px) 100vw, 95vw" className="offer__photo" />
       <Reveal className="offer__text">
         <h3 className="h2 offer__title">{title}</h3>
         <p className="lede">{body}</p>
@@ -305,7 +305,7 @@ function Ways() {
           <Offer
             id="training"
             title="Workforce Upskilling"
-            image="workshop"
+            image="officeMeeting"
             body="We help individuals and teams explore AI, discover relevant tools, and build the skills to use them confidently and effectively."
           >
             <div className="rating">
@@ -329,7 +329,7 @@ function Ways() {
           <Offer
             id="research"
             title="Anthropological Research"
-            image="teamTable"
+            image="teamWall"
             flip
             body="We explore how AI is shaping human behaviour, communication, and everyday life, and how culture and context influence its adoption across East Africa."
           >
@@ -355,7 +355,9 @@ function Ways() {
 
 /* ---------- What others say ---------- */
 
-const QUOTE_STEP = 8;
+// Moves on every 5 seconds. Swipe or drag the card, use the arrows or the
+// keyboard's arrow keys, or pick a bar; hovering or focusing holds it.
+const QUOTE_STEP = 5;
 function Testimonials() {
   const reduce = useReducedMotion();
   const [i, setI] = useState(0);
@@ -363,9 +365,14 @@ function Testimonials() {
   const playing = !reduce && !paused;
   useEffect(() => {
     if (!playing) return;
-    const t = window.setTimeout(() => setI((n) => (n + 1) % quotes.length), QUOTE_STEP * 1000);
+    const t = window.setTimeout(() => go(1), QUOTE_STEP * 1000);
     return () => window.clearTimeout(t);
   }, [i, playing]);
+  const [dir, setDir] = useState(1);
+  const go = (d: number) => {
+    setDir(d);
+    setI((n) => (n + d + quotes.length) % quotes.length);
+  };
   const q = quotes[i];
   const initials = q.by
     .split(" ")
@@ -389,6 +396,10 @@ function Testimonials() {
             onMouseLeave={() => setPaused(false)}
             onFocus={() => setPaused(true)}
             onBlur={() => setPaused(false)}
+            onKeyDown={(e) => {
+              if (e.key === "ArrowRight") go(1);
+              if (e.key === "ArrowLeft") go(-1);
+            }}
           >
             <svg className="voices__mark" viewBox="0 0 48 36" aria-hidden="true">
               <path
@@ -401,10 +412,18 @@ function Testimonials() {
                 <motion.figure
                   key={i}
                   className="voices__quote"
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -12 }}
-                  transition={{ duration: 0.6, ease }}
+                  custom={dir}
+                  initial={{ opacity: 0, x: 40 * dir }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -40 * dir }}
+                  transition={{ duration: 0.35, ease }}
+                  drag="x"
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={0.25}
+                  onDragEnd={(_, info) => {
+                    if (info.offset.x < -60 || info.velocity.x < -400) go(1);
+                    else if (info.offset.x > 60 || info.velocity.x > 400) go(-1);
+                  }}
                 >
                   <blockquote>{q.text}</blockquote>
                   <figcaption>
@@ -420,7 +439,7 @@ function Testimonials() {
               <ol className="voices__bars">
                 {quotes.map((x, n) => (
                   <li key={x.by}>
-                    <button type="button" onClick={() => setI(n)} aria-label={`Quote from ${x.by}`} aria-current={n === i}>
+                    <button type="button" onClick={() => go(n - i)} aria-label={`Quote from ${x.by}`} aria-current={n === i}>
                       <span className="voices__track">
                         <motion.span
                           key={n === i ? `on-${i}-${playing}` : "off"}
@@ -438,11 +457,11 @@ function Testimonials() {
                 <button
                   type="button"
                   aria-label="Previous quote"
-                  onClick={() => setI((n) => (n - 1 + quotes.length) % quotes.length)}
+                  onClick={() => go(-1)}
                 >
                   ←
                 </button>
-                <button type="button" aria-label="Next quote" onClick={() => setI((n) => (n + 1) % quotes.length)}>
+                <button type="button" aria-label="Next quote" onClick={() => go(1)}>
                   →
                 </button>
               </div>

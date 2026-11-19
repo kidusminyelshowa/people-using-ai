@@ -1,6 +1,6 @@
 /* ---------- Hero ----------
-   Tablet and up: the words sit over a full-bleed photo.
-   Phones: the words sit on white with the photo beneath them. */
+   The words sit over a full-bleed video: centred on the left from tablet
+   up, and along the bottom on phones. */
 .hero {
   padding: var(--header-h) clamp(8px, 1.2vw, 16px) 0;
 }
@@ -88,29 +88,26 @@
   transform-origin: left;
 }
 
+/* Phones: the vertical video fills the screen under the header, and the
+   words sit over its lower half on a dark fade. */
 @media (max-width: 720px) {
   .hero {
-    padding-inline: 0;
-  }
-  .hero__stage {
-    display: flex;
-    flex-direction: column;
-  }
-  .hero__copy {
-    order: -1;
-    color: var(--ink);
-    padding-block: 40px 40px;
-  }
-  .hero__text {
-    color: var(--slate);
+    padding-inline: 8px;
   }
   .hero__frame {
-    height: 68svh;
-    min-height: 0;
-    margin-inline: 8px;
+    height: calc(100svh - var(--header-h) - 8px);
+    min-height: 520px;
+    max-height: none;
   }
   .hero__shade {
-    display: none;
+    background: linear-gradient(to top, rgb(0 0 0 / 0.75) 0%, rgb(0 0 0 / 0.45) 40%, rgb(0 0 0 / 0) 70%);
+  }
+  .hero__copy {
+    align-self: end;
+    padding-bottom: 32px;
+  }
+  .hero__title {
+    font-size: clamp(2.2rem, 10vw, 3rem);
   }
 }
 
@@ -124,63 +121,54 @@
 /* ---------- AI didn't come with a manual ---------- */
 .manual__grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: center;
-  gap: clamp(40px, 6vw, 96px);
+  gap: clamp(40px, 6vw, 120px);
 }
 .manual__copy {
   display: grid;
-  gap: clamp(24px, 3vw, 40px);
+  gap: clamp(20px, 2.4vw, 36px);
 }
 .manual__title {
   font-size: clamp(2.5rem, 4.4vw, 7rem);
   line-height: 1.05;
 }
 .manual__copy .statement-text {
-  max-width: 26ch;
+  max-width: 24ch;
 }
 .manual__copy .lede {
-  max-width: 50ch;
+  max-width: 44ch;
 }
+/* A square stage; every bloom is placed in % of it */
 .manual__faces {
   position: relative;
-  aspect-ratio: 1 / 1.05;
+  aspect-ratio: 1;
 }
-.face {
+.bloom {
   position: absolute;
 }
-.face img {
+.bloom__inner > img,
+.bloom__inner svg {
+  display: block;
   width: 100%;
-  aspect-ratio: 1;
-  border-radius: 50%;
+  aspect-ratio: 597.93 / 619.89;
+}
+.bloom__inner > img {
   object-fit: cover;
-  box-shadow: 0 24px 48px -24px rgb(0 0 0 / 0.35);
+  -webkit-mask: url("/shapes/flower.svg") center / contain no-repeat;
+  mask: url("/shapes/flower.svg") center / contain no-repeat;
 }
-.face--a {
-  top: 2%;
-  left: 8%;
-  width: 40%;
+/* A soft shadow traces the flower edge, so pale photos keep their shape */
+.bloom__inner:has(> img) {
+  filter: drop-shadow(0 18px 22px rgb(32 34 43 / 0.2));
 }
-.face--b {
-  top: 0;
-  right: 2%;
-  width: 28%;
-}
-.face--c {
-  top: 38%;
-  right: 10%;
-  width: 36%;
-}
-.face--d {
-  bottom: 2%;
-  left: 2%;
-  width: 30%;
-}
-.face--e {
-  top: 50%;
-  left: 34%;
-  width: 20%;
-}
+.bloom--a { top: 0; left: 0; width: 50%; }
+.bloom--b { top: 6%; right: 2%; width: 34%; }
+.bloom--c { bottom: 0; right: 0; width: 44%; }
+.bloom--d { bottom: 4%; left: 8%; width: 30%; }
+.bloom--e { top: 42%; left: 44%; width: 16%; }
+.bloom--f { top: 0; left: 52%; width: 10%; }
+.bloom--g { bottom: 2%; left: 0; width: 9%; }
 
 /* ---------- Framework: all four skills in one view ---------- */
 .framework__head {
@@ -199,44 +187,52 @@
 .skills {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: clamp(10px, 1.2vw, 16px);
+  gap: clamp(8px, 1vw, 16px);
   margin-top: clamp(40px, 5vw, 64px);
 }
+/* Each skill sits inside a brand flower, which turns slowly on hover */
 .skill {
+  --tone: var(--yellow);
+  --fg: var(--night);
+  position: relative;
   display: grid;
-  grid-template-rows: auto auto 1fr;
-  gap: 14px;
-  min-height: clamp(240px, 21vw, 300px);
-  padding: clamp(24px, 2.6vw, 36px);
-  border-radius: var(--radius);
-  background: var(--warm);
-  transition:
-    background-color 0.5s var(--ease),
-    color 0.5s var(--ease);
+  place-items: center;
+  aspect-ratio: 597.93 / 619.89;
+  color: var(--fg);
+  text-align: center;
 }
-.skill__icon {
-  width: 48px;
-  height: 48px;
-  margin-bottom: clamp(16px, 2.4vw, 32px);
-  color: var(--coral);
-  transition: color 0.5s var(--ease);
+.skill--green { --tone: var(--green); }
+.skill--pink { --tone: var(--pink); }
+.skill--navy {
+  --tone: var(--navy);
+  --fg: #fff;
+}
+.skill__shape {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: var(--tone);
+  transition: transform 1.4s var(--ease);
+}
+.skill:hover .skill__shape {
+  transform: rotate(30deg);
+}
+.skill__body {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  width: 66%;
 }
 .skill__name {
-  font-size: clamp(1.9rem, 2.8vw, 2.75rem);
+  font-size: clamp(1.6rem, 2.4vw, 2.6rem);
   letter-spacing: -0.02em;
 }
 .skill__line {
-  color: var(--slate);
-  line-height: 1.45;
-  transition: color 0.5s var(--ease);
-}
-.skill:hover {
-  background: var(--coral);
-  color: #fff;
-}
-.skill:hover .skill__icon,
-.skill:hover .skill__line {
-  color: #fff;
+  font-size: clamp(0.9rem, 1.05vw, 1.15rem);
+  line-height: 1.4;
+  opacity: 0.85;
 }
 
 /* ---------- Three ways to work with us ---------- */
@@ -339,6 +335,7 @@
 }
 .voices__stage {
   display: grid;
+  overflow: hidden;
   min-height: clamp(200px, 18vw, 260px);
   align-items: start;
 }
@@ -421,6 +418,14 @@
   color: var(--ink);
 }
 
+.voices__quote {
+  cursor: grab;
+  touch-action: pan-y;
+}
+.voices__quote:active {
+  cursor: grabbing;
+}
+
 @media (max-width: 1000px) {
   .skills {
     grid-template-columns: 1fr 1fr;
@@ -447,20 +452,22 @@
   }
 }
 @media (max-width: 520px) {
+  /* Phones: the flowers cascade, overlapping a little, left and right */
+  .skills {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
   .skill {
-    gap: 8px;
-    min-height: 0;
-    padding: 18px;
+    width: 80%;
+    justify-self: start;
   }
-  .skill__icon {
-    width: 36px;
-    height: 36px;
-    margin-bottom: 8px;
+  .skill:nth-child(even) {
+    justify-self: end;
   }
-  .skill__name {
-    font-size: 1.5rem;
+  .skill + .skill {
+    margin-top: -14%;
   }
   .skill__line {
-    font-size: 0.92rem;
+    font-size: 0.95rem;
   }
 }
