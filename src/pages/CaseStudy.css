@@ -13,6 +13,8 @@
 }
 .cs-top .cs-back {
   color: var(--night);
+  font-size: clamp(2.4rem, 3.6vw, 3.6rem);
+  line-height: 1;
 }
 .cs-logo .display {
   display: block;
