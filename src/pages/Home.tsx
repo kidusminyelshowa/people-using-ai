@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { Parallax, Reveal, Stagger, StaggerItem, ease } from "../components/motion";
 import { CtaBand } from "../components/Footer";
 import { useRegister, workshop, type Topic } from "../components/Register";
@@ -8,9 +8,10 @@ import { photo, type PhotoName } from "../content/images";
 import Flower from "../components/Flower";
 import "./Home.css";
 
-// Hero video in public/video, compressed from the 15 MB master: AV1 for
-// browsers that play it (3.7 MB), H.264 otherwise (5.3 MB), and a 720p
-// H.264 cut for phones (3 MB). Set to false to fall back to the photos.
+// Hero video in public/video: a vertical cut for phones and a horizontal
+// one elsewhere, each as AV1 (about 2.7 MB) with an H.264 fallback.
+// Set HERO_VIDEO to false to fall back to the photos.
+const PHONE = "(max-width: 720px)";
 const HERO_VIDEO = true;
 const heroPhotos: PhotoName[] = ["laptopMeeting", "clay", "headphones"];
 const HERO_STEP = 6;
@@ -78,10 +79,19 @@ function Hero() {
         >
           <motion.div className="hero__media" style={{ y: mediaY }}>
             {HERO_VIDEO ? (
-              <video poster="/video/hero-poster.webp" autoPlay={!reduce} muted loop playsInline preload="auto" aria-hidden="true">
-                <source src="/video/hero-720.mp4" type="video/mp4" media="(max-width: 720px)" />
-                <source src="/video/hero-1080-av1.mp4" type='video/mp4; codecs="av01.0.08M.08"' />
-                <source src="/video/hero-1080.mp4" type="video/mp4" />
+              <video
+                poster={window.matchMedia(PHONE).matches ? "/video/hero-v-poster.webp" : "/video/hero-h-poster.webp"}
+                autoPlay={!reduce}
+                muted
+                loop
+                playsInline
+                preload="auto"
+                aria-hidden="true"
+              >
+                <source src="/video/hero-v-av1.mp4" type='video/mp4; codecs="av01.0.08M.08"' media={PHONE} />
+                <source src="/video/hero-v.mp4" type="video/mp4" media={PHONE} />
+                <source src="/video/hero-h-av1.mp4" type='video/mp4; codecs="av01.0.08M.08"' />
+                <source src="/video/hero-h.mp4" type="video/mp4" />
               </video>
             ) : (
               heroPhotos.map((name, n) => (
@@ -214,15 +224,13 @@ function Framework() {
           </Reveal>
         </div>
         <Stagger className="skills">
-          {skills.map((s, n) => (
+          {skills.map((s) => (
             <StaggerItem key={s.name} as="article" className={`skill skill--${skillTone[s.name]}`}>
-              <span className="skill__badge" aria-hidden="true">
-                <Flower />
-                <span>{String(n + 1).padStart(2, "0")}</span>
-              </span>
-              <h3 className="skill__name">{s.name}</h3>
-              <p className="skill__line">{s.line}</p>
-              <Flower className="skill__bloom" />
+              <Flower className="skill__shape" />
+              <div className="skill__body">
+                <h3 className="skill__name">{s.name}</h3>
+                <p className="skill__line">{s.line}</p>
+              </div>
             </StaggerItem>
           ))}
         </Stagger>
@@ -347,119 +355,117 @@ function Ways() {
 
 /* ---------- What others say ---------- */
 
-// A row of quote cards you can swipe, drag or step through with the arrows.
-// It moves on by itself every few seconds until you take over; hovering
-// or focusing it holds it still.
+// Moves on every 5 seconds. Swipe or drag the card, use the arrows or the
+// keyboard's arrow keys, or pick a bar; hovering or focusing holds it.
 const QUOTE_STEP = 5;
-const quoteTones = ["yellow", "pink", "green", "navy"] as const;
-
 function Testimonials() {
   const reduce = useReducedMotion();
-  const track = useRef<HTMLOListElement>(null);
   const [i, setI] = useState(0);
-  const [held, setHeld] = useState(false);
-  const [taken, setTaken] = useState(false); // the visitor has stepped through themselves
-  const [inView, setInView] = useState(false);
-  const playing = !reduce && !held && !taken && inView;
-
-  const go = (n: number) => {
-    const el = track.current;
-    if (!el) return;
-    const card = el.children[(n + quotes.length) % quotes.length] as HTMLElement;
-    el.scrollTo({ left: card.offsetLeft - el.offsetLeft, behavior: reduce ? "auto" : "smooth" });
-  };
-  const step = (d: number) => {
-    setTaken(true);
-    go(i + d);
-  };
-
-  // Which card is in front follows the scroll position, however it got there.
-  useEffect(() => {
-    const el = track.current;
-    if (!el) return;
-    const onScroll = () => {
-      const first = el.children[0] as HTMLElement;
-      const second = el.children[1] as HTMLElement;
-      const pitch = second.offsetLeft - first.offsetLeft;
-      const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 4;
-      setI(atEnd ? quotes.length - 1 : Math.round(el.scrollLeft / pitch));
-    };
-    el.addEventListener("scroll", onScroll, { passive: true });
-    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { threshold: 0.4 });
-    io.observe(el);
-    return () => {
-      el.removeEventListener("scroll", onScroll);
-      io.disconnect();
-    };
-  }, []);
-
+  const [paused, setPaused] = useState(false);
+  const playing = !reduce && !paused;
   useEffect(() => {
     if (!playing) return;
-    const t = window.setTimeout(() => go(i + 1), QUOTE_STEP * 1000);
+    const t = window.setTimeout(() => go(1), QUOTE_STEP * 1000);
     return () => window.clearTimeout(t);
-  }, [i, playing]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [i, playing]);
+  const [dir, setDir] = useState(1);
+  const go = (d: number) => {
+    setDir(d);
+    setI((n) => (n + d + quotes.length) % quotes.length);
+  };
+  const q = quotes[i];
+  const initials = q.by
+    .split(" ")
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join("");
 
   return (
     <section id="voices" className="block">
       <div className="container">
-        <div className="voices__head">
-          <Reveal as="h2" className="h1 voices__title">
-            What others say
-          </Reveal>
-          <div className="voices__arrows">
-            <button type="button" aria-label="Previous quote" onClick={() => step(-1)}>
-              ←
-            </button>
-            <button type="button" aria-label="Next quote" onClick={() => step(1)}>
-              →
-            </button>
-          </div>
-        </div>
-        <Reveal amount={0.3}>
-          <ol
-            ref={track}
-            className="voices__track"
-            aria-label="Testimonials"
-            onMouseEnter={() => setHeld(true)}
-            onMouseLeave={() => setHeld(false)}
-            onFocus={() => setHeld(true)}
-            onBlur={() => setHeld(false)}
-            onPointerDown={() => setTaken(true)}
-            onWheel={(e) => Math.abs(e.deltaX) > Math.abs(e.deltaY) && setTaken(true)}
+        <Reveal as="h2" className="h1 voices__title">
+          What others say
+        </Reveal>
+        <Reveal
+          className="voices"
+          amount={0.4}
+        >
+          <div
+            className="voices__card"
+            onMouseEnter={() => setPaused(true)}
+            onMouseLeave={() => setPaused(false)}
+            onFocus={() => setPaused(true)}
+            onBlur={() => setPaused(false)}
+            onKeyDown={(e) => {
+              if (e.key === "ArrowRight") go(1);
+              if (e.key === "ArrowLeft") go(-1);
+            }}
           >
-            {quotes.map((q, n) => (
-              <li key={q.by} className={`voice voice--${quoteTones[n % quoteTones.length]}`}>
-                <Flower className="voice__bloom" />
-                <blockquote>“{q.text}”</blockquote>
-                <p className="voice__by">{q.by}</p>
-              </li>
-            ))}
-          </ol>
-          <div className="voices__dots">
-            {quotes.map((q, n) => (
-              <button
-                key={q.by}
-                type="button"
-                aria-label={`Quote from ${q.by}`}
-                aria-current={n === i}
-                onClick={() => {
-                  setTaken(true);
-                  go(n);
-                }}
-              >
-                <span className="voices__dot">
-                  {n === i && (
-                    <motion.span
-                      key={`${i}-${playing}`}
-                      className="voices__fill"
-                      initial={{ scaleX: playing ? 0 : 1 }}
-                      animate={{ scaleX: 1 }}
-                      transition={playing ? { duration: QUOTE_STEP, ease: "linear" } : { duration: 0 }}
-                    />
-                  )}
-                </span>
-              </button>
-            ))}
+            <svg className="voices__mark" viewBox="0 0 48 36" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M0 36V22C0 9.5 6.2 2.2 18.6 0l2 5.2C13.4 7 9.9 11.3 9.6 18H20v18H0Zm27 0V22C27 9.5 33.2 2.2 45.6 0l2 5.2C40.4 7 36.9 11.3 36.6 18H47v18H27Z"
+              />
+            </svg>
+            <div className="voices__stage" aria-live="polite">
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.figure
+                  key={i}
+                  className="voices__quote"
+                  custom={dir}
+                  initial={{ opacity: 0, x: 40 * dir }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -40 * dir }}
+                  transition={{ duration: 0.35, ease }}
+                  drag="x"
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={0.25}
+                  onDragEnd={(_, info) => {
+                    if (info.offset.x < -60 || info.velocity.x < -400) go(1);
+                    else if (info.offset.x > 60 || info.velocity.x > 400) go(-1);
+                  }}
+                >
+                  <blockquote>{q.text}</blockquote>
+                  <figcaption>
+                    <span className="voices__avatar" aria-hidden="true">
+                      {initials}
+                    </span>
+                    {q.by}
+                  </figcaption>
+                </motion.figure>
+              </AnimatePresence>
+            </div>
+            <div className="voices__nav">
+              <ol className="voices__bars">
+                {quotes.map((x, n) => (
+                  <li key={x.by}>
+                    <button type="button" onClick={() => go(n - i)} aria-label={`Quote from ${x.by}`} aria-current={n === i}>
+                      <span className="voices__track">
+                        <motion.span
+                          key={n === i ? `on-${i}-${playing}` : "off"}
+                          className="voices__fill"
+                          initial={{ scaleX: n === i && !playing ? 1 : 0 }}
+                          animate={{ scaleX: n === i ? 1 : 0 }}
+                          transition={n === i && playing ? { duration: QUOTE_STEP, ease: "linear" } : { duration: 0.3 }}
+                        />
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ol>
+              <div className="voices__arrows">
+                <button
+                  type="button"
+                  aria-label="Previous quote"
+                  onClick={() => go(-1)}
+                >
+                  ←
+                </button>
+                <button type="button" aria-label="Next quote" onClick={() => go(1)}>
+                  →
+                </button>
+              </div>
+            </div>
           </div>
         </Reveal>
       </div>

@@ -1,6 +1,6 @@
 /* ---------- Hero ----------
-   Tablet and up: the words sit over a full-bleed photo.
-   Phones: the words sit on white with the photo beneath them. */
+   The words sit over a full-bleed video: centred on the left from tablet
+   up, and along the bottom on phones. */
 .hero {
   padding: var(--header-h) clamp(8px, 1.2vw, 16px) 0;
 }
@@ -88,29 +88,26 @@
   transform-origin: left;
 }
 
+/* Phones: the vertical video fills the screen under the header, and the
+   words sit over its lower half on a dark fade. */
 @media (max-width: 720px) {
   .hero {
-    padding-inline: 0;
-  }
-  .hero__stage {
-    display: flex;
-    flex-direction: column;
-  }
-  .hero__copy {
-    order: -1;
-    color: var(--ink);
-    padding-block: 40px 40px;
-  }
-  .hero__text {
-    color: var(--slate);
+    padding-inline: 8px;
   }
   .hero__frame {
-    height: 68svh;
-    min-height: 0;
-    margin-inline: 8px;
+    height: calc(100svh - var(--header-h) - 8px);
+    min-height: 520px;
+    max-height: none;
   }
   .hero__shade {
-    display: none;
+    background: linear-gradient(to top, rgb(0 0 0 / 0.75) 0%, rgb(0 0 0 / 0.45) 40%, rgb(0 0 0 / 0) 70%);
+  }
+  .hero__copy {
+    align-self: end;
+    padding-bottom: 32px;
+  }
+  .hero__title {
+    font-size: clamp(2.2rem, 10vw, 3rem);
   }
 }
 
@@ -190,76 +187,52 @@
 .skills {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: clamp(10px, 1.2vw, 16px);
+  gap: clamp(8px, 1vw, 16px);
   margin-top: clamp(40px, 5vw, 64px);
 }
+/* Each skill sits inside a brand flower, which turns slowly on hover */
 .skill {
   --tone: var(--yellow);
   --fg: var(--night);
-  --badge: var(--night);
-  --bloom: rgb(255 255 255 / 0.4);
   position: relative;
-  isolation: isolate;
-  overflow: hidden;
   display: grid;
-  grid-template-rows: auto auto 1fr;
-  gap: 14px;
-  min-height: clamp(280px, 24vw, 380px);
-  padding: clamp(24px, 2.6vw, 36px);
-  border-radius: var(--radius);
-  background: var(--tone);
+  place-items: center;
+  aspect-ratio: 597.93 / 619.89;
   color: var(--fg);
+  text-align: center;
 }
 .skill--green { --tone: var(--green); }
 .skill--pink { --tone: var(--pink); }
 .skill--navy {
   --tone: var(--navy);
   --fg: #fff;
-  --badge: var(--yellow);
-  --bloom: rgb(255 255 255 / 0.1);
 }
-.skill__badge {
+.skill__shape {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: var(--tone);
+  transition: transform 1.4s var(--ease);
+}
+.skill:hover .skill__shape {
+  transform: rotate(30deg);
+}
+.skill__body {
   position: relative;
   display: grid;
-  place-items: center;
-  width: 64px;
-  margin-bottom: clamp(16px, 2.4vw, 40px);
-  color: var(--badge);
-}
-.skill__badge svg {
-  width: 100%;
-  transition: transform 0.9s var(--ease);
-}
-.skill__badge span {
-  position: absolute;
-  color: var(--tone);
-  font: 700 1rem/1 var(--font-sans);
-  letter-spacing: 0;
+  justify-items: center;
+  gap: 10px;
+  width: 66%;
 }
 .skill__name {
-  font-size: clamp(1.9rem, 2.8vw, 2.75rem);
+  font-size: clamp(1.6rem, 2.4vw, 2.6rem);
   letter-spacing: -0.02em;
 }
 .skill__line {
-  max-width: 30ch;
-  line-height: 1.45;
-  opacity: 0.82;
-}
-/* A large flower bleeds off the corner and turns on hover */
-.skill__bloom {
-  position: absolute;
-  z-index: -1;
-  right: -30%;
-  bottom: -36%;
-  width: 70%;
-  color: var(--bloom);
-  transition: transform 1.2s var(--ease);
-}
-.skill:hover .skill__bloom {
-  transform: rotate(40deg) scale(1.06);
-}
-.skill:hover .skill__badge svg {
-  transform: rotate(-45deg);
+  font-size: clamp(0.9rem, 1.05vw, 1.15rem);
+  line-height: 1.4;
+  opacity: 0.85;
 }
 
 /* ---------- Three ways to work with us ---------- */
@@ -345,101 +318,81 @@
 }
 
 /* ---------- What others say ---------- */
-.voices__head {
+.voices {
+  margin-top: clamp(40px, 5vw, 64px);
+}
+.voices__card {
+  display: grid;
+  gap: clamp(28px, 4vw, 48px);
+  padding: clamp(28px, 4.5vw, 64px);
+  border-radius: var(--radius);
+  background: var(--ink);
+  color: #fff;
+}
+.voices__mark {
+  width: clamp(44px, 5vw, 64px);
+  color: var(--coral);
+}
+.voices__stage {
+  display: grid;
+  overflow: hidden;
+  min-height: clamp(200px, 18vw, 260px);
+  align-items: start;
+}
+.voices__quote blockquote {
+  max-width: 30ch;
+  margin: 0;
+  font-size: clamp(1.6rem, 3.2vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+}
+.voices__quote figcaption {
   display: flex;
-  align-items: end;
+  align-items: center;
+  gap: 14px;
+  margin-top: clamp(24px, 3vw, 36px);
+  color: rgb(255 255 255 / 0.85);
+  font-weight: 700;
+}
+.voices__avatar {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--coral);
+  color: #fff;
+  font-size: 0.95rem;
+}
+.voices__nav {
+  display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 24px;
-  margin-bottom: clamp(32px, 4vw, 56px);
 }
-.voices__track {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: clamp(300px, 42%, 760px);
-  gap: clamp(12px, 1.4vw, 20px);
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-  /* let the row run to the screen edge while cards still line up with the page */
-  margin-right: calc(-1 * var(--gutter));
-  padding-right: var(--gutter);
-  scroll-padding-inline: 0;
-}
-.voices__track::-webkit-scrollbar {
-  display: none;
-}
-.voice {
-  --tone: var(--yellow);
-  --fg: var(--night);
-  --bloom: rgb(255 255 255 / 0.4);
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
+.voices__bars {
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 32px;
-  min-height: clamp(300px, 26vw, 420px);
-  padding: clamp(28px, 3vw, 48px);
-  border-radius: var(--radius);
-  background: var(--tone);
-  color: var(--fg);
-  scroll-snap-align: start;
+  gap: 8px;
 }
-.voice--pink { --tone: var(--pink); }
-.voice--green { --tone: var(--green); }
-.voice--navy {
-  --tone: var(--navy);
-  --fg: #fff;
-  --bloom: rgb(255 255 255 / 0.1);
-}
-.voice blockquote {
-  margin: 0;
-  font-size: clamp(1.35rem, 2vw, 2rem);
-  font-weight: 700;
-  letter-spacing: -0.012em;
-  line-height: 1.22;
-  text-wrap: pretty;
-}
-.voice__by {
-  font-weight: 700;
-  opacity: 0.8;
-}
-.voice__bloom {
-  position: absolute;
-  z-index: -1;
-  right: -14%;
-  bottom: -30%;
-  width: 46%;
-  color: var(--bloom);
-}
-.voices__dots {
-  display: flex;
-  gap: 6px;
-  margin-top: 20px;
-}
-.voices__dots button {
+.voices__bars button {
   padding: 12px 0;
   border: 0;
   background: none;
   cursor: pointer;
 }
-.voices__dot {
+.voices__track {
   display: block;
-  width: 40px;
-  height: 4px;
-  border-radius: 4px;
-  background: var(--line);
+  width: clamp(40px, 6vw, 72px);
+  height: 3px;
+  border-radius: 3px;
+  background: rgb(255 255 255 / 0.25);
   overflow: hidden;
-}
-.voices__dots button[aria-current="true"] .voices__dot {
-  width: 64px;
 }
 .voices__fill {
   display: block;
   height: 100%;
-  background: var(--coral);
+  background: #fff;
   transform-origin: left;
 }
 .voices__arrows {
@@ -447,29 +400,30 @@
   gap: 8px;
 }
 .voices__arrows button {
-  width: 52px;
-  height: 52px;
-  border: 1px solid var(--line);
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgb(255 255 255 / 0.3);
   border-radius: 50%;
-  background: #fff;
-  color: var(--ink);
+  background: none;
+  color: #fff;
   font: inherit;
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   cursor: pointer;
   transition:
     background-color 0.3s var(--ease),
-    color 0.3s var(--ease),
-    border-color 0.3s var(--ease);
+    color 0.3s var(--ease);
 }
 .voices__arrows button:hover {
-  border-color: var(--ink);
-  background: var(--ink);
-  color: #fff;
+  background: #fff;
+  color: var(--ink);
 }
-@media (max-width: 720px) {
-  .voices__track {
-    grid-auto-columns: 86%;
-  }
+
+.voices__quote {
+  cursor: grab;
+  touch-action: pan-y;
+}
+.voices__quote:active {
+  cursor: grabbing;
 }
 
 @media (max-width: 1000px) {
@@ -498,22 +452,22 @@
   }
 }
 @media (max-width: 520px) {
+  /* Phones: the flowers cascade, overlapping a little, left and right */
+  .skills {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
   .skill {
-    gap: 8px;
-    min-height: 0;
-    padding: 18px;
+    width: 80%;
+    justify-self: start;
   }
-  .skill__badge {
-    width: 44px;
-    margin-bottom: 8px;
+  .skill:nth-child(even) {
+    justify-self: end;
   }
-  .skill__badge span {
-    font-size: 0.8rem;
-  }
-  .skill__name {
-    font-size: 1.5rem;
+  .skill + .skill {
+    margin-top: -14%;
   }
   .skill__line {
-    font-size: 0.92rem;
+    font-size: 0.95rem;
   }
 }
