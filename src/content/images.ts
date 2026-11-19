@@ -35,7 +35,11 @@ export type PhotoName = keyof typeof photos;
 export const coverSizes = "(max-aspect-ratio: 1/1) 150vh, 100vw";
 
 export function photo(name: PhotoName) {
-  const slug = photos[name];
+  return photoBySlug(photos[name]);
+}
+
+// For photos referenced straight from content (e.g. case study galleries).
+export function photoBySlug(slug: string) {
   const widths: number[] = (manifest as Record<string, number[]>)[slug] ?? [640, 1280];
   return {
     src: `/images/${slug}-${widths.includes(1280) ? 1280 : widths[widths.length - 1]}.webp`,

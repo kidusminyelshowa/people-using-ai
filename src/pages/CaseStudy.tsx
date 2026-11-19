@@ -1,25 +1,23 @@
-import type { ReactNode } from "react";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "motion/react";
-import { CountUp, Placeholder, Reveal, Stagger, StaggerItem, ease } from "../components/motion";
+import { Reveal, Stagger, StaggerItem, ease } from "../components/motion";
 import { CtaBand } from "../components/Footer";
+import { Stars } from "../components/Stars";
 import { caseStudies } from "../content/caseStudies";
+import { photoBySlug } from "../content/images";
 import { links } from "../content/links";
 import NotFound from "./NotFound";
 import "./CaseStudy.css";
 
-function Step({ n, title, children }: { n: string; title: string; children?: ReactNode }) {
+function Gallery({ slugs, sizes, className, alt }: { slugs: string[]; sizes: string; className: string; alt: string }) {
   return (
-    <div className="cs-step">
-      <Reveal as="h2" className="h1 cs-step__title">
-        <span className="accent">{n}</span> {title}
-      </Reveal>
-      {children && (
-        <Reveal className="cs-step__body" delay={0.1}>
-          {children}
-        </Reveal>
-      )}
-    </div>
+    <Stagger className={className}>
+      {slugs.map((slug) => (
+        <StaggerItem key={slug} className="cs-shot">
+          <img {...photoBySlug(slug)} sizes={sizes} alt={alt} loading="lazy" decoding="async" />
+        </StaggerItem>
+      ))}
+    </Stagger>
   );
 }
 
@@ -33,141 +31,79 @@ export default function CaseStudy() {
     animate: { opacity: 1, y: 0 },
     transition: { duration: 1.1, delay, ease },
   });
+  const alt = `Workshop with the ${cs.client} team`;
 
   return (
     <main id="main" className="cs">
-      <section className="container cs-hero">
-        {cs.backTo && (
-          <motion.div {...enter(0)}>
-            <Link className="text-link cs-back" to={cs.backTo.to}>
-              ← {cs.backTo.label}
-            </Link>
-          </motion.div>
-        )}
-        <motion.h1 className="display cs-hero__title" {...enter(0.1)}>
-          {cs.client}
-        </motion.h1>
-        {cs.summary && (
-          <motion.p className="lede cs-hero__summary" {...enter(0.3)}>
-            {cs.summary}
-          </motion.p>
-        )}
+      <section className="cs-top">
+        <div className="container cs-top__inner">
+          <div className="cs-top__brand">
+            {cs.backTo && (
+              <motion.div {...enter(0)}>
+                <Link className="text-link cs-back" to={cs.backTo.to}>
+                  ← {cs.backTo.label}
+                </Link>
+              </motion.div>
+            )}
+            <motion.h1 className="cs-logo" {...enter(0.1)}>
+              {cs.logo ? <img src={cs.logo} alt={cs.client} /> : <span className="display">{cs.client}</span>}
+            </motion.h1>
+          </div>
 
-        {cs.stats && (
-          <Stagger className="cs-stats">
-            {cs.stats.map((s, i) => (
-              <StaggerItem key={i} className="cs-stat">
-                <CountUp value={s.value} className="cs-stat__value" />
-                <span className="cs-stat__label">{s.label}</span>
-              </StaggerItem>
-            ))}
-          </Stagger>
-        )}
+          {cs.timeline && (
+            <ol className="cs-timeline">
+              {cs.timeline.map((t, i) => (
+                <motion.li key={t.label} className="cs-timeline__item" {...enter(0.25 + i * 0.15)}>
+                  <h2 className="h3">{t.label}</h2>
+                  <p>{t.text}</p>
+                  {t.by && <p className="cs-timeline__by">{t.by}</p>}
+                </motion.li>
+              ))}
+            </ol>
+          )}
+        </div>
       </section>
 
-      {cs.heroPhoto && (
-        <Reveal className="cs-hero__photo-wrap">
-          <Placeholder label={cs.heroPhoto} className="cs-hero__photo" />
-        </Reveal>
-      )}
+      {cs.photos && (
+        <section className="container cs-gallery">
+          <Gallery
+            slugs={cs.photos.top}
+            className="cs-row cs-row--top"
+            sizes="(max-width: 860px) 100vw, 33vw"
+            alt={alt}
+          />
 
-      {cs.challenge && (
-        <section className="container cs-block">
-          <Step n="01" title="The challenge">
-            <p className="statement-text">{cs.challenge.lead}</p>
-            <p className="lede">{cs.challenge.context}</p>
-          </Step>
-        </section>
-      )}
-
-      {cs.gaps && (
-        <section className="container cs-block">
-          <Step n="02" title="The gaps we identified">
-            <p className="statement-text">{cs.gaps.intro}</p>
-          </Step>
-          <Reveal className="cs-chart">
-            <div className="cs-chart__head">
-              <h3 className="h3">Team score before training, by skill</h3>
-              <span className="cs-legend">
-                <i className="cs-legend__before" /> Before <i /> After
-              </span>
-            </div>
-            <ul>
-              {cs.gaps.skills.map((s) => (
-                <li key={s.label} className="cs-bar">
-                  <div className="cs-bar__row">
-                    <span>{s.label}</span>
-                    <span className="cs-bar__nums">
-                      {s.beforeText} → {s.afterText}
-                    </span>
-                  </div>
-                  {[
-                    { v: s.before, c: "cs-bar__fill cs-bar__fill--before", d: 0 },
-                    { v: s.after, c: "cs-bar__fill", d: 0.15 },
-                  ].map((b) => (
-                    <div key={b.c} className="cs-bar__track">
-                      <motion.span
-                        className={b.c}
-                        initial={{ scaleX: 0 }}
-                        whileInView={{ scaleX: b.v / 100 }}
-                        viewport={{ once: true, amount: 0.8 }}
-                        transition={{ duration: 1.2, delay: b.d, ease }}
-                      />
-                    </div>
-                  ))}
-                </li>
-              ))}
-            </ul>
-            <p className="cs-chart__note">{cs.gaps.note}</p>
-          </Reveal>
-        </section>
-      )}
-
-      {cs.training && (
-        <section className="container cs-block">
-          <Step n="03" title="The training">
-            <p className="statement-text">{cs.training.intro}</p>
-          </Step>
-          <Stagger className="cs-sessions">
-            {cs.training.sessions.map((s, i) => (
-              <StaggerItem key={i} as="article" className="cs-session">
-                <h3 className="h3">{s.title}</h3>
-                <p className="muted">{s.label}</p>
-                <ul>
-                  {s.topics.map((t, j) => (
-                    <li key={j}>{t}</li>
-                  ))}
-                </ul>
-              </StaggerItem>
-            ))}
-          </Stagger>
-          <Stagger className="cs-photos">
-            {cs.training.photos.map((p, i) => (
-              <StaggerItem key={i}>
-                <Placeholder label={p} className="cs-photo" />
-              </StaggerItem>
-            ))}
-          </Stagger>
-        </section>
-      )}
-
-      {cs.results && (
-        <section className="container cs-block">
-          <Step n="04" title="The results" />
-          <Stagger className="cs-results">
-            {cs.results.map((r, i) => (
-              <StaggerItem key={i} className="cs-result">
-                <CountUp value={r.value} className="cs-result__value" />
-                <span className="cs-result__label">{r.label}</span>
-              </StaggerItem>
-            ))}
-          </Stagger>
-          {cs.quote && (
-            <Reveal as="figure" className="cs-quote">
-              <blockquote className="h1">“{cs.quote.text}”</blockquote>
-              <figcaption className="lede">{cs.quote.by}</figcaption>
+          {(cs.partners || cs.rating) && (
+            <Reveal className="cs-band">
+              {cs.partners && (
+                <div className="cs-band__partners">
+                  <h2 className="h3">Partnership</h2>
+                  <ul>
+                    {cs.partners.map((p) => (
+                      <li key={p} className="cs-pill">
+                        {p}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {cs.rating && (
+                <div className="cs-band__rating">
+                  <Stars value={cs.rating} />
+                  <p>
+                    <strong>{cs.rating}/5</strong> rating
+                  </p>
+                </div>
+              )}
             </Reveal>
           )}
+
+          <Gallery
+            slugs={cs.photos.bottom}
+            className="cs-row cs-row--bottom"
+            sizes="(max-width: 860px) 50vw, 20vw"
+            alt={alt}
+          />
         </section>
       )}
 
