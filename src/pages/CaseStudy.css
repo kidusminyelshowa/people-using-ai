@@ -11,23 +11,8 @@
   gap: clamp(32px, 5vw, 96px);
   align-items: center;
 }
-.cs-back {
-  display: grid;
-  place-items: center;
-  width: 52px;
-  height: 52px;
-  border: 1.5px solid var(--night);
-  border-radius: 50%;
+.cs-top .cs-back {
   color: var(--night);
-  font-size: 1.5rem;
-  transition:
-    background-color 0.3s var(--ease),
-    color 0.3s var(--ease);
-}
-.cs-back:hover,
-.cs-back:focus-visible {
-  background: var(--night);
-  color: var(--yellow);
 }
 .cs-logo .display {
   display: block;
