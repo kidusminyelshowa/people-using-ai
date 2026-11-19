@@ -69,7 +69,7 @@ export default function CaseStudy() {
           <Gallery
             slugs={cs.photos.top}
             className="cs-row cs-row--top"
-            sizes="(max-width: 860px) 100vw, 33vw"
+            sizes="(max-width: 860px) 100vw, 66vw"
             alt={alt}
           />
 
@@ -101,7 +101,7 @@ export default function CaseStudy() {
           <Gallery
             slugs={cs.photos.bottom}
             className="cs-row cs-row--bottom"
-            sizes="(max-width: 860px) 50vw, 20vw"
+            sizes="(max-width: 860px) 100vw, 50vw"
             alt={alt}
           />
         </section>

@@ -5,6 +5,7 @@ import { Parallax, Reveal, Stagger, StaggerItem, ease } from "../components/moti
 import { CtaBand } from "../components/Footer";
 import { useRegister, workshop, type Topic } from "../components/Register";
 import { photo, type PhotoName } from "../content/images";
+import { links } from "../content/links";
 import Flower from "../components/Flower";
 import { Stars } from "../components/Stars";
 import "./Home.css";
@@ -298,9 +299,9 @@ function Ways() {
               <h4 className="workshop__label">Upcoming workshop</h4>
               <p className="workshop__title">{workshop.title}</p>
               <p className="workshop__meta">{workshop.meta}</p>
-              <button type="button" className="btn" onClick={open("workshop")}>
+              <a className="btn" href={links.workshopForm} target="_blank" rel="noopener noreferrer">
                 Register here <span className="btn__arrow">→</span>
-              </button>
+              </a>
             </div>
           </Offer>
           <Offer
@@ -317,7 +318,7 @@ function Ways() {
           <Offer
             id="community"
             title="Community & Storytelling"
-            image="conversation"
+            image="community"
             body="We bring people together to share experiences, exchange ideas, and explore AI's role in everyday life, from work and education to parenting and creativity."
           >
             <button type="button" className="btn" onClick={open("community")}>
@@ -462,7 +463,6 @@ function Testimonials() {
 }
 
 export default function Home() {
-  const register = useRegister();
   return (
     <main id="main" className="home">
       <Hero />
@@ -472,7 +472,7 @@ export default function Home() {
       <Testimonials />
       <CtaBand
         lines={["AI creates possibilities.", "People shape what comes next."]}
-        action={{ label: "Register for upcoming workshops", onClick: () => register("workshop") }}
+        action={{ label: "Register for upcoming workshops", href: links.workshopForm }}
       />
     </main>
   );

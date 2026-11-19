@@ -22,6 +22,7 @@ const photos = {
   clay: "smiling-young-woman-working-with-clay-at-studio",
   laptopMeeting: "team-meeting-collaboration-in-a-modern-office",
   conversation: "two-friends-enjoying-conversation-in-urban-setting",
+  community: "community-conversation",
 } as const;
 
 export type PhotoName = keyof typeof photos;
