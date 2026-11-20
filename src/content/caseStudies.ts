@@ -65,7 +65,7 @@ export const caseStudies: CaseStudy[] = [
         "sierra-workshop-22", "sierra-workshop-12", "sierra-workshop-13", "sierra-workshop-24", "sierra-workshop-18",
       ],
     },
-    partners: ["OpenAI Community Nairobi", "Claude Community Nairobi"],
+    partners: ["Claude Nairobi Community Ambassadors", "OpenAI Nairobi Community Ambassadors"],
     rating: 4.5,
   },
   {
