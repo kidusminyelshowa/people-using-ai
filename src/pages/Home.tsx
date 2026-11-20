@@ -321,7 +321,7 @@ function Ways() {
             image="community"
             body="We bring people together to share experiences, exchange ideas, and explore AI's role in everyday life, from work and education to parenting and creativity."
           >
-            <a className="btn" href={links.linkedin} target="_blank" rel="noopener noreferrer">
+            <a className="btn" href={links.instagram} target="_blank" rel="noopener noreferrer">
               Join our community <span className="btn__arrow">→</span>
             </a>
           </Offer>
