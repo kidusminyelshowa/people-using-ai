@@ -1,7 +1,8 @@
 /**
  * People using ai — launch waitlist.
  * Receives sign-ups from the coming-soon page and the Community page
- * (email, plus name, country and phone when given) and adds them to this sheet.
+ * (email, plus name, country and phone when given), and messages from the
+ * footer's contact form (source "contact"), and adds them to this sheet.
  *
  * Setup (once):
  *  1. Create a Google Sheet, e.g. "People using ai — Waitlist".
@@ -30,14 +31,15 @@ function doPost(e) {
     const name = String(body.name || "").trim().slice(0, 120);
     const country = String(body.country || "").trim().slice(0, 80);
     const phone = String(body.phone || "").trim().slice(0, 40);
+    const message = String(body.message || "").trim().slice(0, 4000);
     if (!EMAIL.test(email) || email.length > 254) return reply({ ok: false, error: "invalid" });
 
     const sheet = getSheet();
     const last = sheet.getLastRow();
     // One row per email per sign-up form (source).
     const rows = last > 1 ? sheet.getRange(2, 2, last - 1, 2).getValues() : [];
-    const seen = rows.some(function (r) { return r[0] === email && r[1] === source; });
-    if (!seen) sheet.appendRow([new Date(), email, source, name, country, phone]);
+    const seen = !message && rows.some(function (r) { return r[0] === email && r[1] === source; });
+    if (!seen) sheet.appendRow([new Date(), email, source, name, country, phone, message]);
     return reply({ ok: true });
   } catch (err) {
     return reply({ ok: false, error: "server" });
@@ -51,7 +53,7 @@ function getSheet() {
   let sheet = book.getSheetByName(SHEET_NAME);
   if (!sheet) {
     sheet = book.insertSheet(SHEET_NAME);
-    sheet.appendRow(["Signed up", "Email", "Source", "Name", "Country", "Phone"]);
+    sheet.appendRow(["Signed up", "Email", "Source", "Name", "Country", "Phone", "Message"]);
     sheet.setFrozenRows(1);
   }
   return sheet;

@@ -5,7 +5,7 @@ const endpoint = import.meta.env.VITE_WAITLIST_URL as string | undefined;
 
 export const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-export type Details = { name?: string; country?: string; phone?: string };
+export type Details = { name?: string; country?: string; phone?: string; message?: string };
 
 export async function subscribe(email: string, source = "coming-soon", details: Details = {}): Promise<void> {
   if (!endpoint) throw new Error("The waitlist isn't connected yet.");
@@ -19,6 +19,7 @@ export async function subscribe(email: string, source = "coming-soon", details: 
       name: details.name?.trim() ?? "",
       country: details.country?.trim() ?? "",
       phone: details.phone?.trim() ?? "",
+      message: details.message?.trim() ?? "",
     }),
   });
   const data = (await res.json().catch(() => null)) as { ok?: boolean } | null;
