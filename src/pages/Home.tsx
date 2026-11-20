@@ -42,15 +42,15 @@ const skills = [
 ] as const;
 
 const quotes = [
+  {
+    text: "I’ve done Jan 2025 to June 2026 audit prep and financials prep in 4 hours with Claude. Would have taken me days… days of sleepless nights! Thank you",
+    by: "Sierra Breweries Finance Team",
+  },
   { text: "Eye-opener! I didn’t know AI was capable of so much.", by: "Yvonne Wandia Wamuyu" },
   { text: "Excellent delivery. I enjoyed every bit of it, and I look forward to doing more with AI tools.", by: "Korir Kipkirui Isaac" },
   {
     text: "The training was insightful and practical providing good understanding of how AI tools like Claude can be leveraged to improve productivity and simplify day-to-day tasks.",
     by: "Julius Mutie Safari",
-  },
-  {
-    text: "I’ve done Jan 2025 to June 2026 audit prep and financials prep in 4 hours with Claude. Would have taken me days… days of sleepless nights! Thank you",
-    by: "Sierra Breweries Finance Team",
   },
 ];
 
@@ -321,9 +321,9 @@ function Ways() {
             image="community"
             body="We bring people together to share experiences, exchange ideas, and explore AI's role in everyday life, from work and education to parenting and creativity."
           >
-            <button type="button" className="btn" onClick={open("community")}>
+            <a className="btn" href={links.linkedin} target="_blank" rel="noopener noreferrer">
               Join our community <span className="btn__arrow">→</span>
-            </button>
+            </a>
           </Offer>
         </div>
       </div>
