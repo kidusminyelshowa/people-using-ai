@@ -64,8 +64,8 @@ export default function Footer() {
             <Link to="/" aria-label="People Using AI, home">
               <img src={iconCoral} alt="" width={56} height={56} />
             </Link>
-            <a className="footer__email" href={`mailto:${links.contactEmail}`}>
-              {links.contactEmail}
+            <a className="footer__email" href={links.workshopForm} target="_blank" rel="noopener noreferrer">
+              Contact us
             </a>
             <p className="footer__place">Nairobi, Kenya</p>
           </div>
