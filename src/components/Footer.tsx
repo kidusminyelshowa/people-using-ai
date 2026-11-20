@@ -69,7 +69,7 @@ export default function Footer() {
               {links.whatsapp.map((n) => (
                 <li key={n}>
                   <a href={`https://wa.me/${n.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
-                    WhatsApp {n}
+                    {n}
                   </a>
                 </li>
               ))}
