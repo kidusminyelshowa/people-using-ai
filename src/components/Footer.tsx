@@ -64,9 +64,16 @@ export default function Footer() {
             <Link to="/" aria-label="People Using AI, home">
               <img src={iconCoral} alt="" width={56} height={56} />
             </Link>
-            <a className="footer__email" href={links.workshopForm} target="_blank" rel="noopener noreferrer">
-              Contact us
-            </a>
+            <h2 className="footer__email">Contact us</h2>
+            <ul className="footer__whatsapp">
+              {links.whatsapp.map((n) => (
+                <li key={n}>
+                  <a href={`https://wa.me/${n.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
+                    {n}
+                  </a>
+                </li>
+              ))}
+            </ul>
             <p className="footer__place">Nairobi, Kenya</p>
           </div>
 

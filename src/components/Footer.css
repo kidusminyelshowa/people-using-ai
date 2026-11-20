@@ -43,7 +43,19 @@
   overflow-wrap: anywhere;
   transition: color 0.3s var(--ease);
 }
-.footer__email:hover {
+.footer__whatsapp {
+  display: grid;
+  gap: 10px;
+  margin: -8px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 1.125rem;
+}
+.footer__whatsapp a {
+  text-decoration: none;
+  transition: color 0.3s var(--ease);
+}
+.footer__whatsapp a:hover {
   color: var(--coral);
 }
 .footer__place {
